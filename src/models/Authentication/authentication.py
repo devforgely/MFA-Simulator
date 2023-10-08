@@ -1,4 +1,12 @@
-from AuthenticationStrategy import AuthenticationStrategy
+from typing import Protocol
+
+
+class AuthenticationStrategy(Protocol):
+    def encrypt_key(self):
+        ...
+
+    def authenticate(self) -> bool:
+        ...
 
 
 class CompoundAuthentication(AuthenticationStrategy):
@@ -13,8 +21,8 @@ class CompoundAuthentication(AuthenticationStrategy):
     def remove(self, child) -> None:
         self.childens.remove(child)
 
-    def encrypt_key():
+    def encrypt_key(self):
         pass
 
-    def authenticate() -> bool:
-        pass
+    def authenticate(self) -> bool:
+        return True

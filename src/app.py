@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtWidgets
-from viewmodels.MainViewModel import MainViewModel
+from viewmodels.main_viewmodel import MainViewModel
 
 
 class App(QtWidgets.QApplication):

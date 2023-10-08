@@ -1,5 +1,5 @@
-from data.DataService import DataService
-from models.Authentication.CompoundAuthentication import CompoundAuthentication
+from data.data_service import DataService
+from models.Authentication.authentication import CompoundAuthentication
 
 
 class AuthenticationService():
