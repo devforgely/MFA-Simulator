@@ -1,0 +1,24 @@
+{
+    "securityQuestions": [
+      {"question": "What is the name of your first pet?"},
+      {"question": "In which city were you born?"},
+      {"question": "What is your favorite movie?"},
+      {"question": "Who is your favorite author?"},
+      {"question": "What is the model of your first car?"},
+      {"question": "What is the name of your favorite teacher?"},
+      {"question": "In which year did you graduate high school?"},
+      {"question": "What is the name of your maternal grandmother?"},
+      {"question": "What is your favorite color?"},
+      {"question": "What is your mother's maiden name?"},
+      {"question": "Which country would you like to visit the most?"},
+      {"question": "What is the make of your first car?"},
+      {"question": "What is the name of your childhood best friend?"},
+      {"question": "What is the last name of your favorite actor?"},
+      {"question": "What is the name of the street you grew up on?"},
+      {"question": "In which month were you born?"},
+      {"question": "What is the name of your first school?"},
+      {"question": "What is your favorite food?"},
+      {"question": "What is the name of the company of your first job?"},
+      {"question": "What is the name of your favorite sports team?"}
+    ]
+  }

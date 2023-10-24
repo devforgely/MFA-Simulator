@@ -1,4 +1,4 @@
-
+from models.authentication.authentication import Method
 
 
 class DataService():
