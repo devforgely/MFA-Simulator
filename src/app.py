@@ -1,20 +1,16 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QStackedWidget
+import ctypes
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QIcon
 from viewmodels.main_viewmodel import MainViewModel
 
 
 class App(QApplication):
     def __init__(self, sys_argv) -> None:
         super(App, self).__init__(sys_argv)
-
-        self.stackpane = QStackedWidget()
-        self.stackpane.setMinimumHeight(600)
-        self.stackpane.setMinimumWidth(800)
-
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('mfa.app')
+        self.setWindowIcon(QIcon("./icon.png"))
         self.main = MainViewModel()
-        
-        self.stackpane.addWidget(self.main)
-        self.stackpane.show()
 
 if __name__ == '__main__':
     app = App(sys.argv)

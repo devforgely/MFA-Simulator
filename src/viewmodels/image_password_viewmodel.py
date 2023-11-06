@@ -6,6 +6,8 @@ from services.container import ApplicationContainer
 import os
 import random
 
+# pyright: reportGeneralTypeIssues=false
+
 class ClickableImageLabel(QLabel):
     def __init__(self, image, click_callback, parent=None):
         super().__init__(parent)
@@ -18,13 +20,13 @@ class ClickableImageLabel(QLabel):
         self.setPixmap(pixmap)
 
         # Set up properties
-        self.setAlignment(Qt.AlignCenter) # type: ignore
+        self.setAlignment(Qt.AlignCenter) 
 
     def enterEvent(self, event):
-        self.setCursor(Qt.PointingHandCursor) # type: ignore
+        self.setCursor(Qt.PointingHandCursor) 
 
     def leaveEvent(self, event):
-        self.setCursor(Qt.ArrowCursor) # type: ignore
+        self.setCursor(Qt.ArrowCursor) 
 
     def mousePressEvent(self, event):
         if self.click_callback:

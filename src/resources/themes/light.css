@@ -1,0 +1,62 @@
+/* /////////////////////////////////////////////////////////////////////////////////////////////////
+SET APP STYLESHEET - LIGHT THEME
+///////////////////////////////////////////////////////////////////////////////////////////////// */
+
+QMainWindow {
+ 	border: none;
+}
+
+QWidget {
+	color: #0f0f0f;
+	font: 10pt "Segoe UI";
+}
+
+/* Tooltips */
+QToolTip {
+	color: #0f0f0f;
+	background-color: #fcfcdd;
+	border: 1px solid #000000;
+	background-image: none;
+	background-position: left center;
+    background-repeat: no-repeat;
+	text-align: center;
+	padding: 0px;
+	margin: 0px;
+}
+
+/* Background */
+#background {
+    background-color: #ffffff;
+    color: #0f0f0f;
+}
+
+/* Top Bar */
+#topBar {
+    background-color: #34363a;
+}
+
+#logo {
+	background-color: transparent;
+}
+
+/* Top Bar Buttons */
+#rightSection .QPushButton { background-color: rgba(255, 255, 255, 0); border: none;  border-radius: 5px; }
+#rightSection .QPushButton:hover { background-color: #b8b8b8; border-style: solid; border-radius: 4px; }
+#rightSection .QPushButton:pressed { background-color: #363535; border-style: solid; border-radius: 4px; }
+
+/* Left Menu */
+#leftMenu {	
+	background-color: #ffffff;
+}
+
+#leftMenu .QPushButton {	
+	border: none;
+	background-color: transparent;;
+}
+
+#leftMenu .QPushButton:hover {
+	background-color: #b8b8b8;
+}
+#leftMenu .QPushButton:pressed {	
+    border-left: 3px solid #28c469;
+}
