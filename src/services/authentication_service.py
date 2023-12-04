@@ -1,38 +1,95 @@
-from typing import Any
-from data.data_service import DataService
-from models.authentication.authentication import AuthenticationStrategy, CompoundAuthentication, Method
+from typing import Any, List
+from models.authentication.authentication import CompoundAuthentication, Method
+from models.authentication.authentication_methods import *
 
 class AuthenticationService():
     def __init__(self, data_service) -> None:
         self.data_service = data_service
         self.strategy = CompoundAuthentication()
+        self.at = 0
+        self.register_count = 0
+        self.auth_count = 0
+
+        self.type_to_strategy = {
+            Method.PIN: PinStrategy,
+            Method.PASSWORD: PasswordStrategy,
+            Method.SECRET_QUESTION: SecurityQuestionStrategy,
+            Method.IMAGE_PASSWORD: ImagePasswordStrategy,
+            Method.FINGER_PRINT: FingerPrintStrategy,
+            Method.PUSH_NOTIFICATION: PushNotificationStrategy,
+            Method.TWOFA_KEY: TwoFAKeyStrategy
+        }
 
     def can_simulate(self) -> bool:
-        return len(self.strategy) > 0 and (not self.is_registered() or not self.is_authenticated())
+        return len(self.strategy) > 0 and (not self.all_registered() or not self.all_authenticated())
+    
+    def reset(self) -> None:
+        self.strategy = CompoundAuthentication()
+        self.at = 0
+        self.register_count = 0
+        self.auth_count = 0
+    
+    def get_all_types(self) -> List[Method]:
+        return self.strategy.get_all_types()
+    
+    def all_registered(self) -> bool:
+        return len(self.strategy) == self.register_count and self.at == self.register_count - 1
+    
+    def all_authenticated(self) -> bool:
+        return len(self.strategy) == self.auth_count and self.at == self.auth_count - 1
+    
+    def add(self, type: Method) -> bool:
+        if type not in self.get_all_types():
+            strategy_class = self.type_to_strategy.get(type)
+            if strategy_class:
+                self.strategy.add(strategy_class())
+                return True
+        return False
 
-    def get_view_type(self) -> Method:
-        return self.strategy.get_type()
-    
-    def is_registered(self) -> bool:
-        return self.strategy.is_all_registered
-    
-    def is_authenticated(self) -> bool:
-        return self.strategy.is_all_authenticated
-    
-    def add(self, child: AuthenticationStrategy) -> None:
-        self.strategy.add(child)
-        print("add strategy")
+    def remove(self, type: Method) -> bool:
+        try:
+            index = self.get_all_types().index(type)
+            self.strategy.remove(index)
+            return True
+        except ValueError:
+            print("Element not found in the list")
+            return False
+        
+    def forward(self) -> None:
+        if self.at < len(self.strategy):
+            self.at += 1
 
-    def register(self, *args: Any) -> str:
-        return self.strategy.register(*args)
+    def backward(self) -> None:
+        if self.at > 0:
+            self.at -= 1
+
+    def register(self, *args: Any) -> bool:
+        state = self.strategy.register(self.at, *args)
+        if state:
+            if self.at == self.register_count:
+                self.register_count += 1
+            return True
+        return False
     
     def authenticate(self, key: str) -> bool:
-        secret = self.strategy.get_secret()
-        truth = self.strategy.authenticate(key, secret=secret)
-        return truth
+        state = self.strategy.authenticate(self.at, key)
+        if state:
+            if self.at == self.auth_count:
+                self.auth_count += 1
+            return True
+        return False
     
     def session_store(self, *args: Any):
-        self.strategy.store(*args)
+        self.strategy.store(self.at, *args)
+
+    def get_plain_key(self) -> str:
+        return self.strategy.get_plain_key(self.at)
+    
+    def get_secret(self) -> str:
+        return self.strategy.get_secret(self.at)
+    
+    def get_timestamp(self) -> str:
+        return self.strategy.get_timestamp(self.at)
 
     def get_session_stored(self) -> list:
-        return self.strategy.get_stored()
+        return self.strategy.get_stored(self.at)

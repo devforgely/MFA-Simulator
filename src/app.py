@@ -9,7 +9,7 @@ class App(QApplication):
     def __init__(self, sys_argv) -> None:
         super(App, self).__init__(sys_argv)
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('mfa.app')
-        self.setWindowIcon(QIcon("./icon.png"))
+        self.setWindowIcon(QIcon(u"icon.png"))
         self.main = MainViewModel()
 
 if __name__ == '__main__':

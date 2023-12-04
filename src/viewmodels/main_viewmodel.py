@@ -1,10 +1,13 @@
+from typing import Any
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QMainWindow, QGraphicsDropShadowEffect, QSizeGrip, QSystemTrayIcon
+from PyQt5.QtWidgets import QMainWindow, QGraphicsDropShadowEffect, QSizeGrip, QStackedWidget
 from configuration.app_settings import *
-from configuration.resources_rc import *
 from widgets.side_grip import SideGrip
+from services.container import ApplicationContainer
+from viewmodels.simulate_viewmodels import *
+from viewmodels.quiz_viewmodels import *
 
 
 # pyright: reportGeneralTypeIssues=false
@@ -13,12 +16,19 @@ class MainViewModel(QMainWindow):
     def __init__(self) -> None:
         QMainWindow.__init__(self)
         uic.loadUi("views/main_view.ui", self)
+        # self.message_service = ApplicationContainer.message_service()
+
+        # PAGES
+        self.simulate_page = SimulateViewModel()
+        self.quiz_page = QuizViewModel()
+        self.stackedWidget.addWidget(self.simulate_page)
+        self.stackedWidget.addWidget(self.quiz_page)
 
         # TOP BAR CONNECTIONS
         self.help_btn.clicked.connect(self.help)
 
         # LEFT MENUS CONNECTIONS
-        self.play_btn.clicked.connect(self.buttonClick)
+        self.simulate_btn.clicked.connect(self.buttonClick)
         self.learn_btn.clicked.connect(self.buttonClick)
         self.quiz_btn.clicked.connect(self.buttonClick)
         self.profile_btn.clicked.connect(self.buttonClick)
@@ -28,6 +38,9 @@ class MainViewModel(QMainWindow):
 
         # SHOW APP
         self.show()
+
+    # def on_message(self, message_title: str, *args: Any) -> None:
+    #     pass
     
     def setup_ui(self) -> None:
         # USE CUSTOM TITLE BAR
@@ -67,10 +80,10 @@ class MainViewModel(QMainWindow):
             # RESIZE WIDGETS
             self.gripSize = 5
             self.sideGrips = [
-                SideGrip(self, QtCore.Qt.LeftEdge), 
-                SideGrip(self, QtCore.Qt.TopEdge), 
-                SideGrip(self, QtCore.Qt.RightEdge), 
-                SideGrip(self, QtCore.Qt.BottomEdge), 
+                SideGrip(self, Qt.LeftEdge), 
+                SideGrip(self, Qt.TopEdge), 
+                SideGrip(self, Qt.RightEdge), 
+                SideGrip(self, Qt.BottomEdge), 
             ]
             self.cornerGrips = [QSizeGrip(self) for _ in range(4)]
             for grip in self.cornerGrips:
@@ -106,7 +119,7 @@ class MainViewModel(QMainWindow):
             self.stored_size = self.size()
             self.showMaximized()
             self.maximise_restore_btn.setToolTip("Restore")
-            self.maximise_restore_btn.setIcon(QIcon(u":/resources/icons/window-restore-regular.svg"))
+            self.maximise_restore_btn.setIcon(QIcon(u"resources/icons/window-restore-regular.svg"))
 
             for grip in self.cornerGrips:
                 grip.hide()
@@ -118,7 +131,7 @@ class MainViewModel(QMainWindow):
         else:
             self.showNormal()
             self.maximise_restore_btn.setToolTip("Maximise")
-            self.maximise_restore_btn.setIcon(QIcon(u":/resources/icons/square-regular.svg"))
+            self.maximise_restore_btn.setIcon(QIcon(u"resources/icons/square-regular.svg"))
 
             for grip in self.cornerGrips:
                 grip.show()
@@ -133,12 +146,12 @@ class MainViewModel(QMainWindow):
         btn_name = self.sender().objectName()
 
         match(btn_name):
-            case "play_btn":
-                print("play")
+            case "simualte_btn":
+                self.stackedWidget.setCurrentWidget(self.simulate_page)
             case "learn_btn":
                 print("learn")
             case "quiz_btn":
-                print("quiz")
+                self.stackedWidget.setCurrentWidget(self.quiz_page)
             case "profile_btn":
                 print("profile")
             case "manage_btn":
@@ -160,16 +173,16 @@ class MainViewModel(QMainWindow):
 
         # top left
         self.cornerGrips[0].setGeometry(
-            QtCore.QRect(outRect.topLeft(), inRect.topLeft()))
+            QRect(outRect.topLeft(), inRect.topLeft()))
         # top right
         self.cornerGrips[1].setGeometry(
-            QtCore.QRect(outRect.topRight(), inRect.topRight()).normalized())
+            QRect(outRect.topRight(), inRect.topRight()).normalized())
         # bottom right
         self.cornerGrips[2].setGeometry(
-            QtCore.QRect(inRect.bottomRight(), outRect.bottomRight()))
+            QRect(inRect.bottomRight(), outRect.bottomRight()))
         # bottom left
         self.cornerGrips[3].setGeometry(
-            QtCore.QRect(outRect.bottomLeft(), inRect.bottomLeft()).normalized())
+            QRect(outRect.bottomLeft(), inRect.bottomLeft()).normalized())
 
         # left edge
         self.sideGrips[0].setGeometry(

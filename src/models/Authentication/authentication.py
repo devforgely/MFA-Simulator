@@ -1,80 +1,77 @@
-from typing import Protocol, Any
+from typing import Protocol, Any, List
 from enum import Enum
 
 class Method(Enum):
-    PIN = 0
-    PASSWORD = 1
-    SECRET_QUESTION = 2
-    IMAGE_PASSWORD = 3
+    COMPOUND = -1
+    BASEHASH = 0
+    PIN = 1
+    PASSWORD = 2
+    SECRET_QUESTION = 3
+    IMAGE_PASSWORD = 4
+    FINGER_PRINT = 5
+    PUSH_NOTIFICATION = 6
+    TWOFA_KEY = 7
 
 
 class AuthenticationStrategy(Protocol):
+    def get_type(self) -> Method:
+        ...
+    
     def register(self, *keys: str) -> str:
         ...
 
-    def authenticate(self, *keys: str, secret: str) -> bool:
+    def authenticate(self, *keys: str) -> bool:
+        ...
+
+    def get_plain_key(self) -> str:
+        ...
+
+    def get_secret(self) -> str:
+        ...
+
+    def store(self, *args: Any) -> None:
+        ...
+
+    def get_stored(self) -> list:
         ...
 
 
 class CompoundAuthentication(AuthenticationStrategy):
     def __init__(self) -> None:
         self.childens = []
-        self.current_register_index = 0
-        self.current_auth_index = 0
-        self.is_all_registered = False
-        self.is_all_authenticated = False
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.childens)
+    
+    def get_type(self) -> Method:
+        return Method.COMPOUND
+    
+    def get_all_types(self) -> List[Method]:
+        return [t.get_type() for t in self.childens]
     
     def add(self, child: AuthenticationStrategy) -> None:
         self.childens.append(child)
 
-    def remove(self, child: AuthenticationStrategy) -> None:
-        self.childens.remove(child)
+    def remove(self, index: int) -> None:
+        del self.childens[index]
 
-    def get_type(self) -> Method:
-        if self.is_all_registered:
-            return self.childens[self.current_auth_index].type
-        return self.childens[self.current_register_index].type
+    def register(self, index: int, *args: Any) -> bool:     
+        return self.childens[index].register(*args)
 
-    def register(self, *args: Any) -> str:
-        if not self.is_all_registered:
-            secret = self.childens[self.current_register_index].register(*args)
-            
-            self.current_register_index += 1
-
-            if self.current_register_index == len(self.childens):
-                self.is_all_registered = True           
-            return secret
-        return ""
-
-    def authenticate(self, key: str, secret: str) -> bool:
-        if not self.is_all_authenticated:
-            truth = self.childens[self.current_auth_index].authenticate(key, secret)
-            
-            if truth:
-                self.current_auth_index += 1
-                if self.current_auth_index == len(self.childens):
-                    self.is_all_authenticated = True
-                return True         
-            return False
-        return True
+    def authenticate(self, index: int, key: str) -> bool:
+        return self.childens[index].authenticate(key)
     
-    def get_plain_key(self) -> str:
-        if not self.is_all_registered:
-            return self.childens[self.current_register_index].get_plain_key()
-        else:
-            return self.childens[self.current_auth_index].get_plain_key()
+    def get_plain_key(self, index: int) -> str:
+        return self.childens[index].get_plain_key()
         
-    def get_secret(self) -> str:
-        if not self.is_all_registered:
-            return self.childens[self.current_register_index].get_secret()
-        else:
-            return self.childens[self.current_auth_index].get_secret()
+    def get_secret(self, index: int) -> str:
+        return self.childens[index].get_secret()
+    
+    def get_timestamp(self, index: int) -> str:
+        return self.childens[index].get_timestamp()
 
-    def store(self, *args: Any) -> None:    # need to be called before register increments
-        self.childens[self.current_register_index].store(*args)
+    def store(self, index: int, *args: Any) -> None:
+        self.childens[index].store(*args)
 
-    def get_stored(self) -> list:
-        return self.childens[self.current_auth_index].get_stored()
+    def get_stored(self, index: int) -> list:
+        return self.childens[index].get_stored()

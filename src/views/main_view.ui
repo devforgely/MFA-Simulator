@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1290</width>
-    <height>730</height>
+    <width>1390</width>
+    <height>830</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,14 +22,14 @@ QMainWindow {
 	border: none;
 }
 
-QWidget{
-	color: #0f0f0f;
+QWidget {
+	color: #47495a;
 	font: 10pt &quot;Segoe UI&quot;;
 }
 
 /* Tooltips */
 QToolTip {
-	color: #0f0f0f;
+	color: #47495a;
 	background-color: #fcfcdd;
 	border: 1px solid #000000;
 	background-image: none;
@@ -43,7 +43,7 @@ QToolTip {
 /* Background */
 #background {
     background-color: #ffffff;
-    color: #0f0f0f;
+    color: #47495a;
 }
 
 /* Top Bar */
@@ -56,10 +56,23 @@ QToolTip {
 	background-color: transparent;
 }
 
+#search_field {
+	background-color: #f6f7fb;
+	border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+	padding-left: 20px;
+}
+
+#search_icon {
+	background-color: #f6f7fb;
+	border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+	padding: 5px;
+}
+
 /* Top Bar Buttons */
-#rightSection .QPushButton { background-color: rgba(255, 255, 255, 0); border: none;  border-radius: 5px; }
-#rightSection .QPushButton:hover { background-color: #b8b8b8; border-style: solid; border-radius: 4px; }
-#rightSection .QPushButton:pressed { background-color: #363535; border-style: solid; border-radius: 4px; }
+#rightSection .QPushButton { background-color: transparent; border: none;  border-radius: 5px; }
+#rightSection .QPushButton:hover { background-color: #f6f7fb; }
 
 /* Left Menu */
 #leftMenu {	
@@ -69,19 +82,19 @@ QToolTip {
 
 #leftMenu .QPushButton {	
 	border: none;
+	border-radius: 10px;
+	margin: 5px;
 }
 
 #leftMenu .QPushButton:hover {
-	background-color: #b8b8b8;
-}
-#leftMenu .QPushButton:pressed {	
-    border-left: 3px solid #28c469;
+	background-color: #eeeeee;
 }
 
 /* Page Container */
 #pageContainer {
-	background-color:#f6f7fb
-}</string>
+	background-color: #f6f7fb;
+}
+</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
@@ -103,6 +116,12 @@ QToolTip {
      <widget class="QFrame" name="background">
       <property name="enabled">
        <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -154,26 +173,26 @@ QToolTip {
            <number>10</number>
           </property>
           <property name="topMargin">
-           <number>5</number>
+           <number>0</number>
           </property>
           <property name="rightMargin">
            <number>10</number>
           </property>
           <property name="bottomMargin">
-           <number>5</number>
+           <number>0</number>
           </property>
           <item>
            <widget class="QLabel" name="logo">
             <property name="minimumSize">
              <size>
-              <width>120</width>
-              <height>40</height>
+              <width>100</width>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>120</width>
-              <height>40</height>
+              <width>100</width>
+              <height>30</height>
              </size>
             </property>
             <property name="autoFillBackground">
@@ -183,7 +202,7 @@ QToolTip {
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="../resources/resources.qrc">:/resources/images/mfa.png</pixmap>
+             <pixmap>../resources/images/mfa.png</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -218,15 +237,24 @@ QToolTip {
               <widget class="QFrame" name="searchSection">
                <property name="minimumSize">
                 <size>
-                 <width>478</width>
+                 <width>430</width>
                  <height>0</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>478</width>
+                 <width>430</width>
                  <height>16777215</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Segoe UI</family>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <italic>false</italic>
+                 <bold>false</bold>
+                </font>
                </property>
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
@@ -254,15 +282,36 @@ QToolTip {
                  <widget class="QLineEdit" name="search_field">
                   <property name="minimumSize">
                    <size>
-                    <width>450</width>
-                    <height>40</height>
+                    <width>400</width>
+                    <height>30</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>450</width>
-                    <height>16777215</height>
+                    <width>400</width>
+                    <height>30</height>
                    </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Segoe UI</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="maxLength">
+                   <number>50</number>
+                  </property>
+                  <property name="placeholderText">
+                   <string>Search</string>
                   </property>
                  </widget>
                 </item>
@@ -270,21 +319,21 @@ QToolTip {
                  <widget class="QLabel" name="search_icon">
                   <property name="minimumSize">
                    <size>
-                    <width>28</width>
-                    <height>28</height>
+                    <width>30</width>
+                    <height>30</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>28</width>
-                    <height>28</height>
+                    <width>30</width>
+                    <height>30</height>
                    </size>
                   </property>
                   <property name="text">
                    <string/>
                   </property>
                   <property name="pixmap">
-                   <pixmap resource="../resources/resources.qrc">:/resources/icons/magnifying-glass-solid.svg</pixmap>
+                   <pixmap>../resources/icons/magnifying-glass-solid.svg</pixmap>
                   </property>
                   <property name="scaledContents">
                    <bool>true</bool>
@@ -331,16 +380,31 @@ QToolTip {
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QLabel" name="coin_label">
-                  <property name="text">
-                   <string>Coins</string>
+                 <widget class="QLabel" name="coin_icon">
+                  <property name="minimumSize">
+                   <size>
+                    <width>32</width>
+                    <height>32</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>32</width>
+                    <height>32</height>
+                   </size>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap>../resources/images/coin.png</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="xp_label">
+                 <widget class="QLabel" name="coin_count">
                   <property name="text">
-                   <string>XP</string>
+                   <string>99999</string>
                   </property>
                  </widget>
                 </item>
@@ -411,8 +475,8 @@ QToolTip {
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="../resources/resources.qrc">
-                 <normaloff>:/resources/icons/help-question-1.png</normaloff>:/resources/icons/help-question-1.png</iconset>
+                <iconset>
+                 <normaloff>../resources/icons/help-question-1.png</normaloff>../resources/icons/help-question-1.png</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -449,8 +513,8 @@ QToolTip {
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="../resources/resources.qrc">
-                 <normaloff>:/resources/icons/minus.svg</normaloff>:/resources/icons/minus.svg</iconset>
+                <iconset>
+                 <normaloff>../resources/icons/minus.svg</normaloff>../resources/icons/minus.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -487,8 +551,8 @@ QToolTip {
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="../resources/resources.qrc">
-                 <normaloff>:/resources/icons/square-regular.svg</normaloff>:/resources/icons/square-regular.svg</iconset>
+                <iconset>
+                 <normaloff>../resources/icons/square-regular.svg</normaloff>../resources/icons/square-regular.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -525,8 +589,8 @@ QToolTip {
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="../resources/resources.qrc">
-                 <normaloff>:/resources/icons/cross.svg</normaloff>:/resources/icons/cross.svg</iconset>
+                <iconset>
+                 <normaloff>../resources/icons/cross.svg</normaloff>../resources/icons/cross.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -589,6 +653,9 @@ QToolTip {
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <property name="spacing">
               <number>0</number>
@@ -607,11 +674,26 @@ QToolTip {
              </property>
              <item>
               <widget class="QFrame" name="buttonGroup">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
                  <height>16777215</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Segoe UI</family>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <italic>false</italic>
+                 <bold>false</bold>
+                </font>
                </property>
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
@@ -622,6 +704,9 @@ QToolTip {
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <property name="spacing">
                  <number>0</number>
+                </property>
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetDefaultConstraint</enum>
                 </property>
                 <property name="leftMargin">
                  <number>0</number>
@@ -636,7 +721,7 @@ QToolTip {
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QPushButton" name="play_btn">
+                 <widget class="QPushButton" name="simulate_btn">
                   <property name="minimumSize">
                    <size>
                     <width>60</width>
@@ -655,6 +740,9 @@ QToolTip {
                   <property name="cursor">
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
+                  <property name="contextMenuPolicy">
+                   <enum>Qt::DefaultContextMenu</enum>
+                  </property>
                   <property name="toolTip">
                    <string>Play</string>
                   </property>
@@ -662,8 +750,8 @@ QToolTip {
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset resource="../resources/resources.qrc">
-                    <normaloff>:/resources/icons/button-play.png</normaloff>:/resources/icons/button-play.png</iconset>
+                   <iconset>
+                    <normaloff>../resources/icons/button-play.png</normaloff>../resources/icons/button-play.png</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -700,8 +788,8 @@ QToolTip {
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset resource="../resources/resources.qrc">
-                    <normaloff>:/resources/icons/book-reading.png</normaloff>:/resources/icons/book-reading.png</iconset>
+                   <iconset>
+                    <normaloff>../resources/icons/book-reading.png</normaloff>../resources/icons/book-reading.png</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -738,8 +826,8 @@ QToolTip {
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset resource="../resources/resources.qrc">
-                    <normaloff>:/resources/icons/task-list.png</normaloff>:/resources/icons/task-list.png</iconset>
+                   <iconset>
+                    <normaloff>../resources/icons/task-list.png</normaloff>../resources/icons/task-list.png</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -776,8 +864,8 @@ QToolTip {
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset resource="../resources/resources.qrc">
-                    <normaloff>:/resources/icons/user-circle-single.png</normaloff>:/resources/icons/user-circle-single.png</iconset>
+                   <iconset>
+                    <normaloff>../resources/icons/user-circle-single.png</normaloff>../resources/icons/user-circle-single.png</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -814,8 +902,8 @@ QToolTip {
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset resource="../resources/resources.qrc">
-                    <normaloff>:/resources/icons/cog.png</normaloff>:/resources/icons/cog.png</iconset>
+                   <iconset>
+                    <normaloff>../resources/icons/cog.png</normaloff>../resources/icons/cog.png</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -886,8 +974,6 @@ QToolTip {
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="../resources/resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

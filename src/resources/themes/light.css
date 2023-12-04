@@ -1,19 +1,18 @@
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 SET APP STYLESHEET - LIGHT THEME
 ///////////////////////////////////////////////////////////////////////////////////////////////// */
-
 QMainWindow {
- 	border: none;
+	border: none;
 }
 
-QWidget {
-	color: #0f0f0f;
+QWidget{
+	color: #47495a;
 	font: 10pt "Segoe UI";
 }
 
 /* Tooltips */
 QToolTip {
-	color: #0f0f0f;
+	color: #47495a;
 	background-color: #fcfcdd;
 	border: 1px solid #000000;
 	background-image: none;
@@ -27,36 +26,54 @@ QToolTip {
 /* Background */
 #background {
     background-color: #ffffff;
-    color: #0f0f0f;
+    color: #47495a;
 }
 
 /* Top Bar */
 #topBar {
-    background-color: #34363a;
+    background-color: #ffffff;
+	border-bottom: 2px solid #eeeeee;
 }
 
 #logo {
 	background-color: transparent;
 }
 
+#search_field {
+	background-color: #f6f7fb;
+	border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+	padding-left: 20px;
+}
+
+#search_icon {
+	background-color: #f6f7fb;
+	border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+	padding: 5px;
+}
+
 /* Top Bar Buttons */
-#rightSection .QPushButton { background-color: rgba(255, 255, 255, 0); border: none;  border-radius: 5px; }
-#rightSection .QPushButton:hover { background-color: #b8b8b8; border-style: solid; border-radius: 4px; }
-#rightSection .QPushButton:pressed { background-color: #363535; border-style: solid; border-radius: 4px; }
+#rightSection .QPushButton { background-color: transparent; border: none;  border-radius: 5px; }
+#rightSection .QPushButton:hover { background-color: #f6f7fb; }
 
 /* Left Menu */
 #leftMenu {	
 	background-color: #ffffff;
+	border-right: 2px solid #eeeeee;
 }
 
 #leftMenu .QPushButton {	
 	border: none;
-	background-color: transparent;;
+	border-radius: 10px;
+	margin: 5px;
 }
 
 #leftMenu .QPushButton:hover {
-	background-color: #b8b8b8;
+	background-color: #eeeeee;
 }
-#leftMenu .QPushButton:pressed {	
-    border-left: 3px solid #28c469;
+
+/* Page Container */
+#pageContainer {
+	background-color: #f6f7fb;
 }

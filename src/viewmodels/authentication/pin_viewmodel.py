@@ -1,12 +1,10 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QLineEdit
-from services.container import ApplicationContainer
+from PyQt5.QtWidgets import QLineEdit
+from viewmodels.authentication.authentication_base import *
 
-class PinRegisterViewModel(QWidget):
+class PinRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self) -> None:
-        QWidget.__init__(self)
-        self.authentication_service = ApplicationContainer.authentication_service()
-        self.message_service = ApplicationContainer.message_service()
+        super().__init__()
 
         uic.loadUi("views/register_views/pin_view.ui", self)
 
@@ -22,28 +20,26 @@ class PinRegisterViewModel(QWidget):
         self.btn8.clicked.connect(lambda: self.update_field("8"))
         self.btn9.clicked.connect(lambda: self.update_field("9"))
         self.clear_btn.clicked.connect(lambda: self.update_field("$"))
-        self.enter_btn.clicked.connect(lambda: self.send())
+        self.submit_btn.clicked.connect(lambda: self.send())
 
     def update_field(self, char: str) -> None:
         if char == "$":
             self.pin_field.setText("")
         else:
             self.pin_field.setText(self.pin_field.text()+char)
-            print(f"currently {self.pin_field.text()}")
 
     def send(self) -> None:
-        print("sending...")
         plain_key = self.pin_field.text()
-        hashed_key = self.authentication_service.register(plain_key)
-        if hashed_key != "":
-            self.message_service.send(self, "Change View", None)  
+        if self.authentication_service.register(plain_key):
+            self.plain_key_label.setText(self.authentication_service.get_plain_key())
+            self.hashed_key_label.setText(self.authentication_service.get_secret())
+            self.timestamp_label.setText(self.authentication_service.get_timestamp())
+            self.message_service.send(self, "Registered", None)  
 
 
-class PinAuthenticateViewModel(QWidget):
+class PinAuthenticateViewModel(AuthenticationBaseViewModel):
     def __init__(self) -> None:
-        QWidget.__init__(self)
-        self.authentication_service = ApplicationContainer.authentication_service()
-        self.message_service = ApplicationContainer.message_service()
+        super().__init__()
 
         uic.loadUi("views/authenticate_views/pin_view.ui", self)
 
@@ -59,21 +55,19 @@ class PinAuthenticateViewModel(QWidget):
         self.btn8.clicked.connect(lambda: self.update_field("8"))
         self.btn9.clicked.connect(lambda: self.update_field("9"))
         self.clear_btn.clicked.connect(lambda: self.update_field("$"))
-        self.enter_btn.clicked.connect(lambda: self.send())
+        self.submit_btn.clicked.connect(lambda: self.send())
 
     def update_field(self, char: str) -> None:
         if char == "$":
             self.pin_field.setText("")
         else:
             self.pin_field.setText(self.pin_field.text()+char)
-            print(f"currently {self.pin_field.text()}")
 
     def send(self) -> None:
-        print("sending...")
         plain_key = self.pin_field.text()
         truth = self.authentication_service.authenticate(plain_key)
         if truth == True:
-            self.message_service.send(self, "Change View", None)
+            self.message_service.send(self, "Authenticated", None)
         else:
             print("wrong key")
             self.pin_field.clear()

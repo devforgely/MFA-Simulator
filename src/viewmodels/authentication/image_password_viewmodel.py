@@ -1,8 +1,8 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit
+from PyQt5.QtWidgets import QLabel, QLineEdit
 from PyQt5.QtGui import QPixmap
-from services.container import ApplicationContainer
+from viewmodels.authentication.authentication_base import *
 import os
 import random
 
@@ -32,11 +32,9 @@ class ClickableImageLabel(QLabel):
         if self.click_callback:
             self.click_callback(self.image)
 
-class ImagePasswordRegisterViewModel(QWidget):
+class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self) -> None:
-        QWidget.__init__(self)
-        self.authentication_service = ApplicationContainer.authentication_service()
-        self.message_service = ApplicationContainer.message_service()
+        super().__init__()
 
         self.selected_images = []
 
@@ -56,15 +54,13 @@ class ImagePasswordRegisterViewModel(QWidget):
         self.refresh_images()
 
     def refresh_images(self) -> None:
-        print("refresh image")
+        layout = self.image_view.layout()
         #clear widget on the grid
-        while self.image_view.count():
-            item = self.image_view.takeAt(0)
+        while layout.count():
+            item = layout.takeAt(0)
             widget = item.widget()
             if widget:
                 widget.deleteLater()
-
-        layout = self.image_view.layout()
 
         temp_images = self.images[:] #copy
         # filter over selected images
@@ -87,7 +83,6 @@ class ImagePasswordRegisterViewModel(QWidget):
                 row += 1
 
     def on_image_click(self, image: str) -> None:
-        print(image)
         if image in self.selected_images:
             self.selected_images.remove(image)
         else:
@@ -95,25 +90,24 @@ class ImagePasswordRegisterViewModel(QWidget):
         self.select_lbl.setText(f"Selected Image Count: {len(self.selected_images)}")
 
     def send(self) -> None:
-        print("sending")
         imgs_combined = ""
         self.selected_images.sort()
         for img in self.selected_images:
             imgs_combined += img + ";"
 
         plain_key = imgs_combined+self.password_field.text()
-        self.authentication_service.session_store(self.selected_images)
-        hashed_key = self.authentication_service.register(plain_key)
-        if hashed_key != "":
-            self.message_service.send(self, "Change View", None)
+        if self.authentication_service.register(plain_key):
+            self.authentication_service.session_store(self.selected_images)
+            self.plain_key_label.setText(self.authentication_service.get_plain_key())
+            self.hashed_key_label.setText(self.authentication_service.get_secret())
+            self.timestamp_label.setText(self.authentication_service.get_timestamp())
+            self.message_service.send(self, "Registered", None)
 
 
 
-class ImagePasswordAuthenticateViewModel(QWidget):
+class ImagePasswordAuthenticateViewModel(AuthenticationBaseViewModel):
     def __init__(self) -> None:
-        QWidget.__init__(self)
-        self.authentication_service = ApplicationContainer.authentication_service()
-        self.message_service = ApplicationContainer.message_service()
+        super().__init__()
 
         self.selected_images = []
 
@@ -133,15 +127,13 @@ class ImagePasswordAuthenticateViewModel(QWidget):
         self.refresh_images()
 
     def refresh_images(self) -> None:
-        print("refresh image")
+        layout = self.image_view.layout()
         #clear widget on the grid
-        while self.image_view.count():
-            item = self.image_view.takeAt(0)
+        while layout.count():
+            item = layout.takeAt(0)
             widget = item.widget()
             if widget:
                 widget.deleteLater()
-
-        layout = self.image_view.layout()
 
         temp_images = self.images[:] #copy
 
@@ -175,7 +167,6 @@ class ImagePasswordAuthenticateViewModel(QWidget):
                 row += 1
 
     def on_image_click(self, image: str) -> None:
-        print(image)
         if image in self.selected_images:
             self.selected_images.remove(image)
         else:
@@ -183,15 +174,13 @@ class ImagePasswordAuthenticateViewModel(QWidget):
         self.select_lbl.setText(f"Selected Image Count: {len(self.selected_images)}")
 
     def send(self) -> None:
-        print("sending")
         imgs_combined = ""
         self.selected_images.sort()
         for img in self.selected_images:
             imgs_combined += img + ";"
 
         plain_key = imgs_combined+self.password_field.text()
-        truth = self.authentication_service.authenticate(plain_key)
-        if truth == True:
-            self.message_service.send(self, "Change View", None)
+        if self.authentication_service.authenticate(plain_key):
+            self.message_service.send(self, "Authenticated", None)
         else:
             print("wrong key")

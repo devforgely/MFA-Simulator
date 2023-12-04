@@ -1,16 +1,14 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QLineEdit
-from services.container import ApplicationContainer
+from PyQt5.QtWidgets import QLabel, QComboBox, QLineEdit
+from viewmodels.authentication.authentication_base import *
 from models.utils import normalise_text
 import json
 import random
 
 
-class SecurityQuestionRegisterViewModel(QWidget):
+class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self) -> None:
-        QWidget.__init__(self)
-        self.authentication_service = ApplicationContainer.authentication_service()
-        self.message_service = ApplicationContainer.message_service()
+        super().__init__()
 
         try:
             with open('data/security_questions.json', 'r') as file:
@@ -62,7 +60,6 @@ class SecurityQuestionRegisterViewModel(QWidget):
 
     def remove_question(self) -> None:
         if len(self.question_form) > self.minmum_question:
-            print("remove question")
             for i in range(2):
                 for col in range(self.question_view.columnCount()):
                     item = self.question_view.itemAtPosition(2*len(self.question_form) - i - 1, col)
@@ -93,22 +90,21 @@ class SecurityQuestionRegisterViewModel(QWidget):
             combo_box.blockSignals(False)
 
     def send(self) -> None:
-        print("sending...")
         questions = []
         plain_key = ""
         for question, answer_lineedit in self.question_form:
             questions.append(question.currentText())
             plain_key += normalise_text(answer_lineedit.text()) + ";"
-        self.authentication_service.session_store(questions)
-        hashed_key = self.authentication_service.register(plain_key)
-        if hashed_key != "":
-            self.message_service.send(self, "Change View", None)
+        if self.authentication_service.register(plain_key):
+            self.authentication_service.session_store(questions)
+            self.plain_key_label.setText(self.authentication_service.get_plain_key())
+            self.hashed_key_label.setText(self.authentication_service.get_secret())
+            self.timestamp_label.setText(self.authentication_service.get_timestamp())
+            self.message_service.send(self, "Registered", None)
 
-class SecurityQuestionAuthenticateViewModel(QWidget):
+class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
     def __init__(self) -> None:
-        QWidget.__init__(self)
-        self.authentication_service = ApplicationContainer.authentication_service()
-        self.message_service = ApplicationContainer.message_service()
+        super().__init__()
 
         self.answer_widgets = []
 
@@ -137,13 +133,12 @@ class SecurityQuestionAuthenticateViewModel(QWidget):
             self.answer_widgets.append(answer_lineedit)
 
     def send(self) -> None:
-        print("sending...")
         plain_key = ""
         for answer_lineedit in self.answer_widgets:
             plain_key += normalise_text(answer_lineedit.text()) + ";"
 
         truth = self.authentication_service.authenticate(plain_key)
         if truth == True:
-            self.message_service.send(self, "Change View", None)
+            self.message_service.send(self, "Authenticated", None)
         else:
             print("wrong key")
