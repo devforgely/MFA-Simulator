@@ -15,9 +15,6 @@ class PasswordRegisterViewModel(AuthenticationBaseViewModel):
     def send(self) -> None:
         if self.password_field.text() == self.repassword_field.text():
             if self.authentication_service.register(self.username_field.text() + ";" + self.password_field.text()):
-                self.plain_key_label.setText(self.authentication_service.get_plain_key())
-                self.hashed_key_label.setText(self.authentication_service.get_secret())
-                self.timestamp_label.setText(self.authentication_service.get_timestamp())
                 self.message_service.send(self, "Registered", None)
             
 

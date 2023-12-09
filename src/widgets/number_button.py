@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsDropShadowEffect, QSizePolicy
-from PyQt5.QtGui import QColor, QIcon
+from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtCore import Qt
 
 # pyright: reportGeneralTypeIssues=false
@@ -12,14 +12,14 @@ class NumberButton(QPushButton):
 
         self.setStyleSheet(
             f"""
-            QPushButton {{
+            NumberButton {{
                 border-radius: 4px;
                 padding: 12px;
                 background-color: {self.default_color.name()};
-                font-size: 14px;
+                font-size: 12pt;
                 font-weight: bold;
             }}
-            QPushButton:checked {{
+            NumberButton:checked {{
                 background-color: {self.pressed_color.name()};
                 color: #ffffff;
             }}
@@ -28,8 +28,8 @@ class NumberButton(QPushButton):
         self.setMinimumSize(100, 53)
         self.setBaseSize(200, 106)
         self.setSizePolicy(QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding))
+        self.setIcon(QIcon(u"resources/icons/plus-square.svg"))
         self.setCursor(Qt.PointingHandCursor)
-        self.setIcon(QIcon(u"resources/icons/add-circle.svg"))
         self.setCheckable(True)
 
         shadow_effect = QGraphicsDropShadowEffect()
@@ -37,3 +37,22 @@ class NumberButton(QPushButton):
         shadow_effect.setBlurRadius(40)
         shadow_effect.setXOffset(2)
         self.setGraphicsEffect(shadow_effect)
+    
+    def update_icon(self, value: int) -> None:
+        match value:
+            case 1:
+                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
+            case 2:
+                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
+            case 3:
+                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
+            case 4:
+                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
+            case 5:
+                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
+            case 6:
+                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
+            case 7:
+                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
+            case _:
+                self.setIcon(QIcon(u"resources/icons/plus-square.svg"))

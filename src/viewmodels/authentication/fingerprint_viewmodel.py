@@ -12,7 +12,7 @@ class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
 
         uic.loadUi("views/register_views/fingerprint_view.ui", self)
         
-        self.left_frame.layout().setAlignment(Qt.AlignHCenter)
+        self.fp_layout.setAlignment(Qt.AlignHCenter)
         self.fingerprint_btn.clicked.connect(self.send)
 
     def send(self) -> None:
@@ -29,7 +29,7 @@ class FingerPrintAuthenticateViewModel(AuthenticationBaseViewModel):
 
         uic.loadUi("views/authenticate_views/fingerprint_view.ui", self) 
 
-        self.left_frame.layout().setAlignment(Qt.AlignHCenter)
+        self.fp_layout.setAlignment(Qt.AlignHCenter)
         self.fingerprint_btn.clicked.connect(self.send)
 
     def send(self) -> None:

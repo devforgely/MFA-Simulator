@@ -98,9 +98,6 @@ class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
         plain_key = imgs_combined+self.password_field.text()
         if self.authentication_service.register(plain_key):
             self.authentication_service.session_store(self.selected_images)
-            self.plain_key_label.setText(self.authentication_service.get_plain_key())
-            self.hashed_key_label.setText(self.authentication_service.get_secret())
-            self.timestamp_label.setText(self.authentication_service.get_timestamp())
             self.message_service.send(self, "Registered", None)
 
 

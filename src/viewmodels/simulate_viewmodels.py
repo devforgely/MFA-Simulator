@@ -1,6 +1,6 @@
 from typing import Any
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QStackedWidget
+from PyQt5.QtWidgets import QWidget, QStackedWidget, QMessageBox
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 from services.container import ApplicationContainer
@@ -70,6 +70,17 @@ class CreatorViewModel(QWidget):
         self.methods_selection.layout().addWidget(self.push_notification_btn, 1, 4)
         self.methods_selection.layout().addWidget(self.twofa_key_btn, 2, 2)
 
+        # Map type to button
+        self.type_to_button = {
+            Method.PIN: self.pin_btn,
+            Method.PASSWORD: self.password_btn,
+            Method.SECRET_QUESTION: self.security_questions_btn,
+            Method.IMAGE_PASSWORD: self.image_password_btn,
+            Method.FINGER_PRINT: self.fingerprint_btn,
+            Method.PUSH_NOTIFICATION: self.push_notification_btn,
+            Method.TWOFA_KEY: self.twofa_key_btn
+        }
+
         # Connect buttons to function
         self.pin_btn.clicked.connect(lambda: self.set_method(Method.PIN))
         self.password_btn.clicked.connect(lambda: self.set_method(Method.PASSWORD))
@@ -96,6 +107,14 @@ class CreatorViewModel(QWidget):
     def set_method(self, type: Method) -> None:
         if not self.authentication_service.add(type):
             self.authentication_service.remove(type)
+        
+        for btn in self.type_to_button.values():
+            btn.update_icon(0)
+
+        added_types = self.authentication_service.get_all_types()
+        for i in range(len(added_types)):
+            self.type_to_button[added_types[i]].update_icon(i+1)
+    
         measure = calculate_assurance_level(self.authentication_service.get_all_types())
         if measure:
             title, description = measure.split("|")
@@ -192,9 +211,15 @@ class AuthenticateViewModel(QWidget):
             Method.PUSH_NOTIFICATION: PushNotificationAuthenticateViewModel,
             Method.TWOFA_KEY: TwoFAKeyAuthenticateViewModel
         }
+
+        self.next_btn.clicked.connect(self.go_forward)
+        self.back_btn.clicked.connect(self.go_backward)
+        self.end_btn.clicked.connect(lambda: self.message_service.send(self, "Creator View", None))
     
     def setup(self) -> None:
         self.clear_stack()
+        self.next_btn.setEnabled(False)
+        self.back_btn.setEnabled(False)
         self.authentication_service.at = 0
         for method in self.authentication_service.get_all_types():
             viewmodel_factory = self.type_to_authenticate.get(method)
@@ -202,7 +227,7 @@ class AuthenticateViewModel(QWidget):
             if viewmodel_factory:
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
                 self.stackedWidget.addWidget(viewmodel_factory())
-                self.authentication_service.forward()
+                self.authentication_service.forward() # setting method interface require forward()
             else:
                 raise ValueError("Unknown authentication method")
         self.authentication_service.at = 0
@@ -216,10 +241,24 @@ class AuthenticateViewModel(QWidget):
 
     def on_message(self, message_title: str, *args: Any)  -> None:
         if message_title == "Authenticated":
-            if not self.authentication_service.all_authenticated():
-                self.authentication_service.forward()
-                self.stackedWidget.setCurrentIndex(self.authentication_service.at)
-            else:
-                self.message_service.send(self, "Creator View", None)
+            self.next_btn.setEnabled(True)       
+
+    def go_forward(self) -> None:
+        if not self.authentication_service.all_authenticated():
+            self.authentication_service.forward()
+            self.stackedWidget.setCurrentIndex(self.authentication_service.at)     
+            if self.authentication_service.at == self.authentication_service.auth_count:
+                self.next_btn.setEnabled(False)
+            self.back_btn.setEnabled(True)
+        else:
+            QMessageBox.information(self, "Congratulation", "You have earned 100 coins.")
+            self.message_service.send(self, "Creator View", None)
+
+    def go_backward(self) -> None:
+        self.authentication_service.backward()
+        self.stackedWidget.setCurrentIndex(self.authentication_service.at)     
+        if self.authentication_service.at == 0:
+            self.back_btn.setEnabled(False)
+        self.next_btn.setEnabled(True)
         
         

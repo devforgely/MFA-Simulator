@@ -14,6 +14,15 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="style">
+   <property name="font">
+    <font>
+     <family>Segoe UI</family>
+     <pointsize>10</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">/* /////////////////////////////////////////////////////////////////////////////////////////////////
 SET APP STYLESHEET - LIGHT THEME
@@ -403,6 +412,15 @@ QToolTip {
                 </item>
                 <item>
                  <widget class="QLabel" name="coin_count">
+                  <property name="font">
+                   <font>
+                    <family>Segoe UI</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>99999</string>
                   </property>
@@ -410,6 +428,15 @@ QToolTip {
                 </item>
                 <item>
                  <widget class="QLabel" name="badges">
+                  <property name="font">
+                   <font>
+                    <family>Segoe UI</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>Badges</string>
                   </property>

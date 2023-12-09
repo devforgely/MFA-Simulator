@@ -93,13 +93,11 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
         questions = []
         plain_key = ""
         for question, answer_lineedit in self.question_form:
+            if question.currentText() == "-- Select Question --" or len(answer_lineedit.text()) == 0: return
             questions.append(question.currentText())
             plain_key += normalise_text(answer_lineedit.text()) + ";"
         if self.authentication_service.register(plain_key):
             self.authentication_service.session_store(questions)
-            self.plain_key_label.setText(self.authentication_service.get_plain_key())
-            self.hashed_key_label.setText(self.authentication_service.get_secret())
-            self.timestamp_label.setText(self.authentication_service.get_timestamp())
             self.message_service.send(self, "Registered", None)
 
 class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):

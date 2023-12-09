@@ -30,10 +30,10 @@ class PinRegisterViewModel(AuthenticationBaseViewModel):
 
     def send(self) -> None:
         plain_key = self.pin_field.text()
+
+        if len(plain_key) < 3: return
+
         if self.authentication_service.register(plain_key):
-            self.plain_key_label.setText(self.authentication_service.get_plain_key())
-            self.hashed_key_label.setText(self.authentication_service.get_secret())
-            self.timestamp_label.setText(self.authentication_service.get_timestamp())
             self.message_service.send(self, "Registered", None)  
 
 
@@ -65,6 +65,7 @@ class PinAuthenticateViewModel(AuthenticationBaseViewModel):
 
     def send(self) -> None:
         plain_key = self.pin_field.text()
+
         truth = self.authentication_service.authenticate(plain_key)
         if truth == True:
             self.message_service.send(self, "Authenticated", None)
