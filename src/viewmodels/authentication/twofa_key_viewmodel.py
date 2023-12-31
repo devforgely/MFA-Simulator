@@ -1,9 +1,13 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMessageBox, QPushButton
 from viewmodels.authentication.authentication_base import *
+from widgets.waiting_spinner import QtWaitingSpinner
 import uuid
 import random
 
+
+# pyright: reportGeneralTypeIssues=false
 
 class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self) -> None:
@@ -11,7 +15,17 @@ class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
 
         uic.loadUi("views/register_views/twofa_key_view.ui", self)
         
-        self.link_btn.clicked.connect(self.send)
+        self.next_btn = QPushButton('Next')
+        self.next_btn.setMinimumWidth(100)
+        self.next_btn.setMinimumHeight(35)
+        self.next_btn.setCursor(Qt.PointingHandCursor)
+        self.page1.layout().addWidget(self.next_btn, alignment=Qt.AlignRight)
+        w = QtWaitingSpinner(self.page1)
+        self.page1.layout().addWidget(w)
+        w.start()
+
+        self.connect_btn.clicked.connect(self.send)
+        self.on_btn.clicked.connect(self.send)
 
     def send(self) -> None:
         device_id = str(uuid.uuid4())

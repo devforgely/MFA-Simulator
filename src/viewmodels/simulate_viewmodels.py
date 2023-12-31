@@ -200,6 +200,7 @@ class AuthenticateViewModel(QWidget):
         QWidget.__init__(self)
         uic.loadUi("views/authenticate_view.ui", self)
         self.authentication_service = ApplicationContainer.authentication_service()
+        self.data_service = ApplicationContainer.data_service()
         self.message_service = ApplicationContainer.message_service()
 
         self.type_to_authenticate = {
@@ -252,6 +253,7 @@ class AuthenticateViewModel(QWidget):
             self.back_btn.setEnabled(True)
         else:
             QMessageBox.information(self, "Congratulation", "You have earned 100 coins.")
+            self.data_service.increment_user_coin(100)
             self.message_service.send(self, "Creator View", None)
 
     def go_backward(self) -> None:

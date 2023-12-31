@@ -6,18 +6,29 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>500</height>
+    <width>800</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
-    <width>600</width>
-    <height>500</height>
+    <width>800</width>
+    <height>720</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#left_frame {
+	border: 1px solid black;
+	background-color: #fff;
+}
+
+#key_select_frame {
+	background-color: #f6f6f6;
+	border-left: 4px solid #0067c0;
+}</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -30,19 +41,109 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_4">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
-         <string>Enter Code Below</string>
+         <string>Verify Security Key</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="code_field"/>
+       <widget class="QFrame" name="key_select_frame">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>70</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="usb_icon">
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap>../../resources/icons/usb-drive.svg</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Security Key</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="confirm_btn">
+       <widget class="QLabel" name="fingerprint">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>400</height>
+         </size>
+        </property>
+        <property name="pixmap">
+         <pixmap>../../resources/images/fp_0.png</pixmap>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>100</height>
+         </size>
+        </property>
         <property name="text">
-         <string>Confirm</string>
+         <string>Please touch the fingerprint sensor on your security key to verify your identity.</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -73,7 +174,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>2FA Cryptographic Key</string>
+         <string>Using 2FA Cryptographic Key</string>
         </property>
        </widget>
       </item>
@@ -91,28 +192,25 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="plug_btn">
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="text">
-         <string>Plug</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Generate One Time Passcode</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="code_label">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QPushButton" name="connect_btn">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="text">
+           <string>Connect</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="on_btn">
+          <property name="text">
+           <string>Turn On</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

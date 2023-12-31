@@ -2,10 +2,11 @@ from typing import Any
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QMainWindow, QGraphicsDropShadowEffect, QSizeGrip, QStackedWidget
+from PyQt5.QtWidgets import QMainWindow, QGraphicsDropShadowEffect, QSizeGrip
 from configuration.app_settings import *
 from widgets.side_grip import SideGrip
 from services.container import ApplicationContainer
+from data.data_service import DataService
 from viewmodels.simulate_viewmodels import *
 from viewmodels.quiz_viewmodels import *
 
@@ -16,13 +17,18 @@ class MainViewModel(QMainWindow):
     def __init__(self) -> None:
         QMainWindow.__init__(self)
         uic.loadUi("views/main_view.ui", self)
-        # self.message_service = ApplicationContainer.message_service()
+        self.data_service = ApplicationContainer.data_service()
+        self.message_service = ApplicationContainer.message_service()
 
         # PAGES
         self.simulate_page = SimulateViewModel()
         self.quiz_page = QuizViewModel()
         self.stackedWidget.addWidget(self.simulate_page)
         self.stackedWidget.addWidget(self.quiz_page)
+
+        # Data LOAD
+        self.coin_count.setText(str(self.data_service.get_user_coin()))
+        self.message_service.subscribe(self, DataService, self.on_message)
 
         # TOP BAR CONNECTIONS
         self.help_btn.clicked.connect(self.help)
@@ -39,8 +45,9 @@ class MainViewModel(QMainWindow):
         # SHOW APP
         self.show()
 
-    # def on_message(self, message_title: str, *args: Any) -> None:
-    #     pass
+    def on_message(self, message_title: str, *args: Any) -> None:
+        if message_title == "Update coins":
+            self.coin_count.setText(str(args[0]))
     
     def setup_ui(self) -> None:
         # USE CUSTOM TITLE BAR

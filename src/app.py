@@ -1,6 +1,7 @@
 import sys
 import ctypes
 from PyQt5.QtWidgets import QApplication
+from services.container import ApplicationContainer
 from PyQt5.QtGui import QIcon
 from viewmodels.main_viewmodel import MainViewModel
 
@@ -14,4 +15,5 @@ class App(QApplication):
 
 if __name__ == '__main__':
     app = App(sys.argv)
+    app.aboutToQuit.connect(ApplicationContainer.data_service().save_data)
     sys.exit(app.exec_())

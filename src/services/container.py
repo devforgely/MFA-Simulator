@@ -5,7 +5,10 @@ from services.quiz_service import QuizService
 from services.message_service import MessageService
 
 class ApplicationContainer(containers.DeclarativeContainer):
-    data_service = providers.Singleton(DataService)
+    message_service = providers.Singleton(MessageService)
+    data_service = providers.Singleton(
+        DataService,
+        message_service=message_service)
     authentication_service = providers.Singleton(
         AuthenticationService,
         data_service=data_service
@@ -14,4 +17,4 @@ class ApplicationContainer(containers.DeclarativeContainer):
         QuizService,
         data_service=data_service
     )
-    message_service = providers.Singleton(MessageService)
+    
