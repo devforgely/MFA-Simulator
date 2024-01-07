@@ -1,6 +1,7 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QLineEdit
 from viewmodels.authentication.authentication_base import *
+from widgets.clickables import CustomLineEdit
 
 class PasswordRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
@@ -16,8 +17,14 @@ class PasswordRegisterViewModel(AuthenticationBaseViewModel):
 
         self.info_panel.log_text("Waiting for username and password...")
 
-        self.password_field.setEchoMode(QLineEdit.Password)
-        self.repassword_field.setEchoMode(QLineEdit.Password)
+        self.username_field = CustomLineEdit("Enter Username", True, 36, "user")
+        self.password_field = CustomLineEdit("Create Password", False, 50, "lock")
+        self.repassword_field = CustomLineEdit("Confirm Password", False, 50, "lock")
+
+        self.frame.layout().insertWidget(1, self.username_field)
+        self.frame.layout().insertWidget(2, self.password_field)
+        self.frame.layout().insertWidget(3, self.repassword_field)
+
         self.submit_btn.clicked.connect(self.send)
 
     def send(self) -> None:
@@ -56,8 +63,12 @@ class PasswordAuthenticateViewModel(AuthenticationBaseViewModel):
         self.info_panel.add_server_data("user_password", self.authentication_service.get_session_stored()["user_password"])
 
         self.info_panel.log_text("Waiting for username and password...")
-
-        self.password_field.setEchoMode(QLineEdit.Password)
+        
+        self.username_field = CustomLineEdit("Enter Username", True, 36, "user")
+        self.password_field = CustomLineEdit("Create Password", False, 50, "lock")
+        self.frame.layout().insertWidget(1, self.username_field)
+        self.frame.layout().insertWidget(2, self.password_field)
+        
         self.submit_btn.clicked.connect(self.send)
 
     def send(self) -> None:

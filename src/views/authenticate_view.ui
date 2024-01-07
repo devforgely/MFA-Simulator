@@ -6,12 +6,52 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>855</width>
     <height>565</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#authenticate_label {
+	font-family:Yu Gothic UI ;
+	font-size: 12pt;
+	font-weight: 600;
+}
+
+#frame QPushButton {
+	padding: 2px;
+	font-size: 11pt;
+	font-weight: 550;
+	color: white;
+	border: 5px solid #e1dfdf;
+}
+
+#back_btn {
+	border-radius: 17px;
+	background-color: #efa913;
+}
+
+#back_btn:disabled {
+	background-color: #e1dfdf;
+	color: gray;
+}
+
+#next_btn {
+	border-radius: 17px;
+	background-color: #27a37e;
+}
+
+#next_btn:disabled {
+	background-color: #e1dfdf;
+	color: gray;
+}
+
+#end_btn {
+	border-radius: 10px;
+	background-color: #F24942;
+}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -30,48 +70,108 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="authenticate_label">
         <property name="text">
-         <string>Authenticate</string>
+         <string>Authentication Phase</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="back_btn">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>44</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>16777215</height>
          </size>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="text">
-         <string>Back</string>
+         <string>  Back</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../resources/icons/arrow-left.svg</normaloff>../resources/icons/arrow-left.svg</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="next_btn">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>44</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>16777215</height>
          </size>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
         <property name="text">
-         <string>Next</string>
+         <string>Next  </string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../resources/icons/arrow-right.svg</normaloff>../resources/icons/arrow-right.svg</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="end_btn">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>35</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>200</width>
           <height>16777215</height>
          </size>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="text">
-         <string>End Simulation</string>
+         <string> End Simulation</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../resources/icons/x-octagon.svg</normaloff>../resources/icons/x-octagon.svg</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
         </property>
        </widget>
       </item>

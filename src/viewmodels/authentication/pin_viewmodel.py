@@ -1,10 +1,30 @@
 from PyQt5 import uic
+from PyQt5.QtCore import QObject, QEvent
 from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtGui import QIcon
 from viewmodels.authentication.authentication_base import *
 import uuid
 import rsa
 import hashlib
 import base64
+
+# pyright: reportGeneralTypeIssues=false
+
+class ButtonHoverWatcher(QObject):
+    def __init__(self, button, default_image: str, hover_image: str)-> None:
+        super().__init__(button)
+        self.button = button
+        self.default_icon = default_image
+        self.hover_icon = hover_image
+
+    def eventFilter(self, watched, event) -> bool:
+        if event.type() == QEvent.Enter:
+            # The push button is hovered by mouse
+            self.button.setIcon(QIcon(f"resources/icons/{self.hover_icon}.svg"))
+        elif event.type() == QEvent.Leave:
+            # The push button is not hovered by mouse
+            self.button.setIcon(QIcon(f"resources/icons/{self.default_icon}.svg"))
+        return super().eventFilter(watched, event)
 
 class PinRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
@@ -35,6 +55,20 @@ class PinRegisterViewModel(AuthenticationBaseViewModel):
         self.btn9.clicked.connect(lambda: self.update_field("9"))
         self.clear_btn.clicked.connect(lambda: self.update_field("$"))
         self.submit_btn.clicked.connect(lambda: self.send())
+
+        self.clear_btn.installEventFilter(ButtonHoverWatcher(self.clear_btn, "delete", "delete-red"))
+        self.clear_btn.setStyleSheet("""
+            QPushButton:hover {
+                background-color: none;
+            }
+        """)
+
+        self.submit_btn.installEventFilter(ButtonHoverWatcher(self.submit_btn, "tick-circle", "tick-circle-green"))
+        self.submit_btn.setStyleSheet("""
+            QPushButton:hover {             
+                background-color: none;
+            }
+        """)
 
     def update_field(self, char: str) -> None:
         if char == "$":
@@ -104,6 +138,20 @@ class PinAuthenticateViewModel(AuthenticationBaseViewModel):
         self.btn9.clicked.connect(lambda: self.update_field("9"))
         self.clear_btn.clicked.connect(lambda: self.update_field("$"))
         self.submit_btn.clicked.connect(lambda: self.send())
+
+        self.clear_btn.installEventFilter(ButtonHoverWatcher(self.clear_btn, "delete", "delete-red"))
+        self.clear_btn.setStyleSheet("""
+            QPushButton:hover {
+                background-color: none;
+            }
+        """)
+
+        self.submit_btn.installEventFilter(ButtonHoverWatcher(self.submit_btn, "tick-circle", "tick-circle-green"))
+        self.submit_btn.setStyleSheet("""
+            QPushButton:hover {             
+                background-color: none;
+            }
+        """)
 
     def update_field(self, char: str) -> None:
         if char == "$":
