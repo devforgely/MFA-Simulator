@@ -7,8 +7,8 @@ import random
 # pyright: reportGeneralTypeIssues=false
 
 class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, info_panel: QWidget) -> None:
+        super().__init__(info_panel)
 
         uic.loadUi("views/register_views/fingerprint_view.ui", self)
         
@@ -24,8 +24,8 @@ class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
             
 
 class FingerPrintAuthenticateViewModel(AuthenticationBaseViewModel):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, info_panel: QWidget) -> None:
+        super().__init__(info_panel)
 
         uic.loadUi("views/authenticate_views/fingerprint_view.ui", self) 
 

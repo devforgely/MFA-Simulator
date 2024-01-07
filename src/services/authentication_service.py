@@ -63,33 +63,24 @@ class AuthenticationService():
         if self.at > 0:
             self.at -= 1
 
-    def register(self, *args: Any) -> bool:
-        state = self.strategy.register(self.at, *args)
+    def register(self, *data: Any) -> bool:
+        state = self.strategy.register(self.at, *data)
         if state:
             if self.at == self.register_count:
                 self.register_count += 1
             return True
         return False
     
-    def authenticate(self, key: str) -> bool:
-        state = self.strategy.authenticate(self.at, key)
+    def authenticate(self, *data: Any) -> bool:
+        state = self.strategy.authenticate(self.at, *data)
         if state:
             if self.at == self.auth_count:
                 self.auth_count += 1
             return True
         return False
     
-    def session_store(self, *args: Any):
-        self.strategy.store(self.at, *args)
+    def session_store(self, data: dict):
+        self.strategy.store(self.at, data)
 
-    def get_plain_key(self) -> str:
-        return self.strategy.get_plain_key(self.at)
-    
-    def get_secret(self) -> str:
-        return self.strategy.get_secret(self.at)
-    
-    def get_timestamp(self) -> str:
-        return self.strategy.get_timestamp(self.at)
-
-    def get_session_stored(self) -> list:
+    def get_session_stored(self) -> dict:
         return self.strategy.get_stored(self.at)

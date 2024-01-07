@@ -15,5 +15,5 @@ class App(QApplication):
 
 if __name__ == '__main__':
     app = App(sys.argv)
-    app.aboutToQuit.connect(ApplicationContainer.data_service().save_data)
+    # app.aboutToQuit.connect(ApplicationContainer.data_service().save_data)
     sys.exit(app.exec_())

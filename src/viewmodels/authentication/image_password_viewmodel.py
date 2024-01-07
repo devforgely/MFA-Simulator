@@ -1,40 +1,14 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QLineEdit
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QLineEdit
 from viewmodels.authentication.authentication_base import *
+from widgets.clickables import ClickableImageLabel
 import os
 import random
 
-# pyright: reportGeneralTypeIssues=false
-
-class ClickableImageLabel(QLabel):
-    def __init__(self, image, click_callback, parent=None):
-        super().__init__(parent)
-
-        self.image = image
-        self.click_callback = click_callback
-
-        # Load the image
-        pixmap = QPixmap(image)
-        self.setPixmap(pixmap)
-
-        # Set up properties
-        self.setAlignment(Qt.AlignCenter) 
-
-    def enterEvent(self, event):
-        self.setCursor(Qt.PointingHandCursor) 
-
-    def leaveEvent(self, event):
-        self.setCursor(Qt.ArrowCursor) 
-
-    def mousePressEvent(self, event):
-        if self.click_callback:
-            self.click_callback(self.image)
 
 class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, info_panel: QWidget) -> None:
+        super().__init__(info_panel)
 
         self.selected_images = []
 
@@ -103,8 +77,8 @@ class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
 
 
 class ImagePasswordAuthenticateViewModel(AuthenticationBaseViewModel):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, info_panel: QWidget) -> None:
+        super().__init__(info_panel)
 
         self.selected_images = []
 

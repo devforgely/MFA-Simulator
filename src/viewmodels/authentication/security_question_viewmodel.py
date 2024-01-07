@@ -1,33 +1,25 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import QLabel, QComboBox, QLineEdit
+from PyQt5.QtWidgets import QLabel, QComboBox, QLineEdit, QGraphicsDropShadowEffect, QGroupBox, QSizePolicy, QVBoxLayout
+from PyQt5.QtGui import QColor
+from PyQt5.QtCore import Qt
 from viewmodels.authentication.authentication_base import *
+from services.container import ApplicationContainer
 from models.utils import normalise_text
-import json
-import random
 
+# pyright: reportGeneralTypeIssues=false
 
 class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
-    def __init__(self) -> None:
-        super().__init__()
-
-        try:
-            with open('data/security_questions.json', 'r') as file:
-                data = json.load(file)
-        except FileNotFoundError:
-            print("File is not found")
-            return
-        
-        self.minmum_question = 2
-        self.maximum_question = 7
-        self.selected_questions = []
-        self.question_form = []
-        
-        # Select 9 random questions
-        sampled = random.sample(data['securityQuestions'], 9)
-        self.selected_questions.append("-- Select Question --")
-        self.selected_questions.extend(item['question'] for item in sampled)        
+    def __init__(self, info_panel: QWidget) -> None:
+        super().__init__(info_panel)
 
         uic.loadUi("views/register_views/security_question_view.ui", self)
+        
+        self.minmum_question = 2
+        self.maximum_question = 5
+        
+        self.security_questions = ApplicationContainer.data_service().get_security_questions()
+        self.unselected_question = self.security_questions[:]
+        self.question_form = []
 
         self.add_question_btn.clicked.connect(self.add_question)
         self.remove_btn.clicked.connect(self.remove_question)
@@ -35,48 +27,68 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
 
         # default minimum security questions
         for _ in range(self.minmum_question):
-            self.add_question()
+            self.add_question(True)
 
-    def add_question(self) -> None:
+        shadow_effect = QGraphicsDropShadowEffect()
+        shadow_effect.setColor(QColor(0, 0, 0, 30))
+        shadow_effect.setBlurRadius(50)
+        shadow_effect.setXOffset(2)
+        shadow_effect.setYOffset(2)
+        self.setGraphicsEffect(shadow_effect)
+
+    def add_question(self, required: bool) -> None:
         if len(self.question_form) < self.maximum_question:
             layout = self.question_view.layout()
             index = len(self.question_form)
 
-            question_label = QLabel(f"Security Question {index+1}:")
             combo_box = QComboBox()
-            combo_box.addItems(self.selected_questions)
+            combo_box.addItems(self.unselected_question)
             combo_box.currentIndexChanged.connect(self.onComboBoxChanged)
-            self.onComboBoxChanged()
 
-            answer_label = QLabel("Your Answer:")
+            combo_box.setCursor(Qt.PointingHandCursor)
+            combo_box.setStyleSheet("""
+                QComboBox::down-arrow {
+                    image: url(resources/icons/down-arrow.svg);
+                    padding: 0px 24px 10px 0px;
+                }
+            """)
+
             answer_lineedit = QLineEdit()
 
-            layout.addWidget(question_label, 2*index, 0)
-            layout.addWidget(combo_box, 2*index, 1)
-            layout.addWidget(answer_label, 2*index+1, 0)
-            layout.addWidget(answer_lineedit, 2*index+1, 1)
+            group_question = QGroupBox(f"Question {index+1} *") if required else QGroupBox(f"Question {index+1}")
+            group_answer = QGroupBox("Answer *") if required else QGroupBox("Answer")
 
+            group_question.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
+            group_answer.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
+            group_question.setLayout(QVBoxLayout())
+            group_answer.setLayout(QVBoxLayout())
+
+            group_question.layout().addWidget(combo_box)
+            group_answer.layout().addWidget(answer_lineedit)
+
+            group_question.layout().setContentsMargins(1, 1, 1, 1)
+            group_answer.layout().setContentsMargins(1, 1, 1, 1)
+
+
+            layout.addWidget(group_question)
+            layout.addWidget(group_answer)
             self.question_form.append((combo_box, answer_lineedit))
+            self.onComboBoxChanged()
 
     def remove_question(self) -> None:
         if len(self.question_form) > self.minmum_question:
-            for i in range(2):
-                for col in range(self.question_view.columnCount()):
-                    item = self.question_view.itemAtPosition(2*len(self.question_form) - i - 1, col)
-                    if item:
-                        widget = item.widget()
-                        if widget:
-                            widget.deleteLater()
-                        self.question_view.removeItem(item)
+            for _ in range(2):
+                item = self.question_view.layout().takeAt(self.question_view.layout().count() - 1)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
             self.question_form.pop()
 
     def onComboBoxChanged(self) -> None:
-        options = self.selected_questions[:] # copy this array
+        self.unselected_question = self.security_questions[:] # copy this array
 
         for combo_box, _ in self.question_form:
-            current_text = combo_box.currentText()
-            if current_text != "-- Select Question --":
-                options.remove(current_text)
+            self.unselected_question.remove(combo_box.currentText())
                
         # update other combo boxes to exclude the selected option
         for combo_box, _ in self.question_form:
@@ -84,25 +96,24 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
             combo_box.blockSignals(True)
             combo_box.clear()
 
-            if current_text != "-- Select Question --":
-                combo_box.addItem(current_text)
-            combo_box.addItems(options)
+            combo_box.addItem(current_text)
+            combo_box.addItems(self.unselected_question)
             combo_box.blockSignals(False)
 
     def send(self) -> None:
         questions = []
         plain_key = ""
         for question, answer_lineedit in self.question_form:
-            if question.currentText() == "-- Select Question --" or len(answer_lineedit.text()) == 0: return
+            if question.currentText() == "-- Select Question --" or len(answer_lineedit.text()) < 3: return
             questions.append(question.currentText())
             plain_key += normalise_text(answer_lineedit.text()) + ";"
         if self.authentication_service.register(plain_key):
-            self.authentication_service.session_store(questions)
+            self.authentication_service.session_store({"user_questions":questions})
             self.message_service.send(self, "Registered", None)
 
 class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, info_panel: QWidget) -> None:
+        super().__init__(info_panel)
 
         self.answer_widgets = []
 

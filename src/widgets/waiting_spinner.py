@@ -7,14 +7,14 @@ from PyQt5.QtWidgets import QWidget
 # pyright: reportGeneralTypeIssues=false
 
 class QtWaitingSpinner(QWidget):
-    mColor = QColor(Qt.gray)
+    mColor = QColor(Qt.black)
     mRoundness = 100.0
     mMinimumTrailOpacity = 31.4159265358979323846
-    mTrailFadePercentage = 50.0
+    mTrailFadePercentage = 20.0
     mRevolutionsPerSecond = 1.57079632679489661923
-    mNumberOfLines = 20
+    mNumberOfLines = 10
     mLineLength = 10
-    mLineWidth = 2
+    mLineWidth = 10
     mInnerRadius = 20
     mCurrentCounter = 0
     mIsSpinning = False

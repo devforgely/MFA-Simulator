@@ -11,8 +11,8 @@ import re
 # pyright: reportGeneralTypeIssues=false
 
 class PushNotificationRegisterViewModel(AuthenticationBaseViewModel):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, info_panel: QWidget) -> None:
+        super().__init__(info_panel)
 
         uic.loadUi("views/register_views/push_notification_view.ui", self)
 
@@ -75,18 +75,18 @@ class PushNotificationRegisterViewModel(AuthenticationBaseViewModel):
         if self.authentication_service.register(device_id+";"+self.dialing_code.text()+self.number_field.text()):
             self.link_btn.setEnabled(False)
             self.cancel_btn.hide()
-            self.authentication_service.session_store(device_id+";"+self.dialing_code.text()+self.number_field.text())
+            self.authentication_service.session_store(device_id, self.dialing_code.text()+self.number_field.text())
             self.message_service.send(self, "Registered", None)
             
 
 class PushNotificationAuthenticateViewModel(AuthenticationBaseViewModel):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, info_panel: QWidget) -> None:
+        super().__init__(info_panel)
 
         uic.loadUi("views/authenticate_views/push_notification_view.ui", self) 
         
-        self.stored = self.authentication_service.get_session_stored()[0]
-        number = self.stored.split(';')[1]
+        self.stored = self.authentication_service.get_session_stored()
+        number = self.stored[1]
         hidden_number = number[:3] + (len(number)-6)*"x"+number[-3:]
 
         self.left_frame.layout().setAlignment(Qt.AlignTop)
@@ -119,7 +119,7 @@ class PushNotificationAuthenticateViewModel(AuthenticationBaseViewModel):
         self.time_label.setText(datetime.now(timezone.utc).strftime("%H:%M %Z"))
 
     def send(self) -> None:
-        if self.authentication_service.authenticate(self.stored):
+        if self.authentication_service.authenticate(self.stored[0]+";"+self.stored[1]):
             if self.code_field.text() == self.code_label.text():
                 self.message_service.send(self, "Authenticated", None)
                 self.verify_btn.setEnabled(False)

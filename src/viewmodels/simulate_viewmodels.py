@@ -1,6 +1,6 @@
 from typing import Any
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QStackedWidget, QMessageBox
+from PyQt5.QtWidgets import QWidget, QStackedWidget, QMessageBox, QHBoxLayout
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 from services.container import ApplicationContainer
@@ -13,6 +13,7 @@ from viewmodels.authentication.fingerprint_viewmodel import *
 from viewmodels.authentication.push_notification_viewmodel import *
 from viewmodels.authentication.twofa_key_viewmodel import *
 from widgets.number_button import NumberButton
+from widgets.info_panel import *
 from models.utils import calculate_assurance_level
 
 # pyright: reportGeneralTypeIssues=false
@@ -51,8 +52,6 @@ class CreatorViewModel(QWidget):
         uic.loadUi("views/creator_view.ui", self)
         self.authentication_service = ApplicationContainer.authentication_service()
         self.message_service = ApplicationContainer.message_service()
-
-        self.button_container.setAlignment(Qt.AlignRight)
 
         # Buttons on grid
         self.pin_btn = NumberButton(self, "Pin", QColor(255, 255, 255), QColor(0, 97, 169))
@@ -162,7 +161,14 @@ class RegisterViewModel(QWidget):
             
             if viewmodel_factory:
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
-                self.stackedWidget.addWidget(viewmodel_factory())
+                info_panel = InfoPanel()
+                hbox = QWidget()
+                hlayout = QHBoxLayout()
+                hlayout.addWidget(viewmodel_factory(info_panel))
+                hlayout.addWidget(info_panel)
+                hbox.setLayout(hlayout)
+                
+                self.stackedWidget.addWidget(hbox)
             else:
                 raise ValueError("Unknown authentication method")
 
@@ -227,8 +233,14 @@ class AuthenticateViewModel(QWidget):
             
             if viewmodel_factory:
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
-                self.stackedWidget.addWidget(viewmodel_factory())
-                self.authentication_service.forward() # setting method interface require forward()
+                info_panel = InfoPanel()
+                hbox = QWidget()
+                hlayout = QHBoxLayout()
+                hlayout.addWidget(viewmodel_factory(info_panel))
+                hlayout.addWidget(info_panel)
+                hbox.setLayout(hlayout)
+                
+                self.stackedWidget.addWidget(hbox)
             else:
                 raise ValueError("Unknown authentication method")
         self.authentication_service.at = 0

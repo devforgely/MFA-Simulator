@@ -17,22 +17,16 @@ class AuthenticationStrategy(Protocol):
     def get_type(self) -> Method:
         ...
     
-    def register(self, *keys: str) -> str:
+    def register(self, index: int, *data: Any) -> str:
         ...
 
-    def authenticate(self, *keys: str) -> bool:
+    def authenticate(self, index: int, *data: Any) -> bool:
         ...
 
-    def get_plain_key(self) -> str:
+    def store(self, index: int, data: dict) -> None:
         ...
 
-    def get_secret(self) -> str:
-        ...
-
-    def store(self, *args: Any) -> None:
-        ...
-
-    def get_stored(self) -> list:
+    def get_stored(self, index: int) -> dict:
         ...
 
 
@@ -55,23 +49,14 @@ class CompoundAuthentication(AuthenticationStrategy):
     def remove(self, index: int) -> None:
         del self.childens[index]
 
-    def register(self, index: int, *args: Any) -> bool:     
-        return self.childens[index].register(*args)
+    def register(self, index: int, *data: Any) -> bool:     
+        return self.childens[index].register(*data)
 
-    def authenticate(self, index: int, key: str) -> bool:
-        return self.childens[index].authenticate(key)
-    
-    def get_plain_key(self, index: int) -> str:
-        return self.childens[index].get_plain_key()
-        
-    def get_secret(self, index: int) -> str:
-        return self.childens[index].get_secret()
-    
-    def get_timestamp(self, index: int) -> str:
-        return self.childens[index].get_timestamp()
+    def authenticate(self, index: int, *data: Any) -> bool:
+        return self.childens[index].authenticate(*data)
 
-    def store(self, index: int, *args: Any) -> None:
-        self.childens[index].store(*args)
+    def store(self, index: int, data: dict) -> None:
+        self.childens[index].store(data)
 
-    def get_stored(self, index: int) -> list:
+    def get_stored(self, index: int) -> dict:
         return self.childens[index].get_stored()

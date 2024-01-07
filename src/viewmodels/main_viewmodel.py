@@ -9,6 +9,7 @@ from services.container import ApplicationContainer
 from data.data_service import DataService
 from viewmodels.simulate_viewmodels import *
 from viewmodels.quiz_viewmodels import *
+from viewmodels.learn_viewmodel import *
 
 
 # pyright: reportGeneralTypeIssues=false
@@ -23,8 +24,10 @@ class MainViewModel(QMainWindow):
         # PAGES
         self.simulate_page = SimulateViewModel()
         self.quiz_page = QuizViewModel()
+        self.learn_page = LearnViewModel()
         self.stackedWidget.addWidget(self.simulate_page)
         self.stackedWidget.addWidget(self.quiz_page)
+        self.stackedWidget.addWidget(self.learn_page)
 
         # Data LOAD
         self.coin_count.setText(str(self.data_service.get_user_coin()))
@@ -153,10 +156,10 @@ class MainViewModel(QMainWindow):
         btn_name = self.sender().objectName()
 
         match(btn_name):
-            case "simualte_btn":
+            case "simulate_btn":
                 self.stackedWidget.setCurrentWidget(self.simulate_page)
             case "learn_btn":
-                print("learn")
+                self.stackedWidget.setCurrentWidget(self.learn_page)
             case "quiz_btn":
                 self.stackedWidget.setCurrentWidget(self.quiz_page)
             case "profile_btn":

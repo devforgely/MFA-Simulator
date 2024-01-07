@@ -32,7 +32,6 @@ QMainWindow {
 }
 
 QWidget {
-	color: #47495a;
 	font: 10pt &quot;Segoe UI&quot;;
 }
 
@@ -57,8 +56,12 @@ QToolTip {
 
 /* Top Bar */
 #topBar {
-    background-color: #ffffff;
-	border-bottom: 2px solid #eeeeee;
+	background-color: white;
+	border-bottom: 3px solid #eeeeee;
+}
+
+#coin_count {
+	font-weight: 600;
 }
 
 #logo {
@@ -66,14 +69,14 @@ QToolTip {
 }
 
 #search_field {
-	background-color: #f6f7fb;
+	background-color: #ecedf1;
 	border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 	padding-left: 20px;
 }
 
 #search_icon {
-	background-color: #f6f7fb;
+	background-color: #ecedf1;
 	border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 	padding: 5px;
@@ -81,11 +84,11 @@ QToolTip {
 
 /* Top Bar Buttons */
 #rightSection .QPushButton { background-color: transparent; border: none;  border-radius: 5px; }
-#rightSection .QPushButton:hover { background-color: #f6f7fb; }
+#rightSection .QPushButton:hover { background-color: #ecedf1; }
 
 /* Left Menu */
-#leftMenu {	
-	background-color: #ffffff;
+#leftMenu {
+	background-color: white;
 	border-right: 2px solid #eeeeee;
 }
 
@@ -99,7 +102,6 @@ QToolTip {
 	background-color: #eeeeee;
 }
 
-/* Page Container */
 #pageContainer {
 	background-color: #f6f7fb;
 }
@@ -416,9 +418,9 @@ QToolTip {
                    <font>
                     <family>Segoe UI</family>
                     <pointsize>10</pointsize>
-                    <weight>50</weight>
+                    <weight>75</weight>
                     <italic>false</italic>
-                    <bold>false</bold>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="text">

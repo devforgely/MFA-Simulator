@@ -2,39 +2,28 @@ from typing import Any
 import hashlib
 import datetime
 from models.authentication.authentication import AuthenticationStrategy, Method
+import rsa
 
 class BaseHashStrategy(AuthenticationStrategy):
     def __init__(self) -> None:
-        self.plain_key = ""
-        self.secret = ""
-        self.timestamp = ""
-        self.data = []
+        self.data = {}
 
     def get_type(self) -> Method:
         return Method.BASEHASH
 
     def register(self, key: str) -> bool:
-        self.plain_key = key
-        self.secret = hashlib.sha256(key.encode()).hexdigest()
-        self.timestamp = str(datetime.datetime.now())
+        self.data["timestamp_register"] = str(datetime.datetime.now())
+        self.data["key"] = hashlib.sha256(key.encode()).hexdigest()
         return True
 
     def authenticate(self, key: str) -> bool:
-        return hashlib.sha256(key.encode()).hexdigest() == self.secret
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        return hashlib.sha256(key.encode()).hexdigest() == self.data["key"]
     
-    def get_plain_key(self) -> str:
-        return self.plain_key
-    
-    def get_secret(self) -> str:
-        return self.secret
-    
-    def get_timestamp(self) -> str:
-        return self.timestamp
-    
-    def store(self, *args: Any) -> None:
-        self.data = list(args)
+    def store(self, data: dict) -> None:
+        self.data |= data
 
-    def get_stored(self) -> list:
+    def get_stored(self) -> dict:
         return self.data
     
 class FingerPrintStrategy(BaseHashStrategy):
@@ -58,7 +47,16 @@ class PasswordStrategy(BaseHashStrategy):
     
     def get_type(self) -> Method:
         return Method.PASSWORD
-
+    
+    def register(self, username: str, password: str) -> bool:
+        self.data["user_registered"] = username
+        self.data["user_password"] = hashlib.sha256(password.encode()).hexdigest()
+        self.data["timestamp_register"] = str(datetime.datetime.now())
+        return True
+    
+    def authenticate(self, username: str, password: str) -> bool:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        return username == self.data["user_registered"] and hashlib.sha256(password.encode()).hexdigest() == self.data["user_password"]
 
 class PinStrategy(BaseHashStrategy):
     def __init__(self) -> None:
@@ -66,6 +64,23 @@ class PinStrategy(BaseHashStrategy):
     
     def get_type(self) -> Method:
         return Method.PIN
+    
+    def register(self, public_key: bytes) -> bool:
+        self.data["public_key"] = public_key
+        self.data["timestamp_register"] = str(datetime.datetime.now())
+
+        # prepare for authentication
+        self.data["server_challenge"] = ("Approval").encode()
+
+        return True
+
+    def authenticate(self, signature: bytes) -> bool:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        try:
+            rsa.verify(self.data["server_challenge"], signature, rsa.PublicKey.load_pkcs1(self.data["public_key"]))
+            return True
+        except rsa.VerificationError:
+            return False
     
 class PushNotificationStrategy(BaseHashStrategy):
     def __init__(self) -> None:
