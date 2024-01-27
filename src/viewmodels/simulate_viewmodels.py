@@ -246,8 +246,9 @@ class AuthenticateViewModel(QWidget):
                 hlayout.addWidget(viewmodel_factory(info_panel))
                 hlayout.addWidget(info_panel)
                 hbox.setLayout(hlayout)
-                
                 self.stackedWidget.addWidget(hbox)
+                
+                self.authentication_service.forward()
             else:
                 raise ValueError("Unknown authentication method")
         self.authentication_service.at = 0

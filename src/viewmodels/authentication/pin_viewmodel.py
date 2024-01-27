@@ -1,4 +1,3 @@
-from PyQt5 import uic
 from PyQt5.QtCore import QObject, QEvent
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtGui import QIcon
@@ -28,19 +27,9 @@ class ButtonHoverWatcher(QObject):
 
 class PinRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
-
-        uic.loadUi("views/register_views/pin_view.ui", self)
+        super().__init__("views/register_views/pin_view.ui", info_panel)
 
         self.device_id = str(uuid.uuid4())
-        self.info_panel.add_client_data("device_id", self.device_id)
-        self.info_panel.add_client_data("pin", "null")
-        self.info_panel.add_client_data("hashed_pin", "null")
-        self.info_panel.add_client_data("user_private_key", "null")
-
-        self.info_panel.add_server_data("user_public_key", "null")
-
-        self.info_panel.log_text("Waiting for pin...")
 
         self.pin_field.setEchoMode(QLineEdit.Password)
         self.btn0.clicked.connect(lambda: self.update_field("0"))
@@ -69,6 +58,17 @@ class PinRegisterViewModel(AuthenticationBaseViewModel):
                 background-color: none;
             }
         """)
+        self.initalise_infopanel()
+    
+    def initalise_infopanel(self) -> None:
+        self.info_panel.add_client_data("device_id", self.device_id)
+        self.info_panel.add_client_data("pin", "null")
+        self.info_panel.add_client_data("hashed_pin", "null")
+        self.info_panel.add_client_data("user_private_key", "null")
+
+        self.info_panel.add_server_data("user_public_key", "null")
+
+        self.info_panel.log_text("Waiting for pin...")
 
     def update_field(self, char: str) -> None:
         if char == "$":
@@ -110,20 +110,7 @@ class PinRegisterViewModel(AuthenticationBaseViewModel):
 
 class PinAuthenticateViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
-
-        uic.loadUi("views/authenticate_views/pin_view.ui", self)
-
-        self.stored = self.authentication_service.get_session_stored()
-        self.info_panel.add_client_data("device_id", self.stored["device_id"])
-        self.info_panel.add_client_data("pin", "null")
-        self.info_panel.add_client_data("hashed_pin", self.stored["secret"])
-        self.info_panel.add_client_data("server_challenge", "null")
-        self.info_panel.add_client_data("user_private_key", self.stored["private_key"].decode())
-
-        self.info_panel.add_server_data("user_public_key", self.stored["public_key"].decode())
-
-        self.info_panel.log_text("Waiting for pin...")
+        super().__init__("views/authenticate_views/pin_view.ui", info_panel)
 
         self.pin_field.setEchoMode(QLineEdit.Password)
         self.btn0.clicked.connect(lambda: self.update_field("0"))
@@ -152,6 +139,19 @@ class PinAuthenticateViewModel(AuthenticationBaseViewModel):
                 background-color: none;
             }
         """)
+        self.initalise_infopanel()
+
+    def initalise_infopanel(self) -> None:
+        self.stored = self.authentication_service.get_session_stored()
+        self.info_panel.add_client_data("device_id", self.stored["device_id"])
+        self.info_panel.add_client_data("pin", "null")
+        self.info_panel.add_client_data("hashed_pin", self.stored["secret"])
+        self.info_panel.add_client_data("server_challenge", "null")
+        self.info_panel.add_client_data("user_private_key", self.stored["private_key"].decode())
+
+        self.info_panel.add_server_data("user_public_key", self.stored["public_key"].decode())
+
+        self.info_panel.log_text("Waiting for pin...")
 
     def update_field(self, char: str) -> None:
         if char == "$":

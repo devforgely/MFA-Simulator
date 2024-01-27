@@ -25,7 +25,13 @@ class ClickableImageLabel(QLabel):
 
     def mousePressEvent(self, event):
         if self.click_callback:
-            self.click_callback(self.image)
+            self.click_callback(self)
+
+    def show_border(self) -> None:
+        self.setStyleSheet('border: 3px solid blue;')
+    
+    def hide_border(self) -> None:
+        self.setStyleSheet('border: none;')
 
 class ClickableLabel(QLabel):
     clicked = pyqtSignal()

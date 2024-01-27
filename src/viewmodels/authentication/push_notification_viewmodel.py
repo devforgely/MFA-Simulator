@@ -1,5 +1,4 @@
 from PyQt5.QtCore import Qt
-from PyQt5 import uic
 from PyQt5.QtGui import QIntValidator, QColor
 from PyQt5.QtWidgets import QMessageBox, QGraphicsDropShadowEffect
 from viewmodels.authentication.authentication_base import *
@@ -12,9 +11,7 @@ import re
 
 class PushNotificationRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
-
-        uic.loadUi("views/register_views/push_notification_view.ui", self)
+        super().__init__("views/register_views/push_notification_view.ui", info_panel)
 
         self.country_dialing_codes = {
             "United Kingdom": "+44",
@@ -75,18 +72,17 @@ class PushNotificationRegisterViewModel(AuthenticationBaseViewModel):
         if self.authentication_service.register(device_id+";"+self.dialing_code.text()+self.number_field.text()):
             self.link_btn.setEnabled(False)
             self.cancel_btn.hide()
-            self.authentication_service.session_store(device_id, self.dialing_code.text()+self.number_field.text())
+            self.authentication_service.session_store({"user_device_id":device_id, 
+                                                       "user_phone_number": self.dialing_code.text()+self.number_field.text()})
             self.message_service.send(self, "Registered", None)
             
 
 class PushNotificationAuthenticateViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
-
-        uic.loadUi("views/authenticate_views/push_notification_view.ui", self) 
+        super().__init__("views/authenticate_views/push_notification_view.ui", info_panel)
         
         self.stored = self.authentication_service.get_session_stored()
-        number = self.stored[1]
+        number = self.stored["user_phone_number"]
         hidden_number = number[:3] + (len(number)-6)*"x"+number[-3:]
 
         self.left_frame.layout().setAlignment(Qt.AlignTop)
@@ -119,9 +115,11 @@ class PushNotificationAuthenticateViewModel(AuthenticationBaseViewModel):
         self.time_label.setText(datetime.now(timezone.utc).strftime("%H:%M %Z"))
 
     def send(self) -> None:
-        if self.authentication_service.authenticate(self.stored[0]+";"+self.stored[1]):
+        if self.authentication_service.authenticate(self.stored["user_device_id"]+";"+self.stored["user_phone_number"]):
             if self.code_field.text() == self.code_label.text():
                 self.message_service.send(self, "Authenticated", None)
+                self.code_field.setEnabled(False)
+                self.code_btn.setEnabled(False)
                 self.verify_btn.setEnabled(False)
                 self.not_login_btn.hide()
             else:

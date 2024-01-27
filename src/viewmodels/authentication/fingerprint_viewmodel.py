@@ -1,39 +1,42 @@
-from PyQt5.QtCore import Qt
-from PyQt5 import uic
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtGui import QPixmap, QIcon
 from viewmodels.authentication.authentication_base import *
 import random
 
-# pyright: reportGeneralTypeIssues=false
-
 class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
-
-        uic.loadUi("views/register_views/fingerprint_view.ui", self)
+        super().__init__("views/register_views/fingerprint_view.ui", info_panel)
         
-        self.fp_layout.setAlignment(Qt.AlignHCenter)
-        self.fingerprint_btn.clicked.connect(self.send)
+        self.progress = 0
+
+        self.fingerprint_btn.clicked.connect(self.set_fingerprint)
+
+    def set_fingerprint(self) -> None:
+        if self.progress < 6:
+            step = random.choice([1, 2])
+            self.progress += step
+            if self.progress >= 6:
+                self.progress = 6
+                self.instruction_label.setText("Registeration Completed")
+                self.send()
+            self.fingerprint_btn.setIcon(QIcon(QPixmap(f"resources/images/fp{self.progress}.png")))
 
     def send(self) -> None:
-        if random.random() < 0.4:
-            QMessageBox.warning(self, "Error", "Register fingerprint failed. Try again.")
-        else:
-            if self.authentication_service.register('data/fingerprints/fp1.png'):
-                self.message_service.send(self, "Registered", None)
+        if self.authentication_service.register('data/fingerprints/fp1.png'):
+            self.message_service.send(self, "Registered", None)
             
 
 class FingerPrintAuthenticateViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
+        super().__init__("views/authenticate_views/fingerprint_view.ui", info_panel)
 
-        uic.loadUi("views/authenticate_views/fingerprint_view.ui", self) 
-
-        self.fp_layout.setAlignment(Qt.AlignHCenter)
         self.fingerprint_btn.clicked.connect(self.send)
 
     def send(self) -> None:
-        if self.authentication_service.authenticate('data/fingerprints/fp1.png'):
-            self.message_service.send(self, "Authenticated", None)
+        if random.random() < 0.4:
+            QMessageBox.warning(self, "Error", "Authenticate fingerprint failed. Try again.")
         else:
-            print("wrong key")
+            if self.authentication_service.authenticate('data/fingerprints/fp1.png'):
+                self.message_service.send(self, "Authenticated", None)
+            else:
+                print("wrong key")

@@ -1,4 +1,3 @@
-from PyQt5 import uic
 from PyQt5.QtWidgets import QLabel, QComboBox, QLineEdit, QGroupBox, QSizePolicy, QVBoxLayout
 from PyQt5.QtCore import Qt
 from viewmodels.authentication.authentication_base import *
@@ -18,20 +17,10 @@ class CustemComboBox(QComboBox):
 
 class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
+        super().__init__("views/register_views/security_question_view.ui", info_panel)
 
-        uic.loadUi("views/register_views/security_question_view.ui", self)
-
-        self.info_panel.add_client_data("questions", "null")
-        self.info_panel.add_client_data("answers", "null")
-        
-        self.info_panel.add_server_data("user_questions", "null")
-        self.info_panel.add_server_data("user_answers", "null")
-
-        self.info_panel.log_text("Waiting for security questions and answers...")
-        
-        self.minmum_question = 2
-        self.maximum_question = 5
+        self.MINIMUM_QUESTION = 2
+        self.MAXIMUM_QUESTION = 5
         
         self.security_questions = ApplicationContainer.data_service().get_security_questions()
         self.unselected_question = self.security_questions[:]
@@ -43,11 +32,22 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
 
         self.question_view.layout().addStretch()
         # default minimum security questions
-        for _ in range(self.minmum_question):
+        for _ in range(self.MINIMUM_QUESTION):
             self.add_question(True)
 
+        self.initalise_infopanel()
+
+    def initalise_infopanel(self) -> None:
+        self.info_panel.add_client_data("questions", "null")
+        self.info_panel.add_client_data("answers", "null")
+        
+        self.info_panel.add_server_data("user_questions", "null")
+        self.info_panel.add_server_data("user_answers", "null")
+
+        self.info_panel.log_text("Waiting for security questions and answers...")
+
     def add_question(self, required: bool) -> None:
-        if len(self.question_form) < self.maximum_question:
+        if len(self.question_form) < self.MAXIMUM_QUESTION:
             layout = self.question_view.layout()
             index = len(self.question_form)
 
@@ -86,7 +86,7 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
             self.onComboBoxChanged()
 
     def remove_question(self) -> None:
-        if len(self.question_form) > self.minmum_question:
+        if len(self.question_form) > self.MINIMUM_QUESTION:
             for _ in range(2):
                 item = self.question_view.layout().takeAt(self.question_view.layout().count() - 2)
                 widget = item.widget()
@@ -142,22 +142,13 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
 
 class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
-
-        uic.loadUi("views/authenticate_views/security_question_view.ui", self)
-
-        self.info_panel.add_client_data("questions", str(self.authentication_service.get_session_stored()["user_questions"]))
-        self.info_panel.add_client_data("answers", "null")
-        
-        self.info_panel.add_server_data("user_questions", str(self.authentication_service.get_session_stored()["user_questions"]))
-        self.info_panel.add_server_data("user_answers", self.authentication_service.get_session_stored()["key"])
-
-        self.info_panel.log_text("Waiting for answers to security questions...")
+        super().__init__("views/authenticate_views/security_question_view.ui", info_panel)
         
         self.answer_widgets = []
 
         self.submit_btn.clicked.connect(self.send)
         self.setup_ui()
+        self.initalise_infopanel()
 
     def setup_ui(self) -> None:
         stored = self.authentication_service.get_session_stored()["user_questions"]
@@ -187,6 +178,15 @@ class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
 
             self.answer_widgets.append(answer_lineedit)
         layout.addStretch()
+
+    def initalise_infopanel(self) -> None:
+        self.info_panel.add_client_data("questions", str(self.authentication_service.get_session_stored()["user_questions"]))
+        self.info_panel.add_client_data("answers", "null")
+        
+        self.info_panel.add_server_data("user_questions", str(self.authentication_service.get_session_stored()["user_questions"]))
+        self.info_panel.add_server_data("user_answers", self.authentication_service.get_session_stored()["key"])
+
+        self.info_panel.log_text("Waiting for answers to security questions...")
 
     def send(self) -> None:
         plain_key = ""

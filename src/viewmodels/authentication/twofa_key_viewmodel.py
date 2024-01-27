@@ -1,4 +1,3 @@
-from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QPushButton, QLabel
 from PyQt5.QtGui import QPixmap
@@ -14,9 +13,7 @@ import string
 
 class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
-
-        uic.loadUi("views/register_views/twofa_key_view.ui", self)
+        super().__init__("views/register_views/twofa_key_view.ui", info_panel)
         
         self.key_on = False
         self.progress = 0
@@ -84,15 +81,14 @@ class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
         simulated_fingerprint_data = ''.join(random.choice(characters) for _ in range(300))
         
         if self.authentication_service.register(key_id+";"+simulated_fingerprint_data):
-            self.authentication_service.session_store(key_id, key_name, simulated_fingerprint_data)
+            self.authentication_service.session_store({"user_key_id":key_id, "user_key_name":key_name, 
+                                                       "fingerprint_template": simulated_fingerprint_data})
             self.message_service.send(self, "Registered", None)
             
 
 class TwoFAKeyAuthenticateViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel)
-
-        uic.loadUi("views/authenticate_views/twofa_key_view.ui", self) 
+        super().__init__("views/authenticate_views/twofa_key_view.ui", info_panel)
         
         self.key_on = False
         self.progress = 0
@@ -129,7 +125,7 @@ class TwoFAKeyAuthenticateViewModel(AuthenticationBaseViewModel):
         self.waiting_label.hide()
 
         self.key_select_frame.show()
-        self.key_name.setText(self.authentication_service.get_session_stored()[1])
+        self.key_name.setText(self.authentication_service.get_session_stored()["user_key_name"])
         self.fingerprint.show()
         self.instruction_label.show()
 
@@ -146,8 +142,8 @@ class TwoFAKeyAuthenticateViewModel(AuthenticationBaseViewModel):
             self.fingerprint.setPixmap(QPixmap(f"resources/images/fp_{self.progress}.png"))
 
     def send(self) -> None:
-        key_id = self.authentication_service.get_session_stored()[0]
-        simulated_fingerprint_data = self.authentication_service.get_session_stored()[2]
+        key_id = self.authentication_service.get_session_stored()["user_key_id"]
+        simulated_fingerprint_data = self.authentication_service.get_session_stored()["fingerprint_template"]
         if self.authentication_service.authenticate(key_id+";"+simulated_fingerprint_data):
             self.message_service.send(self, "Authenticated", None)
         else:
