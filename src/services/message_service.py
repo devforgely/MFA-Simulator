@@ -8,7 +8,7 @@ class MessageService:
         if publisher_type == type(subscriber_instance):
             raise ValueError(f'{subscriber_instance} cannot subscribe to its own messages.')
         if publisher_type not in self.subscriptions:
-            print(f"subscribe to:{publisher_type}")
+            # print(f"subscribe to:{publisher_type}")
             self.subscriptions[publisher_type] = []
         self.subscriptions[publisher_type].append((subscriber_instance, callback))
 
@@ -18,7 +18,7 @@ class MessageService:
                                                 in self.subscriptions[publisher_type] if instance != subscriber_instance]
 
     def send(self, sender: Any, message_title: str, *args: Any) -> None:
-        print(f"sender:{sender}")
+        # print(f"sender:{sender}")
         if type(sender) in self.subscriptions:
             for _, callback in self.subscriptions[type(sender)]:
                 callback(message_title, *args)

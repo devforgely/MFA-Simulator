@@ -6,54 +6,288 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>927</width>
-    <height>495</height>
+    <width>853</width>
+    <height>506</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#Form {
+	background: white;
+}
+
+#title {
+	font-size: 15pt;
+	font-weight: bold;
+	padding: 20px 10px 20px 10px;
+	background-color: white;
+}
+
+ QListWidget::item:selected {
+	border: 2px solid #6cc8d5;
+	border-right: none;
+}
+
+#horizontalWidget {
+	background-color: white;
+	border-left: 1px solid silver;
+}
+
+#horizontalWidget QPushButton {
+	border: none;
+	border-radius: 10%;
+	padding: 5px;
+}
+
+#horizontalWidget QPushButton:hover {
+	background-color: #ecedf1;
+}
+
+#note_container {
+	background-color: white;
+	border-left: 1px solid silver;
+}</string>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
-    <widget class="QListWidget" name="listWidget">
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-    </widget>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="title">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="text">
+        <string>MFA Notes</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="listWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>300</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="cursor" stdset="0">
+        <cursorShape>ArrowCursor</cursorShape>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+    <layout class="QVBoxLayout" name="note_content_layout">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <property name="widgetResizable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="scrollAreaWidget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>696</width>
-        <height>471</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QTextEdit" name="note_content"/>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+     <item>
+      <widget class="QWidget" name="horizontalWidget" native="true">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="leftMargin">
+         <number>15</number>
+        </property>
+        <property name="topMargin">
+         <number>8</number>
+        </property>
+        <property name="rightMargin">
+         <number>15</number>
+        </property>
+        <property name="bottomMargin">
+         <number>8</number>
+        </property>
+        <item alignment="Qt::AlignLeft">
+         <widget class="QPushButton" name="expand_btn">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>Expand Page</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../resources/icons/expand-arrow.svg</normaloff>../resources/icons/expand-arrow.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font-weight: bold;
+color: darkgray;</string>
+          </property>
+          <property name="text">
+           <string>  |  </string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignLeft">
+         <widget class="QPushButton" name="up_page_btn">
+          <property name="maximumSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>Previous Page</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../resources/icons/chevron-up-light.svg</normaloff>../resources/icons/chevron-up-light.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>28</width>
+            <height>28</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="down_page_btn">
+          <property name="maximumSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>Next Page</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../resources/icons/chevron-down.svg</normaloff>../resources/icons/chevron-down.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>28</width>
+            <height>28</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="note_container" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+       </layout>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

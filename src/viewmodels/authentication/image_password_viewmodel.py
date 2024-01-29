@@ -30,10 +30,10 @@ class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
         self.initalise_infopanel()
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("images", "null")
+        self.info_panel.add_client_data("images", [])
         self.info_panel.add_client_data("password", "null")
         
-        self.info_panel.add_server_data("user_images", "null")
+        self.info_panel.add_server_data("user_images", [])
         self.info_panel.add_server_data("user_password", "null")
 
         self.info_panel.log_text("Waiting for images and password...")
@@ -126,10 +126,10 @@ class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
             self.info_panel.update_server_status("status", "200")
             self.info_panel.update_server_status("message", "user registered")
 
-            self.info_panel.update_client_data("images", str(self.selected_images))
+            self.info_panel.update_client_data("images", self.selected_images)
             self.info_panel.update_client_data("password", plain_key)
 
-            self.info_panel.update_server_data("user_images", str(self.authentication_service.get_session_stored()["user_images"]))
+            self.info_panel.update_server_data("user_images", self.authentication_service.get_session_stored()["user_images"])
             self.info_panel.update_server_data("user_password", self.authentication_service.get_session_stored()["key"])
 
             self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected and password entered.")
@@ -146,10 +146,10 @@ class ImagePasswordAuthenticateViewModel(ImagePasswordRegisterViewModel):
         super().__init__(info_panel, ui="views/authenticate_views/image_password_view.ui")
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("images", "null")
+        self.info_panel.add_client_data("images", [])
         self.info_panel.add_client_data("password", "null")
         
-        self.info_panel.add_server_data("user_images", str(self.authentication_service.get_session_stored()["user_images"]))
+        self.info_panel.add_server_data("user_images", self.authentication_service.get_session_stored()["user_images"])
         self.info_panel.add_server_data("user_password", self.authentication_service.get_session_stored()["key"])
 
         self.info_panel.log_text("Waiting for images and password...")
@@ -168,7 +168,7 @@ class ImagePasswordAuthenticateViewModel(ImagePasswordRegisterViewModel):
             self.info_panel.update_server_status("status", "200")
             self.info_panel.update_server_status("message", "user authenticated")
 
-            self.info_panel.update_client_data("images", str(self.selected_images))
+            self.info_panel.update_client_data("images", self.selected_images)
             self.info_panel.update_client_data("password", plain_key)
 
             self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected and password entered.")

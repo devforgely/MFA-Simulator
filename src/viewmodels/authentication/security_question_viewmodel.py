@@ -38,10 +38,10 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
         self.initalise_infopanel()
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("questions", "null")
+        self.info_panel.add_client_data("questions", [])
         self.info_panel.add_client_data("answers", "null")
         
-        self.info_panel.add_server_data("user_questions", "null")
+        self.info_panel.add_server_data("user_questions", [])
         self.info_panel.add_server_data("user_answers", "null")
 
         self.info_panel.log_text("Waiting for security questions and answers...")
@@ -126,10 +126,10 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
             self.info_panel.update_server_status("status", "200")
             self.info_panel.update_server_status("message", "user registered")
 
-            self.info_panel.update_client_data("questions", str(questions))
+            self.info_panel.update_client_data("questions", questions)
             self.info_panel.update_client_data("answers", plain_key)
 
-            self.info_panel.update_server_data("user_questions", str(self.authentication_service.get_session_stored()["user_questions"]))
+            self.info_panel.update_server_data("user_questions", self.authentication_service.get_session_stored()["user_questions"])
             self.info_panel.update_server_data("user_answers", self.authentication_service.get_session_stored()["key"])
 
             self.info_panel.log_text(f"Client: {len(questions)} security question selected and all answers entered.")
@@ -180,10 +180,10 @@ class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
         layout.addStretch()
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("questions", str(self.authentication_service.get_session_stored()["user_questions"]))
+        self.info_panel.add_client_data("questions", self.authentication_service.get_session_stored()["user_questions"])
         self.info_panel.add_client_data("answers", "null")
         
-        self.info_panel.add_server_data("user_questions", str(self.authentication_service.get_session_stored()["user_questions"]))
+        self.info_panel.add_server_data("user_questions", self.authentication_service.get_session_stored()["user_questions"])
         self.info_panel.add_server_data("user_answers", self.authentication_service.get_session_stored()["key"])
 
         self.info_panel.log_text("Waiting for answers to security questions...")

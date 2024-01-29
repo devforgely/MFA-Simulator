@@ -19,13 +19,12 @@
   <property name="styleSheet">
    <string notr="true">#choose_label {
 	font-size: 30pt;
-    font-weight: 400;
 }
 
 #simulate_btn {
 	color: white;
 	font-size: 12pt;
-	font-weight: 500;
+	font-weight: bold;
 	background-color: #049c84;
 	border: none;
 }
@@ -36,7 +35,7 @@
 
 #measure_frame {
 	margin: 5px 20px;
-	background-color: #0061A9;
+	background-color: #0067c0;
 }
 
 #measure_frame #measure_title {

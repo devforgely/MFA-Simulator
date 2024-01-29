@@ -34,6 +34,11 @@
 	background-color: #0067c0; 
 }
 
+#title {
+	font-size: 12pt;
+	font-weight: bold;
+}
+
 #key_select_frame {
 	background-color: #f6f6f6;
 	border-left: 4px solid #0067c0;
@@ -45,6 +50,12 @@
 
 #key_name_field:focus {
     border-bottom: 1.5px solid #0067c0;
+}
+
+#connect_btn, #on_btn {
+	border: 1px solid gray;
+	height: 30px;
+	width: 100px;
 }
 
 </string>
@@ -70,19 +81,12 @@
      <widget class="QWidget" name="page1">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="title">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
            <height>50</height>
           </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
          </property>
          <property name="text">
           <string>Add Security Key</string>
@@ -249,16 +253,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
+      <item alignment="Qt::AlignHCenter">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Linking 2FA Cryptographic Key</string>
+         <string>Simulate physical 2FA Cryptographic Key</string>
         </property>
        </widget>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
+        <item alignment="Qt::AlignHCenter">
          <widget class="QPushButton" name="connect_btn">
           <property name="cursor">
            <cursorShape>PointingHandCursor</cursorShape>
@@ -266,9 +270,13 @@
           <property name="text">
            <string>Connect</string>
           </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../../resources/icons/electric-cord-1.svg</normaloff>../../resources/icons/electric-cord-1.svg</iconset>
+          </property>
          </widget>
         </item>
-        <item>
+        <item alignment="Qt::AlignHCenter">
          <widget class="QPushButton" name="on_btn">
           <property name="enabled">
            <bool>false</bool>
@@ -278,6 +286,10 @@
           </property>
           <property name="text">
            <string>Turn On</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../../resources/icons/power.svg</normaloff>../../resources/icons/power.svg</iconset>
           </property>
          </widget>
         </item>
