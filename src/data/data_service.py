@@ -24,7 +24,8 @@ class DataService():
             with open(self.file_path, 'r') as f:
                 self.data = json.load(f)
 
-        self.notes = self.read_notes_from_directory('data/notes')
+        self.notes_directory = 'data/notes'
+        self.notes = self.read_notes_titles()
 
     def get_user_coin(self) -> int:
         return self.data['user_coins']
@@ -51,16 +52,24 @@ class DataService():
         return random.sample(data['securityQuestions'], 9)
 
 
-    def read_notes_from_directory(self, directory) -> list:
+    def read_notes_titles(self) -> list:
         notes = []
-        for filename in os.listdir(directory):
+        for filename in os.listdir(self.notes_directory):
             if filename.endswith('.md'):
-                with open(os.path.join(directory, filename), 'r') as file:
-                    title = os.path.splitext(filename)[0]
-                    content = markdown.markdown(file.read())
-                    notes.append(Note(title, content))
+                notes.append(Note(os.path.splitext(filename)[0].replace("_", " ").capitalize(), None))  
         return notes
+    
+    def read_note(self, index) -> Note:
+        if self.notes[index].content == None:
+            with open(os.path.join(self.notes_directory, os.listdir(self.notes_directory)[index]), 'r') as file:
+                self.notes[index].content = markdown.markdown(file.read())
+        return self.notes[index]
     
     def get_notes(self) -> list:
         return self.notes
+    
+
+    def get_quiz_bank(self) -> list:
+        with open('data/quizzes/quiz_bank1.json', 'r') as f:
+            return json.load(f)
             

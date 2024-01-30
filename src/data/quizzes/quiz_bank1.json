@@ -1,0 +1,218 @@
+[
+    {
+        "category": "MFA concepts and principles",
+        "difficulty": "1",
+        "question": "What does MFA stand for in cybersecurity?",
+        "answer": "Multi-Factor Authentication",
+        "choices": [
+          "Multi-Factor Authentication",
+          "Multi-Field Authentication",
+          "Multi-Frame Authentication",
+          "Multi-Factor Authorization"
+        ]
+    },
+    {
+        "category": "MFA concepts and principles",
+        "difficulty": "1",
+        "question": "Which of the following is an example of 'Something you are' in MFA?",
+        "answer": "Fingerprint",
+        "choices": [
+            "Password",
+            "Security Token",
+            "Fingerprint",
+            "Security Question"
+        ]
+    },
+    {
+        "category": "MFA concepts and principles",
+        "difficulty": "1",
+        "question": "Which of the following is an example of 'Something you have' in MFA?",
+        "answer": "Security Token",
+        "choices": [
+            "Password",
+            "Security Token",
+            "Fingerprint",
+            "Security Question"
+        ]
+    },
+    {
+        "category": "MFA concepts and principles",
+        "difficulty": "1",
+        "question": "Which of the following is an example of 'Something you know' in MFA?",
+        "answer": "Password",
+        "choices": [
+            "Password",
+            "Security Token",
+            "Fingerprint",
+            "Security Question"
+        ]
+    },
+    {
+        "category": "MFA concepts and principles",
+        "difficulty": "1",
+        "question": "True or False: Using MFA can help protect your accounts even if your password is compromised.",
+        "answer": "True",
+        "choices": [
+            "True",
+            "False"
+        ]
+    },
+    {
+        "category": "MFA concepts and principles",
+        "difficulty": "1",
+        "question": "What is another term often used to describe Multi-Factor Authentication?",
+        "answer": "Two-Step Verification",
+        "choices": [
+            "Two-Step Verification",
+            "Double Check",
+            "Two-Way Authentication",
+            "Dual-Factor Verification"
+        ]
+    },
+    {
+        "category": "MFA concepts and principles",
+        "difficulty": "1",
+        "question": "True or False: You should use MFA for all your accounts, regardless of how often you use them.",
+        "answer": "True",
+        "choices": [
+            "True",
+            "False"
+        ]
+    },
+    {
+        "category": "MFA concepts and principles",
+        "difficulty": "1",
+        "question": "Which of the following is NOT a benefit of using MFA?",
+        "answer": "Makes it easier to remember passwords",
+        "choices": [
+            "Increases account security",
+            "Protects against phishing",
+            "Improves compliance",
+            "Makes it easier to remember passwords"
+        ]
+    },
+    {
+        "category": "MFA concepts and principles",
+        "difficulty": "1",
+        "question": "True or False: MFA makes it more difficult for unauthorized users to access your information.",
+        "answer": "True",
+        "choices": [
+            "True",
+            "False"
+        ]
+    },
+    {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "Which of the following is an example of a hardware MFA device?",
+        "answer": "Security Token",
+        "choices": [
+          "Password",
+          "Security Token",
+          "Fingerprint",
+          "Security Question"
+        ]
+      },
+      {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "What is a common method of biometric authentication used in MFA?",
+        "answer": "Fingerprint scanning",
+        "choices": [
+          "Password input",
+          "Security token",
+          "Fingerprint scanning",
+          "Security question"
+        ]
+      },
+      {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "What does OTP stand for in the context of MFA?",
+        "answer": "One-Time Password",
+        "choices": [
+          "One-Time Password",
+          "One-Time Pin",
+          "One-Time Pass",
+          "One-Time Permission"
+        ]
+      },
+      {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "True or False: SMS is considered a secure method for delivering OTPs in MFA.",
+        "answer": "False",
+        "choices": [
+          "True",
+          "False"
+        ]
+      },
+      {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "Which of the following is a disadvantage of using biometrics for MFA?",
+        "answer": "Biometric data can't be changed if compromised",
+        "choices": [
+          "Biometric data can't be changed if compromised",
+          "Biometrics are easy to forget",
+          "Biometrics require a physical device",
+          "Biometrics are not unique to each individual"
+        ]
+      },
+      {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "What is a common example of a 'Something you have' factor in MFA?",
+        "answer": "Mobile device",
+        "choices": [
+          "Password",
+          "Mobile device",
+          "Fingerprint",
+          "Security question"
+        ]
+      },
+      {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "True or False: All MFA methods require at least three factors to be authenticated.",
+        "answer": "False",
+        "choices": [
+          "True",
+          "False"
+        ]
+      },
+      {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "Which MFA method involves generating a code that can only be used once?",
+        "answer": "One-Time Password (OTP)",
+        "choices": [
+          "Biometric authentication",
+          "One-Time Password (OTP)",
+          "Security question",
+          "Hardware token"
+        ]
+      },
+      {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "True or False: An authenticator app is a type of software token.",
+        "answer": "True",
+        "choices": [
+          "True",
+          "False"
+        ]
+      },
+      {
+        "category": "MFA technologies and methods",
+        "difficulty": "1",
+        "question": "Which of the following is NOT a type of biometric authentication?",
+        "answer": "Password",
+        "choices": [
+          "Fingerprint scanning",
+          "Facial recognition",
+          "Iris scanning",
+          "Password"
+        ]
+      }
+]

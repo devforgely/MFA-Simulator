@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QMessageBox, QPushButton, QLabel
 from PyQt5.QtGui import QPixmap
 from viewmodels.authentication.authentication_base import *
 from widgets.waiting_spinner import QtWaitingSpinner
-from widgets.clickables import ClickableLabel
 import uuid
 import random
 import string
@@ -25,15 +24,10 @@ class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
         self.next_btn.setMinimumWidth(100)
         self.next_btn.setMinimumHeight(35)
         self.next_btn.setCursor(Qt.PointingHandCursor)
-
-        self.security_key = ClickableLabel()
-        self.security_key.setPixmap(QPixmap(u"resources/images/security_key.png"))
         
         self.page1.layout().addWidget(self.w)
         self.page1.layout().addWidget(self.waiting_label, alignment=Qt.AlignHCenter)
         self.page1.layout().addWidget(self.next_btn, alignment=Qt.AlignRight)
-
-        self.key_frame.layout().addWidget(self.security_key)
 
         self.key_select_frame.hide()
         self.guide_label.hide()
@@ -93,16 +87,10 @@ class TwoFAKeyAuthenticateViewModel(AuthenticationBaseViewModel):
         self.key_on = False
         self.progress = 0
         self.w = QtWaitingSpinner(self.left_frame)
-
         self.waiting_label = QLabel("Waiting for security key connection...")
-
-        self.security_key = ClickableLabel()
-        self.security_key.setPixmap(QPixmap(u"resources/images/security_key.png"))
 
         self.left_frame.layout().addWidget(self.w)
         self.left_frame.layout().addWidget(self.waiting_label, alignment=Qt.AlignHCenter)
-
-        self.key_frame.layout().addWidget(self.security_key)
 
         self.key_select_frame.hide()
         self.fingerprint.hide()

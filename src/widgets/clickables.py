@@ -4,34 +4,25 @@ from PyQt5.QtGui import QPixmap, QIcon
 
 # pyright: reportGeneralTypeIssues=false
 
-class ClickableImageLabel(QLabel):
-    def __init__(self, image, click_callback, parent=None):
+class BorderedImageLabel(QLabel):
+    clicked = pyqtSignal(QLabel)
+    
+    def __init__(self, parent=None):
         super().__init__(parent)
-
+        self.image = ""
+    
+    def set_image(self, image) -> None:
         self.image = image
-        self.click_callback = click_callback
-
-        # Load the image
-        self.setPixmap(QPixmap(image))
-
-        # Set up properties
-        self.setAlignment(Qt.AlignCenter) 
-
-    def enterEvent(self, event):
-        self.setCursor(Qt.PointingHandCursor) 
-
-    def leaveEvent(self, event):
-        self.setCursor(Qt.ArrowCursor) 
-
+    
     def mousePressEvent(self, event):
-        if self.click_callback:
-            self.click_callback(self)
-
+        self.clicked.emit(self)
+    
     def show_border(self) -> None:
         self.setStyleSheet('border: 3px solid blue;')
     
     def hide_border(self) -> None:
         self.setStyleSheet('border: none;')
+
 
 class ClickableLabel(QLabel):
     clicked = pyqtSignal()

@@ -17,13 +17,6 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="classic_btn">
-       <property name="text">
-        <string>Classic Quiz</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="timed_btn">
        <property name="text">
         <string>Timed Quiz</string>
@@ -31,23 +24,40 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="random_btn">
+      <widget class="QPushButton" name="classic_btn">
        <property name="text">
-        <string>Random Quiz</string>
+        <string>Classic Quiz</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="improvement_btn">
+       <property name="text">
+        <string>Improvement Quiz</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Note on the Type of quiz</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="start_btn">
+     <property name="text">
+      <string>Start</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget" native="true"/>
+   </item>
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QPushButton" name="start_btn">
-       <property name="text">
-        <string>Start</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">

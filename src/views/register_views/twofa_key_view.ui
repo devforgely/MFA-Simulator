@@ -52,7 +52,7 @@
     border-bottom: 1.5px solid #0067c0;
 }
 
-#connect_btn, #on_btn {
+#key_frame QPushButton {
 	border: 1px solid gray;
 	height: 30px;
 	width: 100px;
@@ -261,7 +261,7 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <layout class="QHBoxLayout" name="key_tool">
         <item alignment="Qt::AlignHCenter">
          <widget class="QPushButton" name="connect_btn">
           <property name="cursor">
@@ -295,11 +295,28 @@
         </item>
        </layout>
       </item>
+      <item>
+       <widget class="ClickableLabel" name="security_key">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>../../resources/images/security_key.png</pixmap>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>widgets/clickables.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

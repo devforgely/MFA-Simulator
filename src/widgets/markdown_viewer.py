@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QTextEdit
-from PyQt5.QtGui import QTextCursor, QImage
-import re
+
 
 class MarkdownViewer(QTextEdit):
     def __init__(self, parent=None):

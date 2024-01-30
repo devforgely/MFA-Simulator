@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtGui import QPixmap
 from viewmodels.authentication.authentication_base import *
-from widgets.clickables import ClickableImageLabel
 import os
 import random
 
@@ -23,6 +23,11 @@ class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
         self.refresh_btn.clicked.connect(self.refresh_images)
         self.reset_btn.clicked.connect(self.reset)
         self.submit_btn.clicked.connect(self.send)
+
+        layout = self.image_view.layout()
+        for i in range(layout.count()):
+            border_image_label = layout.itemAt(i).widget()
+            border_image_label.clicked.connect(self.on_image_click)
 
         # inital setup for images on grid layout
         self.refresh_images()
@@ -58,33 +63,17 @@ class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
                             widget.hide_border()
 
     def refresh_images(self) -> None:
-        layout = self.image_view.layout()
-        #clear widget on the grid
-        while layout.count():
-            item = layout.takeAt(0)
-            widget = item.widget()
-            if widget:
-                widget.deleteLater()
-
-        temp_images = self.images[:] #copy
-        # filter over selected images
-        temp_images = [x for x in temp_images if x not in self.selected_images]
         random.shuffle(self.images)
+        layout = self.image_view.layout()
 
-        # 3 by 3 grid
-        # Add images that is not selected to the grid
-        row, col = 0, 0
-        for img in temp_images:
-            label = ClickableImageLabel(img, self.on_image_click)
-            layout.addWidget(label, row, col)
+        # filter over selected images
+        temp_images = [x for x in self.images if x not in self.selected_images][:9]
 
-            if (row == 2 and col == 2):
-                break
-
-            col += 1
-            if col > 2:
-                col = 0
-                row += 1
+        for i in range(layout.count()):
+            border_image_label = layout.itemAt(i).widget()
+            border_image_label.setPixmap(QPixmap(temp_images[i]))
+            border_image_label.set_image(temp_images[i])
+            border_image_label.hide_border()
 
     def on_image_click(self, widget: QWidget) -> None:
         if widget.image in self.selected_images:
@@ -153,6 +142,25 @@ class ImagePasswordAuthenticateViewModel(ImagePasswordRegisterViewModel):
         self.info_panel.add_server_data("user_password", self.authentication_service.get_session_stored()["key"])
 
         self.info_panel.log_text("Waiting for images and password...")
+
+    def refresh_images(self) -> None:
+        random.shuffle(self.images)
+        layout = self.image_view.layout()
+
+        # filter over selected images
+        temp_images = [x for x in self.images if x not in self.selected_images][:9] #copy
+        # get a copy of the user_image and filter over selected images
+        stored = [x for x in self.authentication_service.get_session_stored()["user_images"] if x not in self.selected_images]
+        
+        if random.random() < 0.5 and len(stored) > 0:
+            if stored[0] not in temp_images:
+                    temp_images.insert(random.randint(0, 8), stored[0])
+
+        for i in range(layout.count()):
+            border_image_label = layout.itemAt(i).widget()
+            border_image_label.setPixmap(QPixmap(temp_images[i]))
+            border_image_label.set_image(temp_images[i])
+            border_image_label.hide_border()
 
     def send(self) -> None:
         imgs_combined = ""
