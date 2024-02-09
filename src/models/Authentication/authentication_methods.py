@@ -3,6 +3,10 @@ import hashlib
 import datetime
 from models.authentication.authentication import AuthenticationStrategy, Method
 import rsa
+import hmac
+import math
+import secrets
+import time
 
 class BaseHashStrategy(AuthenticationStrategy):
     def __init__(self) -> None:
@@ -82,13 +86,45 @@ class PinStrategy(BaseHashStrategy):
         except rsa.VerificationError:
             return False
     
-class PushNotificationStrategy(BaseHashStrategy):
+class TOTPStrategy(BaseHashStrategy):
     def __init__(self) -> None:
         super().__init__()
     
     def get_type(self) -> Method:
-        return Method.PUSH_NOTIFICATION
+        return Method.TOTP
+    
+    def register(self) -> bool:
+        self.data["timestamp_register"] = str(datetime.datetime.now())
+        self.data["shared_key"] = secrets.token_hex(16)
+        return True
+    
+    def authenticate(self, key: str) -> bool:
+        if key:
+            self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+            self.data["totp"] = self.generate_TOTP()
+            return key == self.data["totp"]
+        else:
+            self.data["totp"] = self.generate_TOTP()
+            return False
+    
+    def generate_TOTP(self) -> str:
+        current_time = time.time()
+        time_step = 50 # In seconds
+        t = math.floor(current_time / time_step)
+        h = hmac.new(
+            bytes(self.data["shared_key"], encoding="utf-8"),
+            t.to_bytes(length=8, byteorder="big"),
+            hashlib.sha1,
+        )
+        digest = h.hexdigest()
+        self.data["sha1_hash"] = digest
 
+        # truncate
+        digits = 6
+        offset = int(digest[-1], 16)
+        binary = int(digest[(offset * 2):((offset * 2) + 8)], 16) & 0x7fffffff
+        passcode = binary % 10 ** digits
+        return str(passcode).zfill(digits)
 
 class SecurityQuestionStrategy(BaseHashStrategy):
     def __init__(self) -> None:
@@ -98,7 +134,7 @@ class SecurityQuestionStrategy(BaseHashStrategy):
         return Method.SECRET_QUESTION
     
 
-class TwoFAKeyStrategy(BaseHashStrategy):
+class TwoFAKeyStrategy(TOTPStrategy):
     def __init__(self) -> None:
         super().__init__()
     

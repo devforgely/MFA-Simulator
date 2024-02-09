@@ -9,7 +9,7 @@ class Method(Enum):
     SECRET_QUESTION = 3
     IMAGE_PASSWORD = 4
     FINGER_PRINT = 5
-    PUSH_NOTIFICATION = 6
+    TOTP = 6
     TWOFA_KEY = 7
 
 

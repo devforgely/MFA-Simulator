@@ -1,1 +1,1 @@
-{"user_coins": 100}
+{"user": {"coins": 100, "quiz_completed": 0, "simulation_played": 0, "recent_activities": [], "awards": [], "improvements": [], "readings": []}}

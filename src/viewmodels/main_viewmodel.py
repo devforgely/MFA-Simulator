@@ -7,9 +7,11 @@ from configuration.app_settings import *
 from widgets.side_grip import SideGrip
 from services.container import ApplicationContainer
 from data.data_service import DataService
-from viewmodels.simulate_viewmodels import *
-from viewmodels.quiz_viewmodels import *
-from viewmodels.learn_viewmodel import *
+from viewmodels.simulate_viewmodels import SimulateViewModel
+from viewmodels.quiz_viewmodels import QuizViewModel
+from viewmodels.learn_viewmodel import LearnViewModel
+from viewmodels.profile_viewmodel import ProfileViewModel
+from viewmodels.manage_viewmodel import ManageViewModel
 
 
 # pyright: reportGeneralTypeIssues=false
@@ -25,12 +27,16 @@ class MainViewModel(QMainWindow):
         self.simulate_page = SimulateViewModel()
         self.quiz_page = QuizViewModel()
         self.learn_page = LearnViewModel()
+        self.profile_page = ProfileViewModel()
+        self.manage_page = ManageViewModel()
         self.stackedWidget.addWidget(self.simulate_page)
         self.stackedWidget.addWidget(self.quiz_page)
         self.stackedWidget.addWidget(self.learn_page)
+        self.stackedWidget.addWidget(self.profile_page)
+        self.stackedWidget.addWidget(self.manage_page)
 
         # Data LOAD
-        self.coin_count.setText(str(self.data_service.get_user_coin()))
+        self.coin_count.setText(str(self.data_service.user.coins))
         self.message_service.subscribe(self, DataService, self.on_message)
 
         # TOP BAR CONNECTIONS
@@ -163,9 +169,9 @@ class MainViewModel(QMainWindow):
             case "quiz_btn":
                 self.stackedWidget.setCurrentWidget(self.quiz_page)
             case "profile_btn":
-                print("profile")
+                self.stackedWidget.setCurrentWidget(self.profile_page)
             case "manage_btn":
-                print("manage")
+                self.stackedWidget.setCurrentWidget(self.manage_page)
             case _:
                 Exception("Undefined Button Behaviour")
 

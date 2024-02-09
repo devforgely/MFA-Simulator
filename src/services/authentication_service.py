@@ -16,7 +16,7 @@ class AuthenticationService():
             Method.SECRET_QUESTION: SecurityQuestionStrategy,
             Method.IMAGE_PASSWORD: ImagePasswordStrategy,
             Method.FINGER_PRINT: FingerPrintStrategy,
-            Method.PUSH_NOTIFICATION: PushNotificationStrategy,
+            Method.TOTP: TOTPStrategy,
             Method.TWOFA_KEY: TwoFAKeyStrategy
         }
 
@@ -36,7 +36,11 @@ class AuthenticationService():
         return len(self.strategy) == self.register_count and self.at == self.register_count - 1
     
     def all_authenticated(self) -> bool:
-        return len(self.strategy) == self.auth_count and self.at == self.auth_count - 1
+        bool = len(self.strategy) == self.auth_count and self.at == self.auth_count - 1
+        if bool:
+            self.data_service.update_user_simulation()
+            self.data_service.update_user_coin(100)
+        return bool
     
     def add(self, type: Method) -> bool:
         if type not in self.get_all_types():

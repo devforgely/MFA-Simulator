@@ -20,6 +20,29 @@
 	border-radius: 10%;
 }
 
+#time_bar {
+	min-height: 6px;
+    max-height: 6px;
+    border-radius: 3px;
+	margin: 0px 5px 0px 5px;
+	background-color: #ececed;
+}
+
+#time_bar::chunk {
+	min-height: 6px;
+    max-height: 6px;
+    border-radius: 3px;
+	background-color: #0b69e5;
+}
+
+#time_label {
+	border: none;
+	background-color: #e1f4fe;
+	border-radius: 22px;
+	color: grey;
+}
+
+
 #question_label {
 	font-size: 14pt;
 	font-weight: bold;
@@ -41,6 +64,10 @@
 
 #next_btn:hover {
 	background-color:  #0061A9;
+}
+
+#backward_btn, #forward_btn {
+	border: none;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -89,6 +116,55 @@
       <property name="rightMargin">
        <number>0</number>
       </property>
+      <item>
+       <layout class="QHBoxLayout" name="time_layout">
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <widget class="QProgressBar" name="time_bar">
+          <property name="value">
+           <number>24</number>
+          </property>
+          <property name="textVisible">
+           <bool>false</bool>
+          </property>
+          <property name="format">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="time_label">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>  1:00</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>../resources/icons/alarm-clock.svg</normaloff>../resources/icons/alarm-clock.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>25</width>
+            <height>25</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item>
        <widget class="QLabel" name="question_label">
         <property name="sizePolicy">
@@ -148,6 +224,36 @@
             <string>&lt;b&gt;1&lt;/b&gt; of &lt;b&gt;5&lt;/b&gt; Questions</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="backward_btn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>../resources/icons/arrow-left-circle.svg</normaloff>../resources/icons/arrow-left-circle.svg</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item alignment="Qt::AlignRight">
           <widget class="QPushButton" name="next_btn">

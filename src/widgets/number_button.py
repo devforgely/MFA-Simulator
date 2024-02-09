@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsDropShadowEffect, QSizePolicy
-from PyQt5.QtGui import QIcon, QColor
+from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsDropShadowEffect, QSizePolicy, QLabel, QHBoxLayout
+from PyQt5.QtGui import QColor, QPixmap
 from PyQt5.QtCore import Qt
+
 
 # pyright: reportGeneralTypeIssues=false
 
@@ -14,10 +15,11 @@ class NumberButton(QPushButton):
             f"""
             NumberButton {{
                 border-radius: 4px;
-                padding: 12px;
+                padding: 12px 12px 12px 75px;
                 background-color: {self.default_color.name()};
                 font-size: 12pt;
                 font-weight: bold;
+                text-align: left;
             }}
             NumberButton:checked {{
                 background-color: {self.pressed_color.name()};
@@ -28,9 +30,21 @@ class NumberButton(QPushButton):
         self.setMinimumSize(100, 53)
         self.setBaseSize(200, 106)
         self.setSizePolicy(QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding))
-        self.setIcon(QIcon(u"resources/icons/plus-square.svg"))
         self.setCursor(Qt.PointingHandCursor)
-        self.setCheckable(True)
+        self.setCheckable(True) 
+
+        self.label = QLabel()
+        self.label.setScaledContents(True)
+        self.label.setFixedSize(28, 28)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setStyleSheet("border: none;")
+        self.label.setPixmap(QPixmap("resources/icons/plus-square"))
+
+        layout = QHBoxLayout(self)
+        layout.addWidget(self.label)
+        layout.addStretch()
+        layout.setContentsMargins(25, 0, 0, 0)
+        self.setLayout(layout)
 
         shadow_effect = QGraphicsDropShadowEffect()
         shadow_effect.setColor(QColor(0, 0, 0, 30))
@@ -39,20 +53,11 @@ class NumberButton(QPushButton):
         self.setGraphicsEffect(shadow_effect)
     
     def update_icon(self, value: int) -> None:
-        match value:
-            case 1:
-                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
-            case 2:
-                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
-            case 3:
-                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
-            case 4:
-                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
-            case 5:
-                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
-            case 6:
-                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
-            case 7:
-                self.setIcon(QIcon(u"resources/icons/plus-square-white.svg"))
-            case _:
-                self.setIcon(QIcon(u"resources/icons/plus-square.svg"))
+        if value > 0 and value < 8:
+            self.label.clear()
+            self.label.setText(str(value))
+            self.label.setStyleSheet("color: white; border: 2px solid white; border-radius: 5px; font-size: 12pt; font-weight: bold;")
+        else:
+            self.label.setText("")
+            self.label.setStyleSheet("border: none;")
+            self.label.setPixmap(QPixmap("resources/icons/plus-square"))

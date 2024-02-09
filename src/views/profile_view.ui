@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>831</width>
-    <height>538</height>
+    <width>1215</width>
+    <height>716</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,72 @@
   <property name="styleSheet">
    <string notr="true">#section_title {
 	font-size: 15pt;
-    font-weight: 350;
+    font-weight: bold;
+	border: none;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #eeeff3;
 }
+
+.ShadowFrame {
+	background-color: white;
+	border-radius: 20%;
+}
+
+#activity_label {
+	font-size: 12pt;
+	padding-bottom: 10px;
+	border: none;
+	border-bottom: 2px solid #eeeff3;
+}
+
+#coin_count {
+	font-size: 17pt;
+	font-weight: bold;
+	color: #ec9a6b;
+	
+}
+
+#quiz_count {
+	font-size: 17pt;
+	font-weight: bold;
+	color: #a285fe;
+	
+}
+
+#simulation_count {
+	font-size: 17pt;
+	font-weight: bold;
+	color: #399ef0;
+	
+}
+
+#coin_label, #quiz_label, #simulation_label {
+	color: #464646;
+	font-weight: bold;
+}
+
+#coin_frame, #quiz_frame, #simulation_frame {
+	padding-left: 30px
+}
+
+#horizontalWidget {
+	border-bottom: 2px solid #eeeff3;
+}
+
+#horizontalWidget QPushButton {
+	border: none;
+	margin: 0px 10px 0px 10px;
+	padding: 0px 10px 10px 10px;
+	color: #b9b9bb;
+	font-weight: bold;
+}
+
+#horizontalWidget QPushButton:checked {
+	border-bottom: 2px solid #4070f4;
+	color: black;
+}
+
+
 </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -35,89 +99,352 @@
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="label_4">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+    <widget class="QWidget" name="main_widget" native="true">
+     <layout class="QHBoxLayout" name="main_layout">
+      <property name="spacing">
+       <number>30</number>
+      </property>
+      <item alignment="Qt::AlignTop">
+       <widget class="ShadowFrame" name="activity_frame">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>500</height>
+         </size>
         </property>
-        <property name="text">
-         <string>Badgets</string>
+        <property name="maximumSize">
+         <size>
+          <width>400</width>
+          <height>500</height>
+         </size>
         </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item alignment="Qt::AlignTop">
+          <widget class="QLabel" name="activity_label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Recent Acitivities</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignTop">
+          <widget class="QWidget" name="activity_widget" native="true">
+           <layout class="QVBoxLayout" name="activity_layout"/>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="spacing">
+         <number>30</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>30</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="ShadowFrame" name="coin_frame">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>150</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <property name="leftMargin">
+              <number>11</number>
+             </property>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item alignment="Qt::AlignLeft">
+                <widget class="QLabel" name="coin_count">
+                 <property name="text">
+                  <string>100</string>
+                 </property>
+                </widget>
+               </item>
+               <item alignment="Qt::AlignLeft|Qt::AlignTop">
+                <widget class="QLabel" name="coin_label">
+                 <property name="text">
+                  <string>Total Coins</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="pixmap">
+                <pixmap>../resources/images/coin.png</pixmap>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="ShadowFrame" name="quiz_frame">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>150</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_7">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item alignment="Qt::AlignLeft">
+                <widget class="QLabel" name="quiz_count">
+                 <property name="text">
+                  <string>10</string>
+                 </property>
+                </widget>
+               </item>
+               <item alignment="Qt::AlignLeft|Qt::AlignTop">
+                <widget class="QLabel" name="quiz_label">
+                 <property name="text">
+                  <string>Quiz Completed</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="pixmap">
+                <pixmap>../resources/images/quiz.png</pixmap>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="ShadowFrame" name="simulation_frame">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>150</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item alignment="Qt::AlignLeft">
+                <widget class="QLabel" name="simulation_count">
+                 <property name="text">
+                  <string>10</string>
+                 </property>
+                </widget>
+               </item>
+               <item alignment="Qt::AlignLeft|Qt::AlignTop">
+                <widget class="QLabel" name="simulation_label">
+                 <property name="text">
+                  <string>Simulation Played</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="pixmap">
+                <pixmap>../resources/images/processing.png</pixmap>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="ShadowFrame" name="frame">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>20</number>
+           </property>
+           <property name="topMargin">
+            <number>20</number>
+           </property>
+           <property name="rightMargin">
+            <number>20</number>
+           </property>
+           <property name="bottomMargin">
+            <number>20</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="horizontalWidget" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <property name="spacing">
+               <number>20</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item alignment="Qt::AlignLeft">
+               <widget class="QPushButton" name="award_btn">
+                <property name="text">
+                 <string>Award &amp;&amp; Achievement</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignLeft">
+               <widget class="QPushButton" name="improvement_btn">
+                <property name="text">
+                 <string>Area of Improvement</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignLeft">
+               <widget class="QPushButton" name="reading_btn">
+                <property name="text">
+                 <string>Book Reading</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QStackedWidget" name="stackedWidget">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <widget class="QWidget" name="award_page"/>
+             <widget class="QWidget" name="improvement_page"/>
+             <widget class="QWidget" name="reading_page"/>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
    </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QFrame" name="frame_2">
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Progress</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QFrame" name="frame_3">
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Recent Acitivity</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ShadowFrame</class>
+   <extends>QFrame</extends>
+   <header>widgets/frame.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QFrame
 from PyQt5.QtCore import QPropertyAnimation, QEasingCurve
 
-class SlidePanel(QWidget):
+class SlidePanel(QFrame):
     def __init__(self, parent=None) -> None:
-        QWidget.__init__(self, parent)
+        QFrame.__init__(self, parent)
         self.is_expanded = True
 
         self.animation = QPropertyAnimation(self, b'maximumWidth')

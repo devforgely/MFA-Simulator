@@ -63,6 +63,12 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QStackedWidget" name="left_stacked">
+     <property name="minimumSize">
+      <size>
+       <width>400</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="maximumSize">
       <size>
        <width>400</width>

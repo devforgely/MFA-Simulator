@@ -16,7 +16,7 @@ def calculate_assurance_level(methods: list[Method]) -> str:
 
     knowledge_based = {Method.PASSWORD, Method.PIN, Method.SECRET_QUESTION, Method.IMAGE_PASSWORD}
     biometric_based = {Method.FINGER_PRINT}
-    possession_based = {Method.PUSH_NOTIFICATION}
+    possession_based = {Method.TOTP}
 
     if Method.TWOFA_KEY in methods:
         return level_three

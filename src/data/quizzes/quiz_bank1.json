@@ -1,218 +1,378 @@
-[
+{
+  "categories": ["MAC concepts and principles", "Public Key Infrastructure", "Asymmetric Cryptography and its Applications",
+                "MFA technologies and methods", "HMAC concepts and principles", "MFA concepts and principles", "RSA concepts and principles"],
+  "questions": [
     {
-        "category": "MFA concepts and principles",
-        "difficulty": "1",
-        "question": "What does MFA stand for in cybersecurity?",
-        "answer": "Multi-Factor Authentication",
-        "choices": [
-          "Multi-Factor Authentication",
-          "Multi-Field Authentication",
-          "Multi-Frame Authentication",
-          "Multi-Factor Authorization"
-        ]
+      "category": "MFA concepts and principles",
+      "difficulty": "1",
+      "question": "What does MFA stand for in cybersecurity?",
+      "answer": "Multi-Factor Authentication",
+      "choices": [
+        "Multi-Factor Authentication",
+        "Multi-Field Authentication",
+        "Multi-Frame Authentication",
+        "Multi-Factor Authorization"
+      ]
     },
     {
-        "category": "MFA concepts and principles",
-        "difficulty": "1",
-        "question": "Which of the following is an example of 'Something you are' in MFA?",
-        "answer": "Fingerprint",
-        "choices": [
-            "Password",
-            "Security Token",
-            "Fingerprint",
-            "Security Question"
-        ]
-    },
-    {
-        "category": "MFA concepts and principles",
-        "difficulty": "1",
-        "question": "Which of the following is an example of 'Something you have' in MFA?",
-        "answer": "Security Token",
-        "choices": [
-            "Password",
-            "Security Token",
-            "Fingerprint",
-            "Security Question"
-        ]
-    },
-    {
-        "category": "MFA concepts and principles",
-        "difficulty": "1",
-        "question": "Which of the following is an example of 'Something you know' in MFA?",
-        "answer": "Password",
-        "choices": [
-            "Password",
-            "Security Token",
-            "Fingerprint",
-            "Security Question"
-        ]
-    },
-    {
-        "category": "MFA concepts and principles",
-        "difficulty": "1",
-        "question": "True or False: Using MFA can help protect your accounts even if your password is compromised.",
-        "answer": "True",
-        "choices": [
-            "True",
-            "False"
-        ]
-    },
-    {
-        "category": "MFA concepts and principles",
-        "difficulty": "1",
-        "question": "What is another term often used to describe Multi-Factor Authentication?",
-        "answer": "Two-Step Verification",
-        "choices": [
-            "Two-Step Verification",
-            "Double Check",
-            "Two-Way Authentication",
-            "Dual-Factor Verification"
-        ]
-    },
-    {
-        "category": "MFA concepts and principles",
-        "difficulty": "1",
-        "question": "True or False: You should use MFA for all your accounts, regardless of how often you use them.",
-        "answer": "True",
-        "choices": [
-            "True",
-            "False"
-        ]
-    },
-    {
-        "category": "MFA concepts and principles",
-        "difficulty": "1",
-        "question": "Which of the following is NOT a benefit of using MFA?",
-        "answer": "Makes it easier to remember passwords",
-        "choices": [
-            "Increases account security",
-            "Protects against phishing",
-            "Improves compliance",
-            "Makes it easier to remember passwords"
-        ]
-    },
-    {
-        "category": "MFA concepts and principles",
-        "difficulty": "1",
-        "question": "True or False: MFA makes it more difficult for unauthorized users to access your information.",
-        "answer": "True",
-        "choices": [
-            "True",
-            "False"
-        ]
-    },
-    {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "Which of the following is an example of a hardware MFA device?",
-        "answer": "Security Token",
-        "choices": [
+      "category": "MFA concepts and principles",
+      "difficulty": "1",
+      "question": "Which of the following is an example of 'Something you are' in MFA?",
+      "answer": "Fingerprint",
+      "choices": [
           "Password",
           "Security Token",
           "Fingerprint",
           "Security Question"
-        ]
-      },
-      {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "What is a common method of biometric authentication used in MFA?",
-        "answer": "Fingerprint scanning",
-        "choices": [
-          "Password input",
-          "Security token",
-          "Fingerprint scanning",
-          "Security question"
-        ]
-      },
-      {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "What does OTP stand for in the context of MFA?",
-        "answer": "One-Time Password",
-        "choices": [
-          "One-Time Password",
-          "One-Time Pin",
-          "One-Time Pass",
-          "One-Time Permission"
-        ]
-      },
-      {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "True or False: SMS is considered a secure method for delivering OTPs in MFA.",
-        "answer": "False",
-        "choices": [
-          "True",
-          "False"
-        ]
-      },
-      {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "Which of the following is a disadvantage of using biometrics for MFA?",
-        "answer": "Biometric data can't be changed if compromised",
-        "choices": [
-          "Biometric data can't be changed if compromised",
-          "Biometrics are easy to forget",
-          "Biometrics require a physical device",
-          "Biometrics are not unique to each individual"
-        ]
-      },
-      {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "What is a common example of a 'Something you have' factor in MFA?",
-        "answer": "Mobile device",
-        "choices": [
+      ]
+    },
+    {
+      "category": "MFA concepts and principles",
+      "difficulty": "1",
+      "question": "Which of the following is an example of 'Something you have' in MFA?",
+      "answer": "Security Token",
+      "choices": [
           "Password",
-          "Mobile device",
+          "Security Token",
           "Fingerprint",
-          "Security question"
-        ]
-      },
-      {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "True or False: All MFA methods require at least three factors to be authenticated.",
-        "answer": "False",
-        "choices": [
+          "Security Question"
+      ]
+    },
+    {
+      "category": "MFA concepts and principles",
+      "difficulty": "1",
+      "question": "Which of the following is an example of 'Something you know' in MFA?",
+      "answer": "Password",
+      "choices": [
+          "Password",
+          "Security Token",
+          "Fingerprint",
+          "Security Question"
+      ]
+    },
+    {
+      "category": "MFA concepts and principles",
+      "difficulty": "1",
+      "question": "True or False: Using MFA can help protect your accounts even if your password is compromised.",
+      "answer": "True",
+      "choices": [
           "True",
           "False"
-        ]
-      },
-      {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "Which MFA method involves generating a code that can only be used once?",
-        "answer": "One-Time Password (OTP)",
-        "choices": [
-          "Biometric authentication",
-          "One-Time Password (OTP)",
-          "Security question",
-          "Hardware token"
-        ]
-      },
-      {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "True or False: An authenticator app is a type of software token.",
-        "answer": "True",
-        "choices": [
+      ]
+    },
+    {
+      "category": "MFA concepts and principles",
+      "difficulty": "1",
+      "question": "What is another term often used to describe Multi-Factor Authentication?",
+      "answer": "Two-Step Verification",
+      "choices": [
+          "Two-Step Verification",
+          "Double Check",
+          "Two-Way Authentication",
+          "Dual-Factor Verification"
+      ]
+    },
+    {
+      "category": "MFA concepts and principles",
+      "difficulty": "1",
+      "question": "True or False: You should use MFA for all your accounts, regardless of how often you use them.",
+      "answer": "True",
+      "choices": [
           "True",
           "False"
-        ]
-      },
-      {
-        "category": "MFA technologies and methods",
-        "difficulty": "1",
-        "question": "Which of the following is NOT a type of biometric authentication?",
-        "answer": "Password",
-        "choices": [
-          "Fingerprint scanning",
-          "Facial recognition",
-          "Iris scanning",
-          "Password"
-        ]
-      }
-]
+      ]
+    },
+    {
+      "category": "MFA concepts and principles",
+      "difficulty": "1",
+      "question": "Which of the following is NOT a benefit of using MFA?",
+      "answer": "Makes it easier to remember passwords",
+      "choices": [
+          "Increases account security",
+          "Protects against phishing",
+          "Improves compliance",
+          "Makes it easier to remember passwords"
+      ]
+    },
+    {
+      "category": "MFA concepts and principles",
+      "difficulty": "1",
+      "question": "True or False: MFA makes it more difficult for unauthorized users to access your information.",
+      "answer": "True",
+      "choices": [
+          "True",
+          "False"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "Which of the following is an example of a hardware MFA device?",
+      "answer": "Security Token",
+      "choices": [
+        "Password",
+        "Security Token",
+        "Fingerprint",
+        "Security Question"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "What is a common method of biometric authentication used in MFA?",
+      "answer": "Fingerprint scanning",
+      "choices": [
+        "Password input",
+        "Security token",
+        "Fingerprint scanning",
+        "Security question"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "What does OTP stand for in the context of MFA?",
+      "answer": "One-Time Password",
+      "choices": [
+        "One-Time Password",
+        "One-Time Pin",
+        "One-Time Pass",
+        "One-Time Permission"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "True or False: SMS is considered a secure method for delivering OTPs in MFA.",
+      "answer": "False",
+      "choices": [
+        "True",
+        "False"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "Which of the following is a disadvantage of using biometrics for MFA?",
+      "answer": "Biometric data can't be changed if compromised",
+      "choices": [
+        "Biometric data can't be changed if compromised",
+        "Biometrics are easy to forget",
+        "Biometrics require a physical device",
+        "Biometrics are not unique to each individual"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "What is a common example of a 'Something you have' factor in MFA?",
+      "answer": "Mobile device",
+      "choices": [
+        "Password",
+        "Mobile device",
+        "Fingerprint",
+        "Security question"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "True or False: All MFA methods require at least three factors to be authenticated.",
+      "answer": "False",
+      "choices": [
+        "True",
+        "False"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "Which MFA method involves generating a code that can only be used once?",
+      "answer": "One-Time Password (OTP)",
+      "choices": [
+        "Biometric authentication",
+        "One-Time Password (OTP)",
+        "Security question",
+        "Hardware token"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "True or False: An authenticator app is a type of software token.",
+      "answer": "True",
+      "choices": [
+        "True",
+        "False"
+      ]
+    },
+    {
+      "category": "MFA technologies and methods",
+      "difficulty": "1",
+      "question": "Which of the following is NOT a type of biometric authentication?",
+      "answer": "Password",
+      "choices": [
+        "Fingerprint scanning",
+        "Facial recognition",
+        "Iris scanning",
+        "Password"
+      ]
+    },
+    {
+      "category": "RSA concepts and principles",
+      "difficulty": "1",
+      "question": "What does RSA stand for in cybersecurity?",
+      "answer": "Rivest-Shamir-Adleman",
+      "choices": [
+        "Rivest-Shamir-Adleman",
+        "Random Sequence Algorithm",
+        "Rapid Security Assessment",
+        "Rivest-Secure-Algorithm"
+      ]
+    },
+    {
+      "category": "RSA concepts and principles",
+      "difficulty": "2",
+      "question": "What is the primary use of RSA in cybersecurity?",
+      "answer": "Encryption and Digital Signatures",
+      "choices": [
+        "Password Hashing",
+        "Encryption and Digital Signatures",
+        "Creating VPNs",
+        "Firewall Configuration"
+      ]
+    },
+    {
+      "category": "RSA concepts and principles",
+      "difficulty": "3",
+      "question": "Why is RSA considered secure?",
+      "answer": "Because factoring large prime numbers is computationally difficult",
+      "choices": [
+        "Because it uses a secret key",
+        "Because it uses a public and a private key",
+        "Because factoring large prime numbers is computationally difficult",
+        "Because it uses a complex algorithm"
+      ]
+    },
+    {
+      "category": "MAC concepts and principles",
+      "difficulty": "1",
+      "question": "What does MAC stand for in cybersecurity?",
+      "answer": "Message Authentication Code",
+      "choices": [
+        "Message Authentication Code",
+        "Message Authorization Code",
+        "Message Access Code",
+        "Message Assurance Code"
+      ]
+    },
+    {
+      "category": "MAC concepts and principles",
+      "difficulty": "2",
+      "question": "What is the primary use of MAC in cybersecurity?",
+      "answer": "To authenticate a message and ensure its integrity",
+      "choices": [
+        "To encrypt a message",
+        "To authenticate a message and ensure its integrity",
+        "To hash a message",
+        "To generate a digital signature"
+      ]
+    },
+    {
+      "category": "MAC concepts and principles",
+      "difficulty": "3",
+      "question": "What is a key feature of a MAC?",
+      "answer": "It uses the same key for generating and verifying the MAC",
+      "choices": [
+        "It uses a public and private key pair",
+        "It uses the same key for generating and verifying the MAC",
+        "It does not require a key",
+        "It uses a different key for generating and verifying the MAC"
+      ]
+    },
+    {
+      "category": "HMAC concepts and principles",
+      "difficulty": "2",
+      "question": "What does HMAC stand for in cybersecurity?",
+      "answer": "Hash-based Message Authentication Code",
+      "choices": [
+        "Hash-based Message Authentication Code",
+        "Hashed Message Access Code",
+        "Hashed Message Authorization Code",
+        "Hash-based Message Assurance Code"
+      ]
+    },
+    {
+      "category": "HMAC concepts and principles",
+      "difficulty": "3",
+      "question": "What is the primary use of HMAC in cybersecurity?",
+      "answer": "To authenticate a message and ensure its integrity using a cryptographic hash function",
+      "choices": [
+        "To encrypt a message",
+        "To generate a digital signature",
+        "To authenticate a message and ensure its integrity using a cryptographic hash function",
+        "To hash a message without a key"
+      ]
+    },
+    {
+      "category": "Public Key Infrastructure",
+      "difficulty": "1",
+      "question": "What is the main purpose of a Public Key Infrastructure (PKI)?",
+      "answer": "To manage, distribute, store, and revoke digital certificates",
+      "choices": [
+        "To manage, distribute, store, and revoke digital certificates",
+        "To encrypt and decrypt messages",
+        "To generate public and private key pairs",
+        "To authenticate users on a network"
+      ]
+    },
+    {
+      "category": "Public Key Infrastructure",
+      "difficulty": "2",
+      "question": "What is a Certificate Authority (CA) in a PKI?",
+      "answer": "An entity that issues digital certificates",
+      "choices": [
+        "An entity that issues digital certificates",
+        "A database that stores public keys",
+        "A server that manages encryption keys",
+        "A software that generates key pairs"
+      ]
+    },
+    {
+      "category": "Public Key Infrastructure",
+      "difficulty": "3",
+      "question": "What is the role of a digital certificate in a PKI?",
+      "answer": "To associate a public key with an entity's identity",
+      "choices": [
+        "To encrypt data",
+        "To generate a public key",
+        "To associate a public key with an entity's identity",
+        "To store private keys securely"
+      ]
+    },
+    {
+      "category": "Asymmetric Cryptography and its Applications",
+      "difficulty": "2",
+      "question": "What is a key characteristic of asymmetric cryptography?",
+      "answer": "It uses a pair of keys: a public key for encryption and a private key for decryption",
+      "choices": [
+        "It uses a single key for both encryption and decryption",
+        "It uses a pair of keys: a public key for encryption and a private key for decryption",
+        "It does not use keys",
+        "It uses a different key for each message"
+      ]
+    },
+    {
+      "category": "Asymmetric Cryptography and its Applications",
+      "difficulty": "3",
+      "question": "What is a common application of asymmetric cryptography?",
+      "answer": "Secure communication over the internet",
+      "choices": [
+        "Password hashing",
+        "Secure communication over the internet",
+        "Data compression",
+        "Error detection and correction"
+      ]
+    }
+  ]
+}

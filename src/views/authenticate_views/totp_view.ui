@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>720</height>
+    <height>708</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -28,6 +28,21 @@
 #left_frame_design {
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;
+	background-color: #0b69e5;
+}
+
+#time_bar {
+	min-height: 6px;
+    max-height: 6px;
+    border-radius: 3px;
+	margin: 0px 5px 0px 5px;
+	background-color: #f5f6f7;
+}
+
+#time_bar::chunk {
+	min-height: 6px;
+    max-height: 6px;
+    border-radius: 3px;
 	background-color: #0b69e5;
 }
 
@@ -84,6 +99,16 @@ QPushButton {
 
 #phone_page2 {
 	background-color: white;
+}
+
+#phone_title {
+	font-size: 14pt;
+	font-weight: bold;
+}
+
+#verification_label {
+	font-size: 10pt;
+	font-weight: bold;
 }
 
 #verify_btn {
@@ -177,7 +202,7 @@ QPushButton {
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>You need to use the app to approve your push notification...</string>
+           <string>You need to use the app to approve your time-based one-time password...</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -203,10 +228,29 @@ QPushButton {
         <item>
          <widget class="QLabel" name="sent_label">
           <property name="text">
-           <string>Sent to mobile (00000000000)</string>
+           <string>Sent to mobile (none)</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="time_bar">
+          <property name="maximum">
+           <number>60</number>
+          </property>
+          <property name="value">
+           <number>30</number>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="textVisible">
+           <bool>false</bool>
+          </property>
+          <property name="format">
+           <string/>
           </property>
          </widget>
         </item>
@@ -353,9 +397,9 @@ QPushButton {
            <number>7</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="phone_title">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -365,13 +409,6 @@ QPushButton {
               <width>16777215</width>
               <height>75</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
             </property>
             <property name="text">
              <string>Are you logging in to MFA APP?</string>
@@ -384,7 +421,7 @@ QPushButton {
           <item>
            <widget class="QLabel" name="label_5">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -392,7 +429,7 @@ QPushButton {
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>65</height>
+              <height>90</height>
              </size>
             </property>
             <property name="font">
@@ -409,19 +446,12 @@ QPushButton {
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="verification_label">
             <property name="maximumSize">
              <size>
               <width>150</width>
               <height>20</height>
              </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
             </property>
             <property name="text">
              <string>Verification Code</string>
@@ -435,6 +465,9 @@ QPushButton {
               <width>200</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="maxLength">
+             <number>6</number>
             </property>
            </widget>
           </item>

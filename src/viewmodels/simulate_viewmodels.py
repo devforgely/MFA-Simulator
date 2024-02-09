@@ -10,7 +10,7 @@ from viewmodels.authentication.pin_viewmodel import *
 from viewmodels.authentication.security_question_viewmodel import *
 from viewmodels.authentication.image_password_viewmodel import *
 from viewmodels.authentication.fingerprint_viewmodel import *
-from viewmodels.authentication.push_notification_viewmodel import *
+from viewmodels.authentication.totp_viewmodel import *
 from viewmodels.authentication.twofa_key_viewmodel import *
 from widgets.number_button import NumberButton
 from widgets.info_panel import *
@@ -59,14 +59,14 @@ class CreatorViewModel(QWidget):
         self.security_questions_btn = NumberButton(self, "Security Questions", QColor(255, 255, 255), QColor(0, 97, 169))
         self.image_password_btn = NumberButton(self, "Image Password", QColor(255, 255, 255), QColor(0, 97, 169))
         self.fingerprint_btn = NumberButton(self, "Fingerprint", QColor(255, 255, 255), QColor(0, 97, 169))
-        self.push_notification_btn = NumberButton(self, "Push Notification", QColor(255, 255, 255), QColor(0, 97, 169))
+        self.totp_btn = NumberButton(self, "TOTP", QColor(255, 255, 255), QColor(0, 97, 169))
         self.twofa_key_btn = NumberButton(self, "2FA Key", QColor(255, 255, 255), QColor(0, 97, 169))
         self.methods_selection.layout().addWidget(self.pin_btn, 0, 2)
         self.methods_selection.layout().addWidget(self.password_btn, 0, 3)
         self.methods_selection.layout().addWidget(self.security_questions_btn, 0, 4)
         self.methods_selection.layout().addWidget(self.image_password_btn, 1, 2)
         self.methods_selection.layout().addWidget(self.fingerprint_btn, 1, 3)
-        self.methods_selection.layout().addWidget(self.push_notification_btn, 1, 4)
+        self.methods_selection.layout().addWidget(self.totp_btn, 1, 4)
         self.methods_selection.layout().addWidget(self.twofa_key_btn, 2, 2)
 
         # Map type to button
@@ -76,7 +76,7 @@ class CreatorViewModel(QWidget):
             Method.SECRET_QUESTION: self.security_questions_btn,
             Method.IMAGE_PASSWORD: self.image_password_btn,
             Method.FINGER_PRINT: self.fingerprint_btn,
-            Method.PUSH_NOTIFICATION: self.push_notification_btn,
+            Method.TOTP: self.totp_btn,
             Method.TWOFA_KEY: self.twofa_key_btn
         }
 
@@ -86,7 +86,7 @@ class CreatorViewModel(QWidget):
         self.security_questions_btn.clicked.connect(lambda: self.set_method(Method.SECRET_QUESTION))
         self.image_password_btn.clicked.connect(lambda: self.set_method(Method.IMAGE_PASSWORD))
         self.fingerprint_btn.clicked.connect(lambda: self.set_method(Method.FINGER_PRINT))
-        self.push_notification_btn.clicked.connect(lambda: self.set_method(Method.PUSH_NOTIFICATION))
+        self.totp_btn.clicked.connect(lambda: self.set_method(Method.TOTP))
         self.twofa_key_btn.clicked.connect(lambda: self.set_method(Method.TWOFA_KEY))
 
         self.simulate_btn.clicked.connect(self.simulate)
@@ -103,8 +103,8 @@ class CreatorViewModel(QWidget):
         self.image_password_btn.update_icon(0)
         self.fingerprint_btn.setChecked(False)
         self.fingerprint_btn.update_icon(0)
-        self.push_notification_btn.setChecked(False)
-        self.push_notification_btn.update_icon(0)
+        self.totp_btn.setChecked(False)
+        self.totp_btn.update_icon(0)
         self.twofa_key_btn.setChecked(False)
         self.twofa_key_btn.update_icon(0)
         self.measure_title.setText("Select challenges from above to see Authenticator Assurance Level")
@@ -150,7 +150,7 @@ class RegisterViewModel(QWidget):
             Method.SECRET_QUESTION: SecurityQuestionRegisterViewModel,
             Method.IMAGE_PASSWORD: ImagePasswordRegisterViewModel,
             Method.FINGER_PRINT: FingerPrintRegisterViewModel,
-            Method.PUSH_NOTIFICATION: PushNotificationRegisterViewModel,
+            Method.TOTP: TOTPRegisterViewModel,
             Method.TWOFA_KEY: TwoFAKeyRegisterViewModel
         }
             
@@ -213,7 +213,6 @@ class AuthenticateViewModel(QWidget):
         QWidget.__init__(self)
         uic.loadUi("views/authenticate_view.ui", self)
         self.authentication_service = ApplicationContainer.authentication_service()
-        self.data_service = ApplicationContainer.data_service()
         self.message_service = ApplicationContainer.message_service()
 
         self.type_to_authenticate = {
@@ -222,7 +221,7 @@ class AuthenticateViewModel(QWidget):
             Method.SECRET_QUESTION: SecurityQuestionAuthenticateViewModel,
             Method.IMAGE_PASSWORD: ImagePasswordAuthenticateViewModel,
             Method.FINGER_PRINT: FingerPrintAuthenticateViewModel,
-            Method.PUSH_NOTIFICATION: PushNotificationAuthenticateViewModel,
+            Method.TOTP: TOTPAuthenticateViewModel,
             Method.TWOFA_KEY: TwoFAKeyAuthenticateViewModel
         }
 
@@ -273,7 +272,6 @@ class AuthenticateViewModel(QWidget):
             self.back_btn.setEnabled(True)
         else:
             QMessageBox.information(self, "Congratulation", "You have earned 100 coins.")
-            self.data_service.increment_user_coin(100)
             self.message_service.send(self, "Creator View", None)
 
     def go_backward(self) -> None:

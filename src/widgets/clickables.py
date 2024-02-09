@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QLabel, QLineEdit, QToolButton, QHBoxLayout
+from PyQt5.QtWidgets import QLabel, QLineEdit, QToolButton, QHBoxLayout, QFrame
 from PyQt5.QtGui import QPixmap, QIcon
 
 # pyright: reportGeneralTypeIssues=false
@@ -25,6 +25,12 @@ class BorderedImageLabel(QLabel):
 
 
 class ClickableLabel(QLabel):
+    clicked = pyqtSignal()
+
+    def mousePressEvent(self, event):
+        self.clicked.emit()
+
+class ClickableFrame(QFrame):
     clicked = pyqtSignal()
 
     def mousePressEvent(self, event):
