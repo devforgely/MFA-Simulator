@@ -8,7 +8,7 @@ import random
 import string
 
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:

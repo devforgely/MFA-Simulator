@@ -14,7 +14,7 @@ from viewmodels.profile_viewmodel import ProfileViewModel
 from viewmodels.manage_viewmodel import ManageViewModel
 
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class MainViewModel(QMainWindow):
     def __init__(self) -> None:

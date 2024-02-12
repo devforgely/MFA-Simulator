@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime, timezone
 import re
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class TOTPRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:

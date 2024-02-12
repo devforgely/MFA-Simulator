@@ -1,13 +1,13 @@
 from typing import Any
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QStackedWidget, QPushButton, QListWidgetItem, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QStackedWidget, QPushButton, QListWidgetItem, QHBoxLayout, QLabel, QVBoxLayout, QSizePolicy, QProgressBar
 from PyQt5.QtCore import Qt, QPointF, QRegExp
 from PyQt5.QtWidgets import QWidget, QGraphicsDropShadowEffect, QButtonGroup
-from PyQt5.QtGui import QColor, QPainter, QIcon, QIntValidator, QRegExpValidator
+from PyQt5.QtGui import QColor, QPainter, QIcon, QIntValidator, QRegExpValidator, QPixmap
 from widgets.timer import TimeDisplayThread
 from services.container import ApplicationContainer
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class QuizButton(QPushButton):
     def __init__(self, parent=None) -> None:
@@ -333,6 +333,7 @@ class QuizPlayViewModel(QWidget):
             self.time_bar.setStyleSheet("#time_bar::chunk { background-color: #0b69e5; }")
             self.time_label.setText(f"  {timed[1]}:{0:02d}")
         else:
+            self.max_time = 0
             self.time_bar.setVisible(False)
             self.time_label.setVisible(False)
 
@@ -387,12 +388,14 @@ class QuizPlayViewModel(QWidget):
 
             self.save_choice("")
         else:
-            self.threading.stop()
+            if self.max_time != 0:
+                self.threading.stop()
             self.message_service.send(self, "Quiz Response", None)
 
     def start_quiz(self) -> None:
         self.init_quiz(self.quiz_service.get_quiz(1))
-        self.threading.start()
+        if self.max_time != 0:
+            self.threading.start()
 
     def next_quiz(self) -> None:
         self.quiz_service.sumbit_answer(self.saved_choice)
@@ -416,6 +419,71 @@ class QuizResponseViewModel(QWidget):
         result = self.quiz_service.check_answers()
         self.score_int.setText(str(result[0]) + " / " + str(result[1]))
         self.time_val.setText(self.quiz_service.check_time())
+
+        layout = self.question_content.layout()
+        for i in reversed(range(layout.count())): 
+            item = layout.takeAt(i)
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
+        answers = self.quiz_service.get_current_answers()
+        i = 0
+        for quiz in self.quiz_service.get_quizzies():
+            group_widget = QWidget()
+            group_layout = QVBoxLayout()
+            group_layout.setAlignment(Qt.AlignLeft)
+            group_widget.setLayout(group_layout)
+
+            question_label = QLabel(str(i+1)+". "+quiz['question'])
+            question_label.setStyleSheet("font-weight: bold")
+            group_layout.addWidget(question_label)
+
+            for choice in quiz['choices']:
+                choice_widget = QWidget()
+                choice_layout = QHBoxLayout()
+                choice_layout.setContentsMargins(20, 0, 0, 0)
+                choice_layout.setAlignment(Qt.AlignLeft)
+                choice_widget.setLayout(choice_layout)
+
+                choice_label = QLabel(choice)
+                choice_label.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
+                choice_layout.addWidget(choice_label)
+
+                if choice == quiz['answer']: 
+                    icon = QLabel()
+                    icon.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
+                    icon.setPixmap(QPixmap("resources/icons/check.svg"))
+                    choice_layout.addWidget(icon)
+
+                if choice == answers[i][0]:
+                    if answers[i][1]:
+                        choice_label.setStyleSheet("border: 1px solid #048c77;")
+                    else:
+                        choice_label.setStyleSheet("border: 1px solid #d5786c;")
+                group_layout.addWidget(choice_widget)
+            
+            layout.addWidget(group_widget)
+            i += 1
+        layout.addStretch()
+
+        layout = self.percentage_display.layout()
+        for i in reversed(range(layout.count())): 
+            item = layout.takeAt(i)
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
+        for category, percentage in self.quiz_service.category_analyse():
+            category_title = QLabel(category)
+            category_title.setStyleSheet("font-weight: bold;")
+
+            percentage_bar = QProgressBar()
+            percentage_bar.setMaximum(100)
+            percentage_bar.setValue(int(percentage))
+            percentage_bar.setFormat("  Correct: %p%")
+
+            layout.addWidget(category_title)
+            layout.addWidget(percentage_bar)
+        layout.addStretch()
 
     def back(self) -> None:
         self.message_service.send(self, "Quiz Settings", None)

@@ -7,7 +7,7 @@ import rsa
 import hashlib
 import base64
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class ButtonHoverWatcher(QObject):
     def __init__(self, button, default_image: str, hover_image: str)-> None:

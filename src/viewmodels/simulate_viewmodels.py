@@ -16,7 +16,7 @@ from widgets.number_button import NumberButton
 from widgets.info_panel import *
 from models.utils import calculate_assurance_level
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class SimulateViewModel(QStackedWidget):
     def __init__(self) -> None:

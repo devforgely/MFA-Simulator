@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QLabel, QLineEdit, QToolButton, QHBoxLayout, QFrame
 from PyQt5.QtGui import QPixmap, QIcon
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class BorderedImageLabel(QLabel):
     clicked = pyqtSignal(QLabel)

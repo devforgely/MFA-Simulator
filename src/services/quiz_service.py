@@ -15,10 +15,12 @@ class QuizService():
             'max_time': 5
         }
         self.quizzes = []
+        self.category_quiz = {}
 
         self.at = -1
-        self.viewed = 0
+        self.to_view = 0
         self.current_answers = []
+        self.category_answer = {}
         self.average_difficulty = 0.0
         self.time = 0.0
 
@@ -43,8 +45,10 @@ class QuizService():
             return False
         
         self.at = -1
-        self.viewed = 0
+        self.to_view = 0
         self.average_difficulty = 0.0
+        self.category_quiz = {}
+        self.category_answer = {}
 
         filtered_questions = [q for q in self.data_service.get_quiz_bank()["questions"] \
                               if (self.config['all_categories'] or q['category'] in self.config['categories']) and \
@@ -52,7 +56,7 @@ class QuizService():
 
         # Randomly select questions from the filtered list
         self.quizzes = random.sample(filtered_questions, min(self.config['num_questions'], len(filtered_questions)))
-        self.current_answers: List[Tuple[str, bool]] = [(str(""), False)] * len(self.quizzes)
+        self.current_answers: List[Tuple[str, bool]] = [("", False)] * len(self.quizzes)
         return True
     
     def get_time(self) -> tuple:
@@ -72,9 +76,10 @@ class QuizService():
         
         quiz = self.quizzes[self.at]
         if direction == 1:    
-            if self.viewed <= self.at:
+            if self.to_view == self.at:
                 self.average_difficulty += float(quiz['difficulty'])
-                self.viewed += 1
+                self.category_quiz[quiz['category']] = self.category_quiz.get(quiz['category'], 0) + 1
+                self.to_view += 1
                 return (self.at+1, quiz, None)
             else:
                 return (self.at+1, quiz, self.current_answers[self.at][0])
@@ -82,10 +87,11 @@ class QuizService():
             return (self.at+1, quiz, self.current_answers[self.at][0])
     
     def sumbit_answer(self, answer: str) -> None:
-        if self.quizzes[self.at]["answer"] == answer:
-            self.current_answers[self.at] = (answer, True)
-        else:
-            self.current_answers[self.at] = (answer, False)
+        if answer:
+            if self.quizzes[self.at]["answer"] == answer:
+                self.current_answers[self.at] = (answer, True)
+            else:
+                self.current_answers[self.at] = (answer, False)
 
     def terminate_quiz(self) -> None:
         self.time = time.time() - self.time
@@ -93,14 +99,15 @@ class QuizService():
 
     def quiz_timeout(self) -> None:
         self.terminate_quiz()
-        self.average_difficulty = 0
-        for quiz in self.quizzes:
-            self.average_difficulty += float(quiz['difficulty'])
+        for i in range(self.to_view, len(self.quizzes)):
+            self.average_difficulty += float(self.quizzes[i]['difficulty'])
+            self.category_quiz[self.quizzes[i]['category']] = self.category_quiz.get(self.quizzes[i]['category'], 0) + 1
 
     def check_answers(self) -> tuple:
         correct = 0
-        for _, bool in self.current_answers:
-            if bool:
+        for i in range(len(self.current_answers)):
+            if self.current_answers[i][1]:
+                self.category_answer[self.quizzes[i]['category']] = self.category_answer.get(self.quizzes[i]['category'], 0) + 1
                 correct += 1
         return (correct, len(self.current_answers))
     
@@ -117,3 +124,21 @@ class QuizService():
     
     def get_all_categories(self) -> set:
         return self.data_service.get_quiz_bank()["categories"]
+    
+    def category_analyse(self) -> list:
+        percentages = []
+        for category in self.category_quiz:
+            total = self.category_quiz[category]
+            correct = self.category_answer.get(category, 0)
+            percentage = (correct / total) * 100
+            percentages.append((category, percentage))
+
+        # Sort the list of tuples by the percentage
+        percentages.sort(key=lambda x: x[1])
+        return percentages
+    
+    def get_quizzies(self) -> list:
+        return self.quizzes
+    
+    def get_current_answers(self) -> list:
+        return self.current_answers

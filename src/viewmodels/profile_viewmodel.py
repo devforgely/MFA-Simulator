@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QButtonGroup, QLabel
 from services.container import ApplicationContainer
 from data.data_service import DataService
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class ProfileViewModel(QWidget):
     def __init__(self) -> None:

@@ -3,7 +3,7 @@ from PyQt5.QtGui import QColor, QPixmap
 from PyQt5.QtCore import Qt
 
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class NumberButton(QPushButton):
     def __init__(self, parent: QWidget, text: str, default_color: QColor, pressed_color: QColor) -> None:

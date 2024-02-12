@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>566</width>
-    <height>426</height>
+    <width>1001</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,8 +46,36 @@
 	font-weight: bold;
 }
 
-#scroll_content {
+#detail_content, #analytic_content {
 	background-color: white;
+	border: 1px solid silver;
+	border-radius: 10px;
+}
+
+#percentage_display, #question_content {
+	background-color: white;
+}
+
+#analytic_title {
+	font-size: 11pt;
+	font-weight: bold;
+}
+
+#percentage_display QProgressBar {
+	min-height: 20px;
+	max-height: 20px;
+    border-radius: 10px;
+	background-color: #d5786c;
+	font-weight: bold;
+	color: white;
+	margin-bottom: 10px;
+}
+
+#percentage_display QProgressBar::chunk {
+	min-height: 20px;
+	max-height: 20px;
+    border-radius: 10px;
+	background-color: #048c77;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -130,6 +158,9 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QGridLayout" name="gridLayout">
+         <property name="bottomMargin">
+          <number>11</number>
+         </property>
          <item row="1" column="0" alignment="Qt::AlignHCenter">
           <widget class="QLabel" name="difficulty_label">
            <property name="text">
@@ -176,25 +207,108 @@
        </widget>
       </item>
       <item>
-       <widget class="QScrollArea" name="scrollArea">
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="spacing">
+         <number>10</number>
         </property>
-        <property name="widgetResizable">
-         <bool>true</bool>
+        <property name="topMargin">
+         <number>0</number>
         </property>
-        <widget class="QWidget" name="scroll_content">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>544</width>
-           <height>224</height>
-          </rect>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3"/>
-        </widget>
-       </widget>
+        <item>
+         <widget class="QWidget" name="detail_content" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>11</number>
+           </property>
+           <property name="topMargin">
+            <number>11</number>
+           </property>
+           <property name="rightMargin">
+            <number>11</number>
+           </property>
+           <property name="bottomMargin">
+            <number>11</number>
+           </property>
+           <item>
+            <widget class="QScrollArea" name="scrollArea">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="question_content">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>473</width>
+                <height>435</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_4"/>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="analytic_content" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item alignment="Qt::AlignHCenter">
+            <widget class="QLabel" name="analytic_title">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>450</width>
+               <height>45</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Category Overview</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QScrollArea" name="scrollArea_2">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="percentage_display">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>450</width>
+                <height>383</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_5"/>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

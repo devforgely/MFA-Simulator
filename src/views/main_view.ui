@@ -324,7 +324,7 @@ QToolTip {
                    <number>50</number>
                   </property>
                   <property name="placeholderText">
-                   <string>Search</string>
+                   <string>Quick Actions</string>
                   </property>
                  </widget>
                 </item>

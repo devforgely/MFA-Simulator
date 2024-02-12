@@ -109,10 +109,12 @@ class DataService():
 
     def update_user_quiz(self) -> None:
         self.user.complete_quiz()
+        self.update_user_coin(100)
         self.message_service.send(self, "Update quiz", self.user.quiz_completed)
 
     def update_user_simulation(self) -> None:
         self.user.play_simulation()
+        self.update_user_coin(100)
         self.message_service.send(self, "Update simulation", self.user.simulation_played)
 
     def get_user_improvements(self) -> list:

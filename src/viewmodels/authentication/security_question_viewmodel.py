@@ -4,7 +4,7 @@ from viewmodels.authentication.authentication_base import *
 from services.container import ApplicationContainer
 from models.utils import normalise_text
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
 
 class CustemComboBox(QComboBox):
     def __init__(self, parent = None):

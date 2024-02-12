@@ -4,7 +4,8 @@ from PyQt5.QtCore import Qt, QTimer, QRect, pyqtSlot
 from PyQt5.QtGui import QColor, QPainter
 from PyQt5.QtWidgets import QWidget
 
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportAttributeAccessIssue=false
+# pyright: reportArgumentType=false
 
 class QtWaitingSpinner(QWidget):
     mColor = QColor(Qt.black)
