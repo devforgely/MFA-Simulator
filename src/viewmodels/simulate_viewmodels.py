@@ -170,10 +170,9 @@ class RegisterViewModel(QWidget):
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
                 info_panel = InfoPanel()
                 hbox = QWidget()
-                hlayout = QHBoxLayout()
+                hlayout = QHBoxLayout(hbox)
                 hlayout.addWidget(viewmodel_factory(info_panel))
                 hlayout.addWidget(info_panel)
-                hbox.setLayout(hlayout)
                 
                 self.stackedWidget.addWidget(hbox)
             else:
@@ -241,10 +240,9 @@ class AuthenticateViewModel(QWidget):
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
                 info_panel = InfoPanel()
                 hbox = QWidget()
-                hlayout = QHBoxLayout()
+                hlayout = QHBoxLayout(hbox)
                 hlayout.addWidget(viewmodel_factory(info_panel))
                 hlayout.addWidget(info_panel)
-                hbox.setLayout(hlayout)
                 self.stackedWidget.addWidget(hbox)
                 
                 self.authentication_service.forward()

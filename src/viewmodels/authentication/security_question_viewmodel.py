@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QLabel, QComboBox, QLineEdit, QGroupBox, QSizePolicy
 from PyQt5.QtCore import Qt
 from viewmodels.authentication.authentication_base import *
 from services.container import ApplicationContainer
+from configuration.app_settings import Settings
 from models.utils import normalise_text
 
 # pyright: reportAttributeAccessIssue=false
@@ -56,11 +57,11 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
             combo_box.currentIndexChanged.connect(self.onComboBoxChanged)
 
             combo_box.setCursor(Qt.PointingHandCursor)
-            combo_box.setStyleSheet("""
-                QComboBox::down-arrow {
-                    image: url(resources/icons/down-arrow.svg);
+            combo_box.setStyleSheet(f"""
+                QComboBox::down-arrow {{
+                    image: url({Settings.ICON_FILE_PATH}down-arrow.svg);
                     padding: 0px 24px 10px 0px;
-                }
+                }}
             """)
 
             answer_lineedit = QLineEdit()

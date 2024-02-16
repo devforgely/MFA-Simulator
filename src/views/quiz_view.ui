@@ -84,7 +84,7 @@
     <number>0</number>
    </property>
    <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-    <widget class="QFrame" name="frame">
+    <widget class="ShadowFrame" name="frame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -273,6 +273,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ShadowFrame</class>
+   <extends>QFrame</extends>
+   <header>widgets/shadow.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

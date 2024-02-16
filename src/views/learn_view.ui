@@ -31,7 +31,7 @@
 }
 
  QListWidget::item:selected {
-	background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #e6e6e6, stop:1 #cccccc);
+	background: #e6e6e6;
 }
 
 #horizontalWidget {

@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon
 from viewmodels.authentication.authentication_base import *
+from configuration.app_settings import Settings
 import random
 
 class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
@@ -27,7 +28,7 @@ class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
                 self.progress = 6
                 self.instruction_label.setText("Registeration Completed")
                 self.send()
-            self.fingerprint_btn.setIcon(QIcon(QPixmap(f"resources/images/fp{self.progress}.png")))
+            self.fingerprint_btn.setIcon(QIcon(QPixmap(f"{Settings.IMAGE_FILE_PATH}fp{self.progress}.png")))
 
     def send(self) -> None:
         if self.authentication_service.register('data/fingerprints/fp1.png'):

@@ -165,7 +165,7 @@
         <number>30</number>
        </property>
        <item>
-        <widget class="QPushButton" name="improvement_btn">
+        <widget class="ShadowButton" name="improvement_btn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -181,7 +181,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="classic_btn">
+        <widget class="ShadowButton" name="classic_btn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -197,7 +197,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="timed_btn">
+        <widget class="ShadowButton" name="timed_btn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -215,7 +215,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QWidget" name="note_container" native="true">
+      <widget class="ShadowFrame" name="note_container">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
          <horstretch>0</horstretch>
@@ -631,10 +631,21 @@ font-size: 12pt;</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>ShadowFrame</class>
+   <extends>QFrame</extends>
+   <header>widgets/shadow.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>ClickableFrame</class>
    <extends>QWidget</extends>
    <header>widgets/clickables.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ShadowButton</class>
+   <extends>QPushButton</extends>
+   <header>widgets/shadow.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

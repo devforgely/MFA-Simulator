@@ -1,6 +1,7 @@
 import random
 import time
 from typing import List, Tuple
+from data.data_service import Badge
 
 
 class QuizService():
@@ -109,6 +110,12 @@ class QuizService():
             if self.current_answers[i][1]:
                 self.category_answer[self.quizzes[i]['category']] = self.category_answer.get(self.quizzes[i]['category'], 0) + 1
                 correct += 1
+        
+        #BADGE CONDITION
+        if len(self.current_answers) >= 30 and correct == len(self.current_answers):
+            self.data_service.update_user_badge(Badge.QUIZ_WHIZ)
+        #BADGE END
+
         return (correct, len(self.current_answers))
     
     def check_difficulty(self) -> float:
@@ -119,8 +126,8 @@ class QuizService():
         # Calculate minutes and seconds
         minutes = int(self.time // 60)
         seconds = int(self.time % 60)
-        # Format elapsed time as M:SS
-        return f"{minutes}:{seconds:02d}"
+        # Format elapsed time as MM:SS
+        return f"{minutes:02d}:{seconds:02d}"
     
     def get_all_categories(self) -> set:
         return self.data_service.get_quiz_bank()["categories"]

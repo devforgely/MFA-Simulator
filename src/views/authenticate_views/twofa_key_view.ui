@@ -214,6 +214,9 @@
         </item>
         <item alignment="Qt::AlignHCenter">
          <widget class="QPushButton" name="on_btn">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="cursor">
            <cursorShape>PointingHandCursor</cursorShape>
           </property>

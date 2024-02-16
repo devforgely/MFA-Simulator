@@ -39,7 +39,6 @@ class AuthenticationService():
         bool = len(self.strategy) == self.auth_count and self.at == self.auth_count - 1
         if bool:
             self.data_service.update_user_simulation()
-            self.data_service.update_user_coin(100)
         return bool
     
     def add(self, type: Method) -> bool:

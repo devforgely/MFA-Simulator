@@ -2,6 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QPushButton, QLabel
 from PyQt5.QtGui import QPixmap
 from viewmodels.authentication.authentication_base import *
+from configuration.app_settings import Settings
 from widgets.waiting_spinner import QtWaitingSpinner
 import uuid
 import random
@@ -80,7 +81,7 @@ class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
                 self.progress = 5
                 self.instruction_label.setText("Registeration Completed")
                 self.send()
-            self.fingerprint.setPixmap(QPixmap(f"resources/images/fp_{self.progress}.png"))
+            self.fingerprint.setPixmap(QPixmap(f"{Settings.IMAGE_FILE_PATH}fp_{self.progress}.png"))
                 
     def send(self) -> None:
         key_id = str(uuid.uuid4())

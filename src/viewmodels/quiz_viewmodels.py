@@ -2,10 +2,11 @@ from typing import Any
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget, QStackedWidget, QPushButton, QListWidgetItem, QHBoxLayout, QLabel, QVBoxLayout, QSizePolicy, QProgressBar
 from PyQt5.QtCore import Qt, QPointF, QRegExp
-from PyQt5.QtWidgets import QWidget, QGraphicsDropShadowEffect, QButtonGroup
+from PyQt5.QtWidgets import QWidget, QButtonGroup
 from PyQt5.QtGui import QColor, QPainter, QIcon, QIntValidator, QRegExpValidator, QPixmap
 from widgets.timer import TimeDisplayThread
 from services.container import ApplicationContainer
+from configuration.app_settings import Settings
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -97,11 +98,6 @@ class QuizSettingsViewModel(QWidget):
         self.message_service = ApplicationContainer.message_service()
 
         self.is_collasped = True
-        
-        self.add_shadow(self.timed_btn, 70)
-        self.add_shadow(self.classic_btn, 70)
-        self.add_shadow(self.improvement_btn, 70)
-        self.add_shadow(self.note_container, 40)
 
         self.config_box.setVisible(not self.is_collasped)
         self.amend_btn.setVisible(not self.is_collasped)
@@ -231,16 +227,15 @@ class QuizSettingsViewModel(QWidget):
             item = QListWidgetItem(self.category_list)
 
             widget = QWidget()
-            layout = QHBoxLayout()
+            layout = QHBoxLayout(widget)
             label = QLabel(current_text)
             label.setStyleSheet("font-size: 9pt; font-weight: normal;")
             button = QPushButton()
-            button.setIcon(QIcon("resources/icons/cross.svg"))
+            button.setIcon(QIcon(Settings.ICON_FILE_PATH + "cross.svg"))
             button.clicked.connect(lambda: self.delete_item(item))
 
             layout.addWidget(label)
             layout.addWidget(button)
-            widget.setLayout(layout)
 
             item.setSizeHint(widget.sizeHint())
 
@@ -253,6 +248,9 @@ class QuizSettingsViewModel(QWidget):
 
     def validate_quiz_setting(self) -> dict:
         range = self.difficulty_field.text().split("-")
+        if len(range) <= 1:
+            return {}
+        
         low = int(range[0])
         high = int(range[1])
         nums_q = int(self.num_field.text())
@@ -277,15 +275,7 @@ class QuizSettingsViewModel(QWidget):
                 dict['is_timed'] = False
 
             return dict
-        return {}
-    
-    def add_shadow(self, widget, opacity: int) -> None:
-        shadow_effect = QGraphicsDropShadowEffect()
-        shadow_effect.setColor(QColor(0, 0, 0, opacity))
-        shadow_effect.setBlurRadius(50)
-        shadow_effect.setXOffset(2)
-        shadow_effect.setYOffset(2)
-        widget.setGraphicsEffect(shadow_effect)
+        return {}      
 
     def retain_size(self, widget) -> None:
         sp_retain = widget.sizePolicy()
@@ -307,13 +297,6 @@ class QuizPlayViewModel(QWidget):
         self.saved_choice = ""
 
         self.button_group = QButtonGroup()
-
-        shadow_effect = QGraphicsDropShadowEffect()
-        shadow_effect.setColor(QColor(0, 0, 0, 40))
-        shadow_effect.setBlurRadius(50)
-        shadow_effect.setXOffset(2)
-        shadow_effect.setYOffset(2)
-        self.frame.setGraphicsEffect(shadow_effect)
 
         self.next_btn.clicked.connect(self.next_quiz)
         self.backward_btn.clicked.connect(self.quiz_before)
@@ -412,13 +395,25 @@ class QuizResponseViewModel(QWidget):
         self.quiz_service = ApplicationContainer.quiz_service()
         self.message_service = ApplicationContainer.message_service()
 
+        self.result_bar.setFixedSize(150, 150)
+        self.result_bar.setFormat('%p%|%v / %m')
+        self.result_bar.setBrushColor(QColor(77,186,124))
+
         self.back_btn.clicked.connect(self.back)
 
     def setup(self) -> None:
+        timed = self.quiz_service.get_time()
+        if timed[0]:
+            self.time_val.setText(self.quiz_service.check_time()+f"<font color='#7c7c7c'>&nbsp;&nbsp;/&nbsp;&nbsp;{timed[1]:02d}:00</font>")
+        else:
+            self.time_val.setText(self.quiz_service.check_time())
         self.difficulty_float.setText(str(self.quiz_service.check_difficulty()))
+
         result = self.quiz_service.check_answers()
-        self.score_int.setText(str(result[0]) + " / " + str(result[1]))
-        self.time_val.setText(self.quiz_service.check_time())
+        self.set_rank(result[0]/result[1])
+        self.result_bar.setRange(0, result[1])
+        self.result_bar.setValue(result[0])
+        
 
         layout = self.question_content.layout()
         for i in reversed(range(layout.count())): 
@@ -430,9 +425,8 @@ class QuizResponseViewModel(QWidget):
         i = 0
         for quiz in self.quiz_service.get_quizzies():
             group_widget = QWidget()
-            group_layout = QVBoxLayout()
+            group_layout = QVBoxLayout(group_widget)
             group_layout.setAlignment(Qt.AlignLeft)
-            group_widget.setLayout(group_layout)
 
             question_label = QLabel(str(i+1)+". "+quiz['question'])
             question_label.setStyleSheet("font-weight: bold")
@@ -440,10 +434,9 @@ class QuizResponseViewModel(QWidget):
 
             for choice in quiz['choices']:
                 choice_widget = QWidget()
-                choice_layout = QHBoxLayout()
+                choice_layout = QHBoxLayout(choice_widget)
                 choice_layout.setContentsMargins(20, 0, 0, 0)
                 choice_layout.setAlignment(Qt.AlignLeft)
-                choice_widget.setLayout(choice_layout)
 
                 choice_label = QLabel(choice)
                 choice_label.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
@@ -452,14 +445,14 @@ class QuizResponseViewModel(QWidget):
                 if choice == quiz['answer']: 
                     icon = QLabel()
                     icon.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
-                    icon.setPixmap(QPixmap("resources/icons/check.svg"))
+                    icon.setPixmap(QPixmap(Settings.ICON_FILE_PATH + "check.svg"))
                     choice_layout.addWidget(icon)
 
                 if choice == answers[i][0]:
                     if answers[i][1]:
-                        choice_label.setStyleSheet("border: 1px solid #048c77;")
+                        choice_label.setStyleSheet("border: 1px solid #52c17e;")
                     else:
-                        choice_label.setStyleSheet("border: 1px solid #d5786c;")
+                        choice_label.setStyleSheet("border: 1px solid #c15252;")
                 group_layout.addWidget(choice_widget)
             
             layout.addWidget(group_widget)
@@ -484,6 +477,32 @@ class QuizResponseViewModel(QWidget):
             layout.addWidget(category_title)
             layout.addWidget(percentage_bar)
         layout.addStretch()
+
+    def set_rank(self, percentage: float) -> None:
+        if percentage >= 0.6:
+            self.result_icon.setPixmap(QPixmap(Settings.ICON_FILE_PATH + "Check-Square--Streamline-Core.svg"))
+            self.score_label.setText("Test Passed")
+            self.score_label.setStyleSheet("color: #52c17e")
+        else:
+            self.result_icon.setPixmap(QPixmap(Settings.ICON_FILE_PATH + "Subtract-Square--Streamline-Core.svg"))
+            self.score_label.setText("Test Failed")
+            self.score_label.setStyleSheet("color: #c15252")
+
+        if percentage >= 0.9:
+            self.grade_text.setText("Excellent")
+            self.grade_message.setText("You've mastered the material!")
+        elif percentage >= 0.8:
+            self.grade_text.setText("Great")
+            self.grade_message.setText("You've understood most of the material.")
+        elif percentage >= 0.7:
+            self.grade_text.setText("Good")
+            self.grade_message.setText("You've grasped the basic concepts.")
+        elif percentage >= 0.6:
+            self.grade_text.setText("Pass")
+            self.grade_message.setText("You've passed, but there's room for improvement.")
+        else:
+            self.grade_text.setText("Fail")
+            self.grade_message.setText("You might need to study a bit more.")
 
     def back(self) -> None:
         self.message_service.send(self, "Quiz Settings", None)

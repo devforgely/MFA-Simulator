@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QLabel, QLineEdit, QToolButton, QHBoxLayout, QFrame
 from PyQt5.QtGui import QPixmap, QIcon
+from configuration.app_settings import Settings
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -65,7 +66,7 @@ class CustomLineEdit(QLineEdit):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 5, 0, 0)
         self.icon = QLabel(self)
-        self.icon.setPixmap(QPixmap(f"resources/icons/{icon}.svg"))
+        self.icon.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}{icon}.svg"))
         layout.addWidget(self.icon)
         # Add a stretchable space in the middle
         layout.addStretch()
@@ -74,7 +75,7 @@ class CustomLineEdit(QLineEdit):
             self.setEchoMode(QLineEdit.Password)
             self.eye_button = QToolButton(self)
             self.eye_button.setCursor(Qt.PointingHandCursor)
-            self.eye_button.setIcon(QIcon("resources/icons/eye.svg"))
+            self.eye_button.setIcon(QIcon(f"{Settings.ICON_FILE_PATH}eye.svg"))
 
             self.eye_button.setStyleSheet("""
                 QToolButton {
@@ -89,8 +90,8 @@ class CustomLineEdit(QLineEdit):
 
     def toggle_password_visibility(self):
         if self.echoMode() == QLineEdit.Password:
-            self.eye_button.setIcon(QIcon("resources/icons/eye-off.svg"))
+            self.eye_button.setIcon(QIcon(f"{Settings.ICON_FILE_PATH}eye-off.svg"))
             self.setEchoMode(QLineEdit.Normal)
         else:
-            self.eye_button.setIcon(QIcon("resources/icons/eye.svg"))
+            self.eye_button.setIcon(QIcon(f"{Settings.ICON_FILE_PATH}eye.svg"))
             self.setEchoMode(QLineEdit.Password)

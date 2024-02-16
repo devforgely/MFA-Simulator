@@ -2,6 +2,7 @@ from PyQt5.QtCore import QObject, QEvent
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtGui import QIcon
 from viewmodels.authentication.authentication_base import *
+from configuration.app_settings import Settings
 import uuid
 import rsa
 import hashlib
@@ -19,10 +20,10 @@ class ButtonHoverWatcher(QObject):
     def eventFilter(self, watched, event) -> bool:
         if event.type() == QEvent.Enter:
             # The push button is hovered by mouse
-            self.button.setIcon(QIcon(f"resources/icons/{self.hover_icon}.svg"))
+            self.button.setIcon(QIcon(f"{Settings.ICON_FILE_PATH}{self.hover_icon}.svg"))
         elif event.type() == QEvent.Leave:
             # The push button is not hovered by mouse
-            self.button.setIcon(QIcon(f"resources/icons/{self.default_icon}.svg"))
+            self.button.setIcon(QIcon(f"{Settings.ICON_FILE_PATH}{self.default_icon}.svg"))
         return super().eventFilter(watched, event)
 
 class PinRegisterViewModel(AuthenticationBaseViewModel):

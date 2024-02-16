@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QListWidgetItem, QLabel, QHBoxLayout, QSize
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from services.container import ApplicationContainer
+from configuration.app_settings import Settings
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -25,9 +26,10 @@ class LearnViewModel(QWidget):
         for note in self.data_service.get_notes():
             item = QListWidgetItem()
             widget = QWidget()
+            widget.setCursor(Qt.PointingHandCursor)
 
             icon_label = QLabel()
-            icon_label.setPixmap(QPixmap("resources/icons/book.svg"))
+            icon_label.setPixmap(QPixmap(Settings.ICON_FILE_PATH + "book.svg"))
             icon_label.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
 
             text_label = QLabel(note.title)
@@ -36,11 +38,9 @@ class LearnViewModel(QWidget):
             text_label.setAlignment(Qt.AlignLeft)
             icon_label.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
 
-            layout = QHBoxLayout()
+            layout = QHBoxLayout(widget)
             layout.addWidget(icon_label)
             layout.addWidget(text_label)
-            widget.setLayout(layout)
-            widget.setCursor(Qt.PointingHandCursor)
 
             item.setSizeHint(widget.sizeHint())
 
@@ -57,39 +57,39 @@ class LearnViewModel(QWidget):
             icon_label = widget.layout().itemAt(0).widget()
             text_label = widget.layout().itemAt(1).widget()
             if not item.isSelected():
-                icon_label.setPixmap(QPixmap("resources/icons/book.svg"))
+                icon_label.setPixmap(QPixmap(Settings.ICON_FILE_PATH + "book.svg"))
                 text_label.setStyleSheet("font-size: 12pt; border: none; border-bottom: 1px solid #37352f; \
                                       padding-bottom: 4px; color: #37352f;")
             else:
                 self.display_note_content(i)
                 
-                icon_label.setPixmap(QPixmap("resources/icons/book-open.svg"))
+                icon_label.setPixmap(QPixmap(Settings.ICON_FILE_PATH + "book-open.svg"))
                 text_label.setStyleSheet("font-size: 12pt; border: none; border-bottom: 1px solid #37352f; \
                                       padding-bottom: 4px; color: #37352f; font-weight: bold;")
 
                 if i == 0:
-                    self.up_page_btn.setIcon(QIcon("resources/icons/chevron-up-light.svg"))
+                    self.up_page_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "chevron-up-light.svg"))
                     self.up_page_btn.setEnabled(False)
                 else:
-                    self.up_page_btn.setIcon(QIcon("resources/icons/chevron-up.svg"))
+                    self.up_page_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "chevron-up.svg"))
                     self.up_page_btn.setEnabled(True)
 
                 if i == self.listWidget.count()-1:
-                    self.down_page_btn.setIcon(QIcon("resources/icons/chevron-down-light.svg"))
+                    self.down_page_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "chevron-down-light.svg"))
                     self.down_page_btn.setEnabled(False)
                 else:              
-                    self.down_page_btn.setIcon(QIcon("resources/icons/chevron-down.svg"))
+                    self.down_page_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "chevron-down.svg"))
                     self.down_page_btn.setEnabled(True)
     
     def expand_collapse_panel(self) -> None:
         self.menu.toggle()
         if self.menu.is_expanded:
-            self.expand_btn.setIcon(QIcon("resources/icons/expand-arrow.svg"))
+            self.expand_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "expand-arrow.svg"))
             self.expand_btn.setIconSize(QSize(18, 18))
             self.horizontalWidget.setStyleSheet("border-left: 1px solid silver;")
             self.note_container.setStyleSheet("border-left: 1px solid silver;")
         else:
-            self.expand_btn.setIcon(QIcon("resources/icons/chevrons-right.svg"))
+            self.expand_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "chevrons-right.svg"))
             self.expand_btn.setIconSize(QSize(28, 28))
             self.horizontalWidget.setStyleSheet("border-left: none;")
             self.note_container.setStyleSheet("border-left: none;")

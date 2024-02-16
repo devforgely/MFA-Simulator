@@ -135,7 +135,7 @@ class MainViewModel(QMainWindow):
             self.stored_size = self.size()
             self.showMaximized()
             self.maximise_restore_btn.setToolTip("Restore")
-            self.maximise_restore_btn.setIcon(QIcon(u"resources/icons/window-restore-regular.svg"))
+            self.maximise_restore_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "window-restore-regular.svg"))
 
             for grip in self.cornerGrips:
                 grip.hide()
@@ -147,7 +147,7 @@ class MainViewModel(QMainWindow):
         else:
             self.showNormal()
             self.maximise_restore_btn.setToolTip("Maximise")
-            self.maximise_restore_btn.setIcon(QIcon(u"resources/icons/square-regular.svg"))
+            self.maximise_restore_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "square-regular.svg"))
 
             for grip in self.cornerGrips:
                 grip.show()

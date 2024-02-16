@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsDropShadowEffect, QSizePolicy, QLabel, QHBoxLayout
 from PyQt5.QtGui import QColor, QPixmap
 from PyQt5.QtCore import Qt
+from configuration.app_settings import Settings
 
 
 # pyright: reportAttributeAccessIssue=false
@@ -38,7 +39,7 @@ class NumberButton(QPushButton):
         self.label.setFixedSize(28, 28)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("border: none;")
-        self.label.setPixmap(QPixmap("resources/icons/plus-square"))
+        self.label.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}plus-square"))
 
         layout = QHBoxLayout(self)
         layout.addWidget(self.label)
@@ -60,4 +61,4 @@ class NumberButton(QPushButton):
         else:
             self.label.setText("")
             self.label.setStyleSheet("border: none;")
-            self.label.setPixmap(QPixmap("resources/icons/plus-square"))
+            self.label.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}plus-square"))

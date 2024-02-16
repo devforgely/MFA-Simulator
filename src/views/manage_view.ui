@@ -98,6 +98,19 @@ font-weight: 500;</string>
               </property>
              </widget>
             </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_4">
+              <property name="styleSheet">
+               <string notr="true">border: none;
+border-top: 1px solid gray;
+margin-top: 13px;
+</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label_2">
               <property name="text">
@@ -137,7 +150,7 @@ font-weight: 500;</string>
              <widget class="QComboBox" name="comboBox">
               <property name="maximumSize">
                <size>
-                <width>140</width>
+                <width>200</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -158,18 +171,19 @@ font-weight: 500;</string>
               </item>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_4">
-              <property name="styleSheet">
-               <string notr="true">border: none;
-border-top: 1px solid gray;
-margin-top: 13px;
-</string>
+            <item row="3" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <property name="rightMargin">
+               <number>30</number>
               </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
+              <item alignment="Qt::AlignRight">
+               <widget class="QPushButton" name="reset_btn">
+                <property name="text">
+                 <string>Reset System</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -186,7 +200,7 @@ margin-top: 13px;
   <customwidget>
    <class>ShadowFrame</class>
    <extends>QFrame</extends>
-   <header>widgets/frame.h</header>
+   <header>widgets/shadow.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
