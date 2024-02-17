@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QLabel, QComboBox, QLineEdit, QGroupBox, QSizePolicy
 from PyQt5.QtCore import Qt
 from viewmodels.authentication.authentication_base import *
 from services.container import ApplicationContainer
-from configuration.app_settings import Settings
+from configuration.app_configuration import Settings
 from models.utils import normalise_text
 
 # pyright: reportAttributeAccessIssue=false

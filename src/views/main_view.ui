@@ -62,7 +62,7 @@ QToolTip {
 	border-bottom: 3px solid #eeeeee;
 }
 
-#coin_count {
+#coin_count, #badge_count {
 	font-weight: 600;
 }
 
@@ -377,9 +377,6 @@ QToolTip {
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_7">
-                <property name="spacing">
-                 <number>10</number>
-                </property>
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -416,6 +413,12 @@ QToolTip {
                 </item>
                 <item>
                  <widget class="QLabel" name="coin_count">
+                  <property name="maximumSize">
+                   <size>
+                    <width>120</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <family>Segoe UI</family>
@@ -431,7 +434,19 @@ QToolTip {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="badges">
+                 <widget class="QLabel" name="badge_icon">
+                  <property name="minimumSize">
+                   <size>
+                    <width>36</width>
+                    <height>36</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>36</width>
+                    <height>36</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <family>Segoe UI</family>
@@ -442,7 +457,20 @@ QToolTip {
                    </font>
                   </property>
                   <property name="text">
-                   <string>Badges</string>
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap>../resources/images/star-medal.png</pixmap>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="badge_count">
+                  <property name="text">
+                   <string>0/8</string>
                   </property>
                  </widget>
                 </item>
@@ -820,7 +848,7 @@ QToolTip {
                   </property>
                   <property name="icon">
                    <iconset>
-                    <normaloff>../resources/icons/book-reading.png</normaloff>../resources/icons/book-reading.png</iconset>
+                    <normaloff>../resources/icons/book-reading.svg</normaloff>../resources/icons/book-reading.svg</iconset>
                   </property>
                   <property name="iconSize">
                    <size>

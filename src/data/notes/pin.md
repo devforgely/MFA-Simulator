@@ -2,7 +2,7 @@
 
 1. PIN Creation: The user creates a PIN on their device.
 2. Asymmetric Key Pair Generation: The system generates an asymmetric key pair. This consists of a private key, which is kept secret on the user's device, and a public key, which is registered with the identity provider.
-3. Trusted Relationship Establishment: The registration of the public key with the identity provider establishes a trusted relationship. The identity provider now recognizes the public key as a valid identifier for the user.
+3. Trusted Relationship Establishment: The registration of the public key with the identity provider establishes a trusted relationship. The identity provider now recognises the public key as a valid identifier for the user.
 
 ---
 

@@ -47,11 +47,17 @@
 	font-weight: bold;
 }
 
-#time_val, #difficulty_float, #grade_text, #grade_message {
+#grade_text, #grade_message {
 	margin: 0px 0px 5px 2px;
 	font-size: 10pt;
 	color: #263134;
 	font-weight: bold;
+}
+
+#time_val, #difficulty_float {
+	font-size: 12pt;
+	font-weight: bold;
+	color: #263134;
 }
 
 #detail_content, #analytic_content {
@@ -255,6 +261,12 @@
         </property>
         <item row="0" column="2">
          <widget class="QLabel" name="time_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Total Time</string>
           </property>
@@ -291,21 +303,21 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="2" alignment="Qt::AlignTop">
+        <item row="1" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
          <widget class="QLabel" name="time_val">
           <property name="text">
            <string>12:00</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="4" alignment="Qt::AlignTop">
+        <item row="1" column="4" alignment="Qt::AlignHCenter|Qt::AlignTop">
          <widget class="QLabel" name="difficulty_float">
           <property name="text">
            <string>1</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="3">
+        <item row="0" column="3" alignment="Qt::AlignRight">
          <widget class="QLabel" name="label_4">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

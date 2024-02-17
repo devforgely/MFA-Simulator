@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon
 from viewmodels.authentication.authentication_base import *
-from configuration.app_settings import Settings
+from configuration.app_configuration import Settings
 import random
 
 class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):

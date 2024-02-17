@@ -2,7 +2,7 @@ from PyQt5.QtCore import QObject, QEvent
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtGui import QIcon
 from viewmodels.authentication.authentication_base import *
-from configuration.app_settings import Settings
+from configuration.app_configuration import Settings
 import uuid
 import rsa
 import hashlib

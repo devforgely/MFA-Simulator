@@ -2,8 +2,8 @@ from typing import Any
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QMainWindow, QGraphicsDropShadowEffect, QSizeGrip
-from configuration.app_settings import *
+from PyQt5.QtWidgets import QMainWindow, QGraphicsDropShadowEffect, QSizeGrip, QButtonGroup
+from configuration.app_configuration import Settings
 from widgets.side_grip import SideGrip
 from services.container import ApplicationContainer
 from data.data_service import DataService
@@ -36,18 +36,28 @@ class MainViewModel(QMainWindow):
         self.stackedWidget.addWidget(self.manage_page)
 
         # Data LOAD
-        self.coin_count.setText(str(self.data_service.user.coins))
+        self.coin_count.setText(str(self.data_service.get_user_coins()))
+
+        badge_count = self.data_service.get_user_badges_count()
+        self.badge_count.setText(f"{badge_count[0]}/{badge_count[1]}")
         self.message_service.subscribe(self, DataService, self.on_message)
 
         # TOP BAR CONNECTIONS
         self.help_btn.clicked.connect(self.help)
 
         # LEFT MENUS CONNECTIONS
-        self.simulate_btn.clicked.connect(self.buttonClick)
-        self.learn_btn.clicked.connect(self.buttonClick)
-        self.quiz_btn.clicked.connect(self.buttonClick)
-        self.profile_btn.clicked.connect(self.buttonClick)
-        self.manage_btn.clicked.connect(self.buttonClick)
+        self.button_group = QButtonGroup(self)
+        self.button_group.addButton(self.simulate_btn)
+        self.button_group.addButton(self.learn_btn)
+        self.button_group.addButton(self.quiz_btn)
+        self.button_group.addButton(self.profile_btn)
+        self.button_group.addButton(self.manage_btn)
+        self.button_group.buttonClicked.connect(self.highlight_menu)
+        self.simulate_btn.clicked.connect(self.button_click)
+        self.learn_btn.clicked.connect(self.button_click)
+        self.quiz_btn.clicked.connect(self.button_click)
+        self.profile_btn.clicked.connect(self.button_click)
+        self.manage_btn.clicked.connect(self.button_click)
 
         self.setup_ui()
 
@@ -57,6 +67,8 @@ class MainViewModel(QMainWindow):
     def on_message(self, message_title: str, *args: Any) -> None:
         if message_title == "Update coins":
             self.coin_count.setText(str(args[0]))
+        elif message_title == "Update badges":
+            self.badge_count.setText(f"{args[0]}/{args[1]}")
     
     def setup_ui(self) -> None:
         # USE CUSTOM TITLE BAR
@@ -119,12 +131,19 @@ class MainViewModel(QMainWindow):
         if Settings.ENABLE_CUSTOM_THEME:
             self.styleSheet.setStyleSheet(open(Settings.THEME_FILE, 'r').read())
 
-        #DROP SHADOW
+        # DROP SHADOW
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(15)
         shadow.setColor(QColor(0, 0, 0, 150))
         shadow.setOffset(0, 0)
         self.setGraphicsEffect(shadow)
+        
+        # PAGE INIT
+        self.stackedWidget.setCurrentIndex(self.data_service.get_system_start_up())
+
+        button = self.button_group.buttons()[self.data_service.get_system_start_up()]
+        button.setChecked(True)
+        self.highlight_menu(button)
 
 
     def help(self) -> None:
@@ -157,7 +176,7 @@ class MainViewModel(QMainWindow):
 
             self.window_normal_status = True
     
-    def buttonClick(self) -> None:
+    def button_click(self) -> None:
         # GET BUTTON CLICKED
         btn_name = self.sender().objectName()
 
@@ -174,6 +193,38 @@ class MainViewModel(QMainWindow):
                 self.stackedWidget.setCurrentWidget(self.manage_page)
             case _:
                 Exception("Undefined Button Behaviour")
+    
+    def highlight_menu(self, button) -> None:
+        btn_name = button.objectName()
+        for btn in self.button_group.buttons():
+            if btn.objectName() == btn_name:
+                match(btn.objectName()):
+                    case "simulate_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"button-play-blue.svg"))
+                    case "learn_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"book-reading-blue.svg"))
+                    case "quiz_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"task-list-blue.svg"))
+                    case "profile_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"user-circle-single-blue.svg"))
+                    case "manage_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"cog-blue.svg"))
+                    case _:
+                        Exception("Undefined Button Behaviour")
+            else:
+                match(btn.objectName()):
+                    case "simulate_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"button-play.png"))
+                    case "learn_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"book-reading.svg"))
+                    case "quiz_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"task-list.png"))
+                    case "profile_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"user-circle-single.png"))
+                    case "manage_btn":
+                        btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"cog.png"))
+                    case _:
+                        Exception("Undefined Button Behaviour")
 
     """
     =====================================================================================

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsDropShadowEffect, QSizePolicy, QLabel, QHBoxLayout
 from PyQt5.QtGui import QColor, QPixmap
 from PyQt5.QtCore import Qt
-from configuration.app_settings import Settings
+from configuration.app_configuration import Settings
 
 
 # pyright: reportAttributeAccessIssue=false

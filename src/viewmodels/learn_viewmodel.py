@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QListWidgetItem, QLabel, QHBoxLayout, QSize
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from services.container import ApplicationContainer
-from configuration.app_settings import Settings
+from configuration.app_configuration import Settings
 
 # pyright: reportAttributeAccessIssue=false
 

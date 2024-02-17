@@ -6,7 +6,8 @@ from PyQt5.QtWidgets import QWidget, QButtonGroup
 from PyQt5.QtGui import QColor, QPainter, QIcon, QIntValidator, QRegExpValidator, QPixmap
 from widgets.timer import TimeDisplayThread
 from services.container import ApplicationContainer
-from configuration.app_settings import Settings
+from configuration.app_configuration import Settings
+from data.data_service import DataService
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -94,10 +95,11 @@ class QuizSettingsViewModel(QWidget):
     def __init__(self) -> None:
         QWidget.__init__(self)
         uic.loadUi("views/quiz_settings_view.ui", self)
+        self.data_service = ApplicationContainer.data_service()
         self.quiz_service = ApplicationContainer.quiz_service()
         self.message_service = ApplicationContainer.message_service()
 
-        self.is_collasped = True
+        self.is_collasped = not self.data_service.get_custom_quiz_expand()
 
         self.config_box.setVisible(not self.is_collasped)
         self.amend_btn.setVisible(not self.is_collasped)
@@ -132,6 +134,13 @@ class QuizSettingsViewModel(QWidget):
         self.change_all_categories()
         self.change_timed()
         self.setting_warning.setVisible(False)
+
+        self.message_service.subscribe(self, DataService, self.on_message)
+
+    def on_message(self, message_title: str, *args: Any) -> None:
+        if message_title == "Update custom quiz":
+            self.is_collasped = args[0]
+            self.toggle_collapse()
     
     def set_quiz(self) -> None:
         btn_name = self.sender().objectName()

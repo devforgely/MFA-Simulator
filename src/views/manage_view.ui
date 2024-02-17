@@ -121,7 +121,7 @@ margin-top: 13px;
             <item row="1" column="1">
              <layout class="QVBoxLayout" name="verticalLayout_3">
               <item>
-               <widget class="QRadioButton" name="radioButton">
+               <widget class="QRadioButton" name="default_location_btn">
                 <property name="text">
                  <string>System Default (Simulate Section)</string>
                 </property>
@@ -131,7 +131,7 @@ margin-top: 13px;
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="radioButton_2">
+               <widget class="QRadioButton" name="custom_location_btn">
                 <property name="text">
                  <string>Custom Location</string>
                 </property>
@@ -147,7 +147,7 @@ margin-top: 13px;
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="QComboBox" name="comboBox">
+             <widget class="QComboBox" name="start_up_combobox">
               <property name="maximumSize">
                <size>
                 <width>200</width>
@@ -169,9 +169,19 @@ margin-top: 13px;
                 <string>Quiz Section</string>
                </property>
               </item>
+              <item>
+               <property name="text">
+                <string>Profile Section</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Settings Section</string>
+               </property>
+              </item>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="5" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout">
               <property name="rightMargin">
                <number>30</number>
@@ -180,6 +190,67 @@ margin-top: 13px;
                <widget class="QPushButton" name="reset_btn">
                 <property name="text">
                  <string>Reset System</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="label_6">
+              <property name="styleSheet">
+               <string notr="true">border: none;
+border-top: 1px solid gray;
+margin-top: 13px;
+</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="styleSheet">
+               <string notr="true">font-size: 12pts;
+font-weight: 500;</string>
+              </property>
+              <property name="text">
+               <string>QUIZ SECTION SETTING</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Custom Quiz Setting</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="ToggleSwitch" name="expand_toggle">
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="custom_quiz_expand">
+                <property name="text">
+                 <string>Auto</string>
                 </property>
                </widget>
               </item>
@@ -202,6 +273,11 @@ margin-top: 13px;
    <extends>QFrame</extends>
    <header>widgets/shadow.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ToggleSwitch</class>
+   <extends>QCheckBox</extends>
+   <header>widgets/clickables.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

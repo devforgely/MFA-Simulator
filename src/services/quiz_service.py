@@ -37,7 +37,7 @@ class QuizService():
         self.configure({'num_questions': 10, 'difficulty_range': (1, 10), 'all_categories': True, 'is_timed': True, 'max_time': 5})
 
     def configure_improvement(self) -> None:
-        improvement_categories = self.data_service.get_user_improvements()[:]
+        improvement_categories = [c[0] for c in self.data_service.get_user_improvements()]
         self.configure({'num_questions': 10, 'difficulty_range': (1, 10), 'all_categories': False, 
                         'categories': improvement_categories, 'is_timed': False})
 
@@ -134,12 +134,15 @@ class QuizService():
     
     def category_analyse(self) -> list:
         percentages = []
+        correct_to_incorrect = []
         for category in self.category_quiz:
             total = self.category_quiz[category]
             correct = self.category_answer.get(category, 0)
             percentage = (correct / total) * 100
             percentages.append((category, percentage))
+            correct_to_incorrect.append((category, 2*correct-total))
 
+        self.data_service.update_user_improvement(correct_to_incorrect)
         # Sort the list of tuples by the percentage
         percentages.sort(key=lambda x: x[1])
         return percentages

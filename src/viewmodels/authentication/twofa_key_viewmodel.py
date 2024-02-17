@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QPushButton, QLabel
 from PyQt5.QtGui import QPixmap
 from viewmodels.authentication.authentication_base import *
-from configuration.app_settings import Settings
+from configuration.app_configuration import Settings
 from widgets.waiting_spinner import QtWaitingSpinner
 import uuid
 import random
