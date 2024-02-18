@@ -37,9 +37,10 @@ class AuthenticationService():
     
     def all_authenticated(self) -> bool:
         bool = len(self.strategy) == self.auth_count and self.at == self.auth_count - 1
-        if bool:
-            self.data_service.update_user_simulation()
         return bool
+    
+    def complete_simulation(self) -> None:
+        self.data_service.update_user_simulation()
     
     def add(self, type: Method) -> bool:
         if type not in self.get_all_types():
@@ -55,7 +56,6 @@ class AuthenticationService():
             self.strategy.remove(index)
             return True
         except ValueError:
-            print("Element not found in the list")
             return False
         
     def forward(self) -> None:

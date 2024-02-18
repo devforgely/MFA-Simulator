@@ -1,6 +1,6 @@
 from typing import Any
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QStackedWidget, QMessageBox, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QStackedWidget, QHBoxLayout
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 from services.container import ApplicationContainer
@@ -14,6 +14,7 @@ from viewmodels.authentication.totp_viewmodel import *
 from viewmodels.authentication.twofa_key_viewmodel import *
 from widgets.number_button import NumberButton
 from widgets.info_panel import *
+from widgets.dialog import GifDialog
 from models.utils import calculate_assurance_level
 
 # pyright: reportAttributeAccessIssue=false
@@ -269,8 +270,10 @@ class AuthenticateViewModel(QWidget):
                 self.next_btn.setEnabled(False)
             self.back_btn.setEnabled(True)
         else:
-            QMessageBox.information(self, "Congratulation", "You have earned 100 coins.")
-            self.message_service.send(self, "Creator View", None)
+            dialog = GifDialog(self.width(), self.height(), self.authentication_service.complete_simulation, self)
+            dialog.move(0, 0)
+            dialog.show()
+            dialog.destroyed.connect(lambda: self.message_service.send(self, "Creator View", None))
 
     def go_backward(self) -> None:
         self.authentication_service.backward()

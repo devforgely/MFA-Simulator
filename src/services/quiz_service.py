@@ -96,7 +96,6 @@ class QuizService():
 
     def terminate_quiz(self) -> None:
         self.time = time.time() - self.time
-        self.data_service.update_user_quiz()
 
     def quiz_timeout(self) -> None:
         self.terminate_quiz()
@@ -151,4 +150,5 @@ class QuizService():
         return self.quizzes
     
     def get_current_answers(self) -> list:
+        self.data_service.update_user_quiz(len(self.current_answers))
         return self.current_answers

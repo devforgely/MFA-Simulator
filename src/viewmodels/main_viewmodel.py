@@ -1,6 +1,6 @@
 from typing import Any
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, QPoint, QRect
+from PyQt5.QtCore import Qt, QPoint, QRect, QTimer
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QMainWindow, QGraphicsDropShadowEffect, QSizeGrip, QButtonGroup
 from configuration.app_configuration import Settings
@@ -12,6 +12,7 @@ from viewmodels.quiz_viewmodels import QuizViewModel
 from viewmodels.learn_viewmodel import LearnViewModel
 from viewmodels.profile_viewmodel import ProfileViewModel
 from viewmodels.manage_viewmodel import ManageViewModel
+from widgets.dialog import Notification
 
 
 # pyright: reportAttributeAccessIssue=false
@@ -22,6 +23,8 @@ class MainViewModel(QMainWindow):
         uic.loadUi("views/main_view.ui", self)
         self.data_service = ApplicationContainer.data_service()
         self.message_service = ApplicationContainer.message_service()
+
+        self.notifications = []
 
         # PAGES
         self.simulate_page = SimulateViewModel()
@@ -67,8 +70,10 @@ class MainViewModel(QMainWindow):
     def on_message(self, message_title: str, *args: Any) -> None:
         if message_title == "Update coins":
             self.coin_count.setText(str(args[0]))
+            self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"coin.png"), "You've just earned some coins!")
         elif message_title == "Update badges":
             self.badge_count.setText(f"{args[0]}/{args[1]}")
+            self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"star-medal.png"), "You've been awarded with a MFA badge!")
     
     def setup_ui(self) -> None:
         # USE CUSTOM TITLE BAR
@@ -225,6 +230,15 @@ class MainViewModel(QMainWindow):
                         btn.setIcon(QIcon(Settings.ICON_FILE_PATH+"cog.png"))
                     case _:
                         Exception("Undefined Button Behaviour")
+
+    def show_notification(self, icon: QIcon, message: str):
+        notification = Notification(icon, message, self)
+        self.notifications.append(notification)
+        notification.move(self.width() // 2 - notification.width() // 2, len(self.notifications) * (notification.height()+7) + 20)
+        QTimer.singleShot(100, notification.show)
+
+        # Connect the 'destroyed' signal to a slot that removes the notification from the list
+        notification.destroyed.connect(lambda: self.notifications.remove(notification))
 
     """
     =====================================================================================

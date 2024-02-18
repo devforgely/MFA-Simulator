@@ -184,11 +184,11 @@ class DataService():
         self.user.update_coins(value)
         self.message_service.send(self, "Update coins", self.user.get_coins())
 
-    def update_user_quiz(self) -> None:
+    def update_user_quiz(self, val: int) -> None:
         self.signal_update = True
         self.user.complete_quiz()
         self.user.add_activity("Quiz Completion", "Great job on completing the quiz! Keep learning.")
-        self.update_user_coin(100)
+        self.update_user_coin(val*10)
         self.message_service.send(self, "Update quiz", self.user.get_quiz_completed())
 
     def update_user_simulation(self) -> None:
