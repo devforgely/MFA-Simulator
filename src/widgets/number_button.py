@@ -6,28 +6,13 @@ from configuration.app_configuration import Settings
 
 # pyright: reportAttributeAccessIssue=false
 
-class NumberButton(QPushButton):
-    def __init__(self, parent: QWidget, text: str, default_color: QColor, pressed_color: QColor) -> None:
+class LockableNumberButton(QPushButton):
+    def __init__(self, parent: QWidget, text: str, default_color: QColor, pressed_color: QColor, locked: bool) -> None:
         QPushButton.__init__(self, parent, text=text)
         self.default_color = default_color
         self.pressed_color = pressed_color
-
-        self.setStyleSheet(
-            f"""
-            NumberButton {{
-                border-radius: 4px;
-                padding: 12px 12px 12px 75px;
-                background-color: {self.default_color.name()};
-                font-size: 12pt;
-                font-weight: bold;
-                text-align: left;
-            }}
-            NumberButton:checked {{
-                background-color: {self.pressed_color.name()};
-                color: #ffffff;
-            }}
-            """
-        )
+        self.locked = locked
+       
         self.setMinimumSize(100, 53)
         self.setBaseSize(200, 106)
         self.setSizePolicy(QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding))
@@ -38,8 +23,6 @@ class NumberButton(QPushButton):
         self.label.setScaledContents(True)
         self.label.setFixedSize(28, 28)
         self.label.setAlignment(Qt.AlignCenter)
-        self.label.setStyleSheet("border: none;")
-        self.label.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}plus-square"))
 
         layout = QHBoxLayout(self)
         layout.addWidget(self.label)
@@ -52,13 +35,57 @@ class NumberButton(QPushButton):
         shadow_effect.setBlurRadius(40)
         shadow_effect.setXOffset(2)
         self.setGraphicsEffect(shadow_effect)
+
+        self.lock(locked)
+    
+    def isLocked(self) -> bool:
+        return self.locked
+
+    def lock(self, value: bool) -> None:
+        if value:
+            self.setStyleSheet(
+                f"""
+                LockableNumberButton {{
+                    border-radius: 4px;
+                    padding: 12px 12px 12px 75px;
+                    background-color: #cccccc;
+                    font-size: 12pt;
+                    font-weight: bold;
+                    text-align: left;
+                }}
+                """
+            )
+            self.label.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}lock.svg"))
+        else:
+            self.setStyleSheet(
+                f"""
+                LockableNumberButton {{
+                    border-radius: 4px;
+                    padding: 12px 12px 12px 75px;
+                    background-color: {self.default_color.name()};
+                    font-size: 12pt;
+                    font-weight: bold;
+                    text-align: left;
+                }}
+                LockableNumberButton:checked {{
+                    background-color: {self.pressed_color.name()};
+                    color: #ffffff;
+                }}
+                """
+            )
+            self.label.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}plus-square"))
+            self.setChecked(False)
+        self.locked = value
     
     def update_icon(self, value: int) -> None:
-        if value > 0 and value < 8:
-            self.label.clear()
-            self.label.setText(str(value))
-            self.label.setStyleSheet("color: white; border: 2px solid white; border-radius: 5px; font-size: 12pt; font-weight: bold;")
-        else:
-            self.label.setText("")
-            self.label.setStyleSheet("border: none;")
-            self.label.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}plus-square"))
+        if not self.locked:
+            if value > 0:
+                self.setChecked(True)
+                self.label.clear()
+                self.label.setText(str(value))
+                self.label.setStyleSheet("color: white; border: 2px solid white; border-radius: 5px; font-size: 12pt; font-weight: bold;")
+            else:
+                self.setChecked(False)
+                self.label.setText("")
+                self.label.setStyleSheet("")
+                self.label.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}plus-square.svg"))

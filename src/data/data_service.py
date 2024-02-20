@@ -6,6 +6,7 @@ import markdown
 import random
 from datetime import datetime
 from enum import Enum
+from models.authentication.authentication import Method
 
 class Note:
     def __init__(self, title, content):
@@ -13,9 +14,6 @@ class Note:
         self.content = content
 
 class Badge(Enum):
-    BEGINNER = (-3, "b8.png")
-    NO_ADVANCED = (-2, "b0.png")
-    NO_FA = (-1, "b4.png")
     ONE_FA = (0, "b5.png")
     TWO_FA = (1, "b6.png")
     MFA = (2, "b7.png")
@@ -34,6 +32,15 @@ class User:
         self.badges = []
         self.improvements = []
         self.readings = []
+        self.unlocked_simulations = {
+            Method.PIN.value: True,
+            Method.PASSWORD.value: False,
+            Method.SECRET_QUESTION.value: False,
+            Method.IMAGE_PASSWORD.value: False,
+            Method.FINGER_PRINT.value: False,
+            Method.TOTP.value: False,
+            Method.TWOFA_KEY.value: False
+        }
 
     def get_coins(self) -> int:
         return self.coins
@@ -58,6 +65,9 @@ class User:
     
     def get_readings(self) -> list:
         return self.readings
+    
+    def get_unlocked_simulations(self) -> dict:
+        return self.unlocked_simulations
 
     def update_coins(self, amount) -> None:
         self.coins += amount
@@ -74,9 +84,11 @@ class User:
             self.recent_activities.pop(0)
         self.recent_activities.append((activity_title, formatted_date, description))
 
-    def add_badge(self, badge: Badge) -> None:
+    def add_badge(self, badge: Badge) -> bool:
         if badge.value not in self.badges:
             self.badges.append(badge.value)
+            return True
+        return False
 
     def update_improvements(self, improvements: list[tuple]) -> None:
         for category, difference in improvements:
@@ -98,15 +110,24 @@ class User:
 
     def update_reading(self, state, title, i) -> None:
         self.readings[i] = (title, state)
+
+    def unlock_simulations(self, method_val: int) -> None:
+        self.unlocked_simulations[method_val] = True
     
     def to_json(self) -> str:
         return json.dumps(self.__dict__)
     
     @classmethod
     def from_json(cls, json_string):
+        def convert_keys_to_int(x):
+            if isinstance(x, dict):
+                return {int(k): v for k, v in x.items()}
+            return x
+
         user_data = json.loads(json_string)
         user = cls()
         user.__dict__.update(user_data)
+        user.unlocked_simulations = convert_keys_to_int(user.unlocked_simulations)
         return user
     
 class SystemData():
@@ -157,7 +178,7 @@ class DataService():
 
     def save_data(self) -> None:
         if self.signal_update:
-            print("saving data...")
+            print("Saving Data...")
             with open(self.file_path, 'w') as f:
                 json.dump({"user": json.loads(self.user.to_json()), "system": json.loads(self.system.to_json())}, f)
             self.signal_update = False
@@ -168,10 +189,9 @@ class DataService():
         data = {"user": json.loads(self.user.to_json()), "system": json.loads(self.system.to_json())}
         with open(self.file_path, 'w') as f:
             json.dump(data, f)
-        self.message_service.send(self, "Update coins", self.user.coins)
-        self.message_service.send(self, "Update quiz", self.user.quiz_completed)
-        self.message_service.send(self, "Update simulation", self.user.simulation_played)
-        self.message_service.send(self, "Update badges", self.user.simulation_played)
+        self.notes = self.read_notes_titles()
+        self.signal_update = False
+        self.message_service.send(self, "Reboot")
 
     """
     =====================================================================================
@@ -182,35 +202,62 @@ class DataService():
     def update_user_coin(self, value: int) -> None:
         self.signal_update = True
         self.user.update_coins(value)
-        self.message_service.send(self, "Update coins", self.user.get_coins())
 
-    def update_user_quiz(self, val: int) -> None:
+        #BADGE CONDITION
+        if self.user.get_coins() >= 1000:
+            self.update_user_badge(Badge.COIN_HUNTER)
+        #BADGE END
+
+        self.message_service.send(self, "Update Coins", self.user.get_coins(), value > 0)
+
+    def update_user_quiz(self, correct: int) -> None:
         self.signal_update = True
         self.user.complete_quiz()
         self.user.add_activity("Quiz Completion", "Great job on completing the quiz! Keep learning.")
-        self.update_user_coin(val*10)
-        self.message_service.send(self, "Update quiz", self.user.get_quiz_completed())
+        self.update_user_coin(correct*20)
+        self.message_service.send(self, "Update Quiz", self.user.get_quiz_completed())
 
     def update_user_simulation(self) -> None:
         self.signal_update = True
         self.user.play_simulation()
         self.user.add_activity("Simulation Completion", "Well done! You've mastered a simulation. Keep growing.")
         self.update_user_coin(100)
-        self.message_service.send(self, "Update simulation", self.user.get_simulation_played())
+        self.message_service.send(self, "Update Simulation", self.user.get_simulation_played())
 
     def update_user_badge(self, badge: Badge) -> None:
-        self.signal_update = True
-        self.user.add_badge(badge)
-        self.message_service.send(self, "Update badges", self.user.get_badges_count())
+        updated = self.user.add_badge(badge)
+
+        #BADGE CONDITION
+        current, total = self.user.get_badges_count()
+        if current == total-1:
+            updated = self.user.add_badge(Badge.SECURITY_SAVY) | updated
+        #BADGE END
+            
+        self.signal_update = self.signal_update | updated
+        self.message_service.send(self, "Update Badges", self.user.get_badges_count(), updated)
 
     def update_user_improvement(self, improvements: list[tuple]) -> None:
         self.signal_update = True
         self.user.update_improvements(improvements)
-        self.message_service.send(self, "Update improvements", None)
+        self.message_service.send(self, "Update Improvements", None)
 
     def update_user_reading(self, state: bool, title: str, i: int) -> None:
         self.signal_update = True
         self.user.update_reading(state, title, i)
+
+        #BADGE CONDITION
+        readings = self.user.get_readings()
+        count = 0
+        for _, state in readings:
+            if state:
+                count += 1
+        if count / len(readings) >= 0.7:
+            self.update_user_badge(Badge.SECURITY_SCHOLAR)
+        #BADGE END
+            
+    def unlock_user_simulation(self, method_val: int) -> None:
+        self.signal_update = True
+        self.user.unlock_simulations(method_val)
 
     def get_user_coins(self) -> int:
         return self.user.get_coins()
@@ -236,6 +283,9 @@ class DataService():
     def get_user_readings(self) -> list:
         return self.user.get_readings()
     
+    def get_user_unlocked_simulations(self) -> dict:
+        return self.user.get_unlocked_simulations()
+    
     """
     =====================================================================================
     SYSTEM
@@ -255,7 +305,7 @@ class DataService():
     def change_custom_quiz_expand(self, state) -> None:
         self.signal_update = True
         self.system.set_custom_quiz_expand(state)
-        self.message_service.send(self, "Update custom quiz", state)
+        self.message_service.send(self, "Update Custom Quiz", state)
 
     """
     =====================================================================================

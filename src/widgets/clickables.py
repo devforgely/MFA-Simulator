@@ -67,6 +67,8 @@ class CustomLineEdit(QLineEdit):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 5, 0, 0)
         self.icon = QLabel(self)
+        self.icon.setFixedSize(24, 24)
+        self.icon.setScaledContents(True)
         self.icon.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}{icon}.svg"))
         layout.addWidget(self.icon)
         # Add a stretchable space in the middle

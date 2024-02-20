@@ -17,4 +17,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
         QuizService,
         data_service=data_service
     )
+
+    @classmethod
+    def get_service_count(cls):
+        return len(cls.__dict__)
     

@@ -22,3 +22,6 @@ class MessageService:
         if type(sender) in self.subscriptions:
             for _, callback in self.subscriptions[type(sender)]:
                 callback(message_title, *args)
+
+    def unsubscribe_all(self) -> None:
+        self.subscriptions = {}

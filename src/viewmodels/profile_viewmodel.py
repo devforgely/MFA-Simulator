@@ -34,17 +34,17 @@ class ProfileViewModel(QWidget):
 
     def on_message(self, message_title: str, *args: Any) -> None:
         match message_title:
-            case "Update coins":
+            case "Update Coins":
                 self.coin_count.setText(str(args[0]))
-            case "Update quiz":
+            case "Update Quiz":
                 self.quiz_count.setText(str(args[0]))
                 self.update_activites()
-            case "Update simulation":
+            case "Update Simulation":
                 self.simulation_count.setText(str(args[0]))
                 self.update_activites()
-            case "Update improvements":
+            case "Update Improvements":
                 self.update_improvements()
-            case "Update badges":
+            case "Update Badges":
                 self.update_badges()
 
     def update_activites(self) -> None:
@@ -81,32 +81,37 @@ class ProfileViewModel(QWidget):
     def update_improvements(self) -> None:
         self.improvement_list.clear()
 
-        for category, val in self.data_service.get_user_improvements():
-            widget = QListWidgetItem(category, self.improvement_list)
+        improvements = self.data_service.get_user_improvements()
+        if len(improvements) == 0:
+            widget = QListWidgetItem("""🔍 No improvement analysed yet: It appears that the quiz hasn't been completed.\n      Once you finish a quiz, area of improvement will be assessed. Keep going! 🌟""", self.improvement_list)
             self.improvement_list.addItem(widget)
+        else: 
+            for category, val in improvements:
+                widget = QListWidgetItem(category, self.improvement_list)
+                self.improvement_list.addItem(widget)
 
-            val *= -1 #convert to positive
-            icon_holder = QWidget()
-            hlayout = QHBoxLayout(icon_holder)
-            counter = 0
-            while val > 0 and counter < 15:
-                icon = QLabel()
-                icon.setToolTip(f"{min(val, 10)} Incorrect")
-                icon.setPixmap(QPixmap(Settings.ICON_FILE_PATH+'x-square.svg'))
-                hlayout.addWidget(icon)
-                val -= 10
-                counter += 1
-            if val > 0:
-                icon = QLabel()
-                icon.setToolTip(f"{val} Incorrect")
-                icon.setPixmap(QPixmap(Settings.ICON_FILE_PATH+'x-square.svg'))
-                hlayout.addWidget(icon)
+                val *= -1 #convert to positive
+                icon_holder = QWidget()
+                hlayout = QHBoxLayout(icon_holder)
+                counter = 0
+                while val > 0 and counter < 15:
+                    icon = QLabel()
+                    icon.setToolTip(f"{min(val, 10)} Incorrect")
+                    icon.setPixmap(QPixmap(Settings.ICON_FILE_PATH+'x-square.svg'))
+                    hlayout.addWidget(icon)
+                    val -= 10
+                    counter += 1
+                if val > 0:
+                    icon = QLabel()
+                    icon.setToolTip(f"{val} Incorrect")
+                    icon.setPixmap(QPixmap(Settings.ICON_FILE_PATH+'x-square.svg'))
+                    hlayout.addWidget(icon)
 
-            hlayout.addStretch()
-            widget = QListWidgetItem(self.improvement_list)
-            widget.setSizeHint(icon_holder.sizeHint())
-            self.improvement_list.addItem(widget)
-            self.improvement_list.setItemWidget(widget, icon_holder)
+                hlayout.addStretch()
+                widget = QListWidgetItem(self.improvement_list)
+                widget.setSizeHint(icon_holder.sizeHint())
+                self.improvement_list.addItem(widget)
+                self.improvement_list.setItemWidget(widget, icon_holder)
     
     def update_badges(self) -> None:
         layout = self.award_page.layout()

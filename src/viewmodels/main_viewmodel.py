@@ -7,7 +7,7 @@ from configuration.app_configuration import Settings
 from widgets.side_grip import SideGrip
 from services.container import ApplicationContainer
 from data.data_service import DataService
-from viewmodels.simulate_viewmodels import SimulateViewModel
+from viewmodels.simulate_viewmodels import SimulateViewModel, CreatorViewModel
 from viewmodels.quiz_viewmodels import QuizViewModel
 from viewmodels.learn_viewmodel import LearnViewModel
 from viewmodels.profile_viewmodel import ProfileViewModel
@@ -44,9 +44,7 @@ class MainViewModel(QMainWindow):
         badge_count = self.data_service.get_user_badges_count()
         self.badge_count.setText(f"{badge_count[0]}/{badge_count[1]}")
         self.message_service.subscribe(self, DataService, self.on_message)
-
-        # TOP BAR CONNECTIONS
-        self.help_btn.clicked.connect(self.help)
+        self.message_service.subscribe(self, CreatorViewModel, self.on_message)
 
         # LEFT MENUS CONNECTIONS
         self.button_group = QButtonGroup(self)
@@ -68,12 +66,16 @@ class MainViewModel(QMainWindow):
         self.show()
 
     def on_message(self, message_title: str, *args: Any) -> None:
-        if message_title == "Update coins":
+        if message_title == "Update Coins":
             self.coin_count.setText(str(args[0]))
-            self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"coin.png"), "You've just earned some coins!")
-        elif message_title == "Update badges":
-            self.badge_count.setText(f"{args[0]}/{args[1]}")
-            self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"star-medal.png"), "You've been awarded with a MFA badge!")
+            if args[1]: # bool to determine whether if you have earned coins or not
+                self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"coin.png"), "You've just earned some coins!")
+        elif message_title == "Update Badges":
+            self.badge_count.setText(f"{args[0][0]}/{args[0][1]}")
+            if args[1]: # bool to determine whether if you have earned badge or not
+                self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"star-medal.png"), "You've been awarded with a MFA badge!")
+        elif message_title == "Show Notification":
+            self.show_notification(args[0], args[1])
     
     def setup_ui(self) -> None:
         # USE CUSTOM TITLE BAR
@@ -149,10 +151,6 @@ class MainViewModel(QMainWindow):
         button = self.button_group.buttons()[self.data_service.get_system_start_up()]
         button.setChecked(True)
         self.highlight_menu(button)
-
-
-    def help(self) -> None:
-        pass
 
     def maximise_restore_window(self) -> None:
         if self.window_normal_status:
@@ -232,13 +230,14 @@ class MainViewModel(QMainWindow):
                         Exception("Undefined Button Behaviour")
 
     def show_notification(self, icon: QIcon, message: str):
-        notification = Notification(icon, message, self)
-        self.notifications.append(notification)
-        notification.move(self.width() // 2 - notification.width() // 2, len(self.notifications) * (notification.height()+7) + 20)
-        QTimer.singleShot(100, notification.show)
+        if len(self.notifications) < 10:
+            notification = Notification(icon, message, self)
+            self.notifications.append(notification)
+            notification.move(self.width() // 2 - notification.width() // 2, len(self.notifications) * (notification.height()+7) + 20)
+            QTimer.singleShot(100, notification.show)
 
-        # Connect the 'destroyed' signal to a slot that removes the notification from the list
-        notification.destroyed.connect(lambda: self.notifications.remove(notification))
+            # Connect the 'destroyed' signal to a slot that removes the notification from the list
+            notification.destroyed.connect(lambda: self.notifications.remove(notification))
 
     """
     =====================================================================================

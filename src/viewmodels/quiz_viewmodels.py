@@ -138,7 +138,7 @@ class QuizSettingsViewModel(QWidget):
         self.message_service.subscribe(self, DataService, self.on_message)
 
     def on_message(self, message_title: str, *args: Any) -> None:
-        if message_title == "Update custom quiz":
+        if message_title == "Update Custom Quiz":
             self.is_collasped = args[0]
             self.toggle_collapse()
     

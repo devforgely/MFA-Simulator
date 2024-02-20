@@ -1,11 +1,13 @@
 from typing import Any, List
 from models.authentication.authentication import CompoundAuthentication, Method
 from models.authentication.authentication_methods import *
+from data.data_service import Badge
 
 class AuthenticationService():
     def __init__(self, data_service) -> None:
         self.data_service = data_service
         self.strategy = CompoundAuthentication()
+        self.measure = 0
         self.at = 0
         self.register_count = 0
         self.auth_count = 0
@@ -25,12 +27,33 @@ class AuthenticationService():
     
     def reset(self) -> None:
         self.strategy = CompoundAuthentication()
+        self.measure = 0
         self.at = 0
         self.register_count = 0
         self.auth_count = 0
     
     def get_all_types(self) -> List[Method]:
         return self.strategy.get_all_types()
+
+    def calculate_assurance_level(self) -> int:
+        methods = self.strategy.get_all_types()
+        if len(methods) == 0:
+            self.measure = 0
+            return self.measure
+
+        knowledge_based = {Method.PASSWORD, Method.PIN, Method.SECRET_QUESTION, Method.IMAGE_PASSWORD}
+        biometric_based = {Method.FINGER_PRINT}
+        possession_based = {Method.TOTP}
+
+        if Method.TWOFA_KEY in methods:
+            self.measure = 3
+        elif any(element in knowledge_based for element in methods) \
+            + any(element in biometric_based for element in methods) \
+            + any(element in possession_based for element in methods) >= 2:
+            self.measure = 2
+        else:
+            self.measure = 1
+        return self.measure
     
     def all_registered(self) -> bool:
         return len(self.strategy) == self.register_count and self.at == self.register_count - 1
@@ -40,6 +63,15 @@ class AuthenticationService():
         return bool
     
     def complete_simulation(self) -> None:
+        #BADGE CONDITION
+        if self.measure == 1:
+            self.data_service.update_user_badge(Badge.ONE_FA)
+        elif self.measure == 2:
+            self.data_service.update_user_badge(Badge.TWO_FA)
+        elif self.measure == 3:
+            self.data_service.update_user_badge(Badge.MFA)
+        #BADGE END
+
         self.data_service.update_user_simulation()
     
     def add(self, type: Method) -> bool:

@@ -15,6 +15,7 @@ class QuizService():
             'is_timed': False,
             'max_time': 5
         }
+        self.type = "custom"
         self.quizzes = []
         self.category_quiz = {}
 
@@ -31,12 +32,15 @@ class QuizService():
                 self.config[key] = value
 
     def configure_classic(self) -> None:
+        self.type = "classic"
         self.configure({'num_questions': 10, 'difficulty_range': (1, 10), 'all_categories': True, 'is_timed': False})
 
     def configure_timed(self) -> None:
+        self.type = "timed"
         self.configure({'num_questions': 10, 'difficulty_range': (1, 10), 'all_categories': True, 'is_timed': True, 'max_time': 5})
 
     def configure_improvement(self) -> None:
+        self.type = "improvement"
         improvement_categories = [c[0] for c in self.data_service.get_user_improvements()]
         self.configure({'num_questions': 10, 'difficulty_range': (1, 10), 'all_categories': False, 
                         'categories': improvement_categories, 'is_timed': False})
@@ -114,6 +118,13 @@ class QuizService():
         if len(self.current_answers) >= 30 and correct == len(self.current_answers):
             self.data_service.update_user_badge(Badge.QUIZ_WHIZ)
         #BADGE END
+            
+        #BADGE CONDITION
+        if self.type == "improvement":
+            self.data_service.update_user_badge(Badge.LEARNER)
+        #BADGE END
+            
+        self.data_service.update_user_quiz(correct)
 
         return (correct, len(self.current_answers))
     
@@ -150,5 +161,4 @@ class QuizService():
         return self.quizzes
     
     def get_current_answers(self) -> list:
-        self.data_service.update_user_quiz(len(self.current_answers))
         return self.current_answers

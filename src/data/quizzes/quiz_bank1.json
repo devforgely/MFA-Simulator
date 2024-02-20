@@ -62,7 +62,7 @@
     },
     {
       "category": "MFA concepts and principles",
-      "difficulty": "1",
+      "difficulty": "2",
       "question": "What is another term often used to describe Multi-Factor Authentication?",
       "answer": "Two-Step Verification",
       "choices": [
@@ -74,7 +74,7 @@
     },
     {
       "category": "MFA concepts and principles",
-      "difficulty": "1",
+      "difficulty": "2",
       "question": "True or False: You should use MFA for all your accounts, regardless of how often you use them.",
       "answer": "True",
       "choices": [
@@ -84,7 +84,7 @@
     },
     {
       "category": "MFA concepts and principles",
-      "difficulty": "1",
+      "difficulty": "3",
       "question": "Which of the following is NOT a benefit of using MFA?",
       "answer": "Makes it easier to remember passwords",
       "choices": [
@@ -142,7 +142,7 @@
     },
     {
       "category": "MFA technologies and methods",
-      "difficulty": "1",
+      "difficulty": "2",
       "question": "True or False: SMS is considered a secure method for delivering OTPs in MFA.",
       "answer": "False",
       "choices": [
@@ -152,7 +152,7 @@
     },
     {
       "category": "MFA technologies and methods",
-      "difficulty": "1",
+      "difficulty": "3",
       "question": "Which of the following is a disadvantage of using biometrics for MFA?",
       "answer": "Biometric data can't be changed if compromised",
       "choices": [
@@ -176,7 +176,7 @@
     },
     {
       "category": "MFA technologies and methods",
-      "difficulty": "1",
+      "difficulty": "2",
       "question": "True or False: All MFA methods require at least three factors to be authenticated.",
       "answer": "False",
       "choices": [
@@ -186,7 +186,7 @@
     },
     {
       "category": "MFA technologies and methods",
-      "difficulty": "1",
+      "difficulty": "2",
       "question": "Which MFA method involves generating a code that can only be used once?",
       "answer": "One-Time Password (OTP)",
       "choices": [
@@ -198,7 +198,7 @@
     },
     {
       "category": "MFA technologies and methods",
-      "difficulty": "1",
+      "difficulty": "2",
       "question": "True or False: An authenticator app is a type of software token.",
       "answer": "True",
       "choices": [
