@@ -67,6 +67,7 @@ class GifDialog(QDialog):
 
         # Create a QLabel to hold the GIF
         self.gif_label = QLabel()
+        self.gif_label.setAlignment(Qt.AlignCenter)
         self.movie = QMovie(Settings.IMAGE_FILE_PATH+"confetti.gif")
         self.gif_label.setMovie(self.movie)
 

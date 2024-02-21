@@ -65,5 +65,4 @@ class ManageViewModel(QWidget):
         self.reset_container.setVisible(True)
 
     def reset(self) -> None:
-        self.reset_container.setVisible(False)
         self.data_service.reset_data()

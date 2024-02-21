@@ -21,9 +21,15 @@ class App(QApplication):
     def on_message(self, message_title: str, *args: Any) -> None:
         if message_title == "Reboot":
             self.message_service.unsubscribe_all()
+
+            widgets = self.allWidgets()
+            for widget in widgets:
+                widget.deleteLater()
+            
             old_main = self.main
             self.main = MainViewModel()
             old_main.close()
+            
 
 
 if __name__ == '__main__':

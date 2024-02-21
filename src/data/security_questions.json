@@ -1,24 +1,24 @@
 {
-  "securityQuestions": [
-    "What is the name of your first pet?",
-    "In which city were you born?",
-    "What is your favorite movie?",
-    "Who is your favorite author?",
-    "What is the model of your first car?",
+  "security_questions": [
+    "What obscure childhood hobby did you pick up at a specific age?",
+    "What inside joke did you share with a specific person?",
+    "What foreign song holds significance for a personal reason?",
+    "What fictional character did you relate to most as a child?",
+    "What specific achievement are you most proud of?",
     "What is the name of your favorite teacher?",
-    "In which year did you graduate high school?",
-    "What is the name of your maternal grandmother?",
-    "What is your favorite color?",
-    "What is your mother's maiden name?",
+    "What uncommon food combination do you secretly enjoy?",
+    "What unusual souvenir did you pick up on a specific trip?",
+    "What board game holds personal meaning from memory?",
+    "What hidden talent did you briefly pursue and then abandon?",
     "Which country would you like to visit the most?",
-    "What is the make of your first car?",
+    "What specific quote holds personal significance for you?",
     "What is the name of your childhood best friend?",
-    "What is the last name of your favorite actor?",
-    "What is the name of the street you grew up on?",
-    "In which month were you born?",
-    "What is the name of your first school?",
+    "What minor childhood injury holds a funny or relatable story?",
+    "What specific tradition do you cherish?",
+    "What specific piece of art resonates with you deeply?",
+    "What specific smell evokes strong memories?",
     "What is your favorite food?",
-    "What is the name of the company of your first job?",
-    "What is the name of your favorite sports team?"
+    "What specific fear did you overcome?",
+    "What specific dream do you still remember vividly?"
   ]
 }

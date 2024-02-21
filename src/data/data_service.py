@@ -175,6 +175,8 @@ class DataService():
         self.notes_directory = 'data/notes'
         self.notes = self.read_notes_titles()
         self.cached_quiz_bank = []
+        self.cached_security_questions = []
+        self.cached_facts = []
 
     def save_data(self) -> None:
         if self.signal_update:
@@ -307,6 +309,16 @@ class DataService():
         self.system.set_custom_quiz_expand(state)
         self.message_service.send(self, "Update Custom Quiz", state)
 
+    def get_fun_fact(self) -> str:
+        if not self.cached_facts:
+            try:
+                with open('data/facts.json', 'r') as file:
+                    self.cached_facts = json.load(file)["facts"]
+            except FileNotFoundError:
+                print("File is not found")
+                return "Where are all the MFA facts :("
+        return random.choice(self.cached_facts)
+
     """
     =====================================================================================
     SIMULATION SECTION
@@ -314,15 +326,16 @@ class DataService():
     """
 
     def get_security_questions(self) -> list:
-        try:
-            with open('data/security_questions.json', 'r') as file:
-                data = json.load(file)
-        except FileNotFoundError:
-            print("File is not found")
-            return []
+        if not self.cached_security_questions:
+            try:
+                with open('data/security_questions.json', 'r') as file:
+                    self.cached_security_questions = json.load(file)["security_questions"]
+            except FileNotFoundError:
+                print("File is not found")
+                return []
         
         # Select 9 random questions
-        return random.sample(data['securityQuestions'], 9)
+        return random.sample(self.cached_security_questions, 9)
 
     """
     =====================================================================================

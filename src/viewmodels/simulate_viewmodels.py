@@ -1,6 +1,6 @@
 from typing import Any
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QStackedWidget, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QStackedWidget, QHBoxLayout, QMainWindow
 from PyQt5.QtGui import QColor
 from services.container import ApplicationContainer
 from models.authentication.authentication import Method

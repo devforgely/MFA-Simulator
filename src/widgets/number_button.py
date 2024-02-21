@@ -31,7 +31,7 @@ class LockableNumberButton(QPushButton):
         self.setLayout(layout)
 
         shadow_effect = QGraphicsDropShadowEffect()
-        shadow_effect.setColor(QColor(0, 0, 0, 30))
+        shadow_effect.setColor(QColor(0, 0, 0, 40))
         shadow_effect.setBlurRadius(40)
         shadow_effect.setXOffset(2)
         self.setGraphicsEffect(shadow_effect)

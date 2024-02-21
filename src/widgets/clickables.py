@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, pyqtSignal, QRectF, QPointF, QPoint, QSize, pyqtSlot
-from PyQt5.QtWidgets import QLabel, QLineEdit, QToolButton, QHBoxLayout, QFrame, QCheckBox
+from PyQt5.QtWidgets import QLabel, QLineEdit, QToolButton, QHBoxLayout, QFrame, QCheckBox, QPushButton
 from PyQt5.QtGui import QPixmap, QIcon, QPen, QBrush, QPainter, QColor, QFont
 from configuration.app_configuration import Settings
 
@@ -37,6 +37,12 @@ class ClickableFrame(QFrame):
 
     def mousePressEvent(self, event):
         self.clicked.emit()
+
+# Seems stupid but it is for handle style :(
+class ClickableButton(QPushButton):
+    def __init__(self, parent=None):
+        QPushButton.__init__(self, parent)
+        self.setStyleSheet("background-color: none;border: none;")
 
 
 class CustomLineEdit(QLineEdit):

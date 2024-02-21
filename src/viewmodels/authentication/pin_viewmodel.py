@@ -31,8 +31,8 @@ class PinRegisterViewModel(AuthenticationBaseViewModel):
         super().__init__("views/register_views/pin_view.ui", info_panel)
 
         self.device_id = str(uuid.uuid4())
+        self.pin_entered = ""
 
-        self.pin_field.setEchoMode(QLineEdit.Password)
         self.btn0.clicked.connect(lambda: self.update_field("0"))
         self.btn1.clicked.connect(lambda: self.update_field("1"))
         self.btn2.clicked.connect(lambda: self.update_field("2"))
@@ -47,18 +47,9 @@ class PinRegisterViewModel(AuthenticationBaseViewModel):
         self.submit_btn.clicked.connect(lambda: self.send())
 
         self.clear_btn.installEventFilter(ButtonHoverWatcher(self.clear_btn, "delete", "delete-red"))
-        self.clear_btn.setStyleSheet("""
-            QPushButton:hover {
-                background-color: none;
-            }
-        """)
-
         self.submit_btn.installEventFilter(ButtonHoverWatcher(self.submit_btn, "tick-circle", "tick-circle-green"))
-        self.submit_btn.setStyleSheet("""
-            QPushButton:hover {             
-                background-color: none;
-            }
-        """)
+        self.frame.adjust_shadow(30, 50, 2, 2)
+    
         self.initalise_infopanel()
     
     def initalise_infopanel(self) -> None:
@@ -79,34 +70,43 @@ class PinRegisterViewModel(AuthenticationBaseViewModel):
 
     def send(self) -> None:
         plain_pin = self.pin_field.text()
-
         if len(plain_pin) < 3: return
 
-        public_key, private_key = rsa.newkeys(512)
+        if not self.pin_entered:
+            self.pin_entered = plain_pin
+            self.pin_field.setText("")
+            self.pin_field.setPlaceholderText("Re-Enter Pin")
+            self.pin_field.setEchoMode(QLineEdit.Password)
+            return
+        
+        if plain_pin != self.pin_entered:
+            print("dont match")
+        else:
+            public_key, private_key = rsa.newkeys(512)
 
-        if self.authentication_service.register(public_key.save_pkcs1()):
-            secret = hashlib.sha256(plain_pin.encode()).hexdigest()
-            self.authentication_service.session_store({
-                "secret": secret, "device_id": self.device_id, "private_key": private_key.save_pkcs1()})
+            if self.authentication_service.register(public_key.save_pkcs1()):
+                secret = hashlib.sha256(plain_pin.encode()).hexdigest()
+                self.authentication_service.session_store({
+                    "secret": secret, "device_id": self.device_id, "private_key": private_key.save_pkcs1()})
 
-            self.info_panel.update_client_status("request", "registration")
-            self.info_panel.update_client_status("timestamp", self.authentication_service.get_session_stored()["timestamp_register"])
+                self.info_panel.update_client_status("request", "registration")
+                self.info_panel.update_client_status("timestamp", self.authentication_service.get_session_stored()["timestamp_register"])
 
-            self.info_panel.update_server_status("status", "200")
-            self.info_panel.update_server_status("message", "user registered")
+                self.info_panel.update_server_status("status", "200")
+                self.info_panel.update_server_status("message", "user registered")
 
-            self.info_panel.update_client_data("user_private_key", private_key.save_pkcs1().decode())
-            self.info_panel.update_client_data("pin", plain_pin)
-            self.info_panel.update_client_data("hashed_pin", secret)
+                self.info_panel.update_client_data("user_private_key", private_key.save_pkcs1().decode())
+                self.info_panel.update_client_data("pin", plain_pin)
+                self.info_panel.update_client_data("hashed_pin", secret)
 
-            self.info_panel.update_server_data("user_public_key", public_key.save_pkcs1().decode())
+                self.info_panel.update_server_data("user_public_key", public_key.save_pkcs1().decode())
 
-            self.info_panel.log_text("Client: Pin created locally.")
-            self.info_panel.log_text("Client: Generating asymmetric key-pair.")
-            self.info_panel.log_text("Server: Registering user public key in identity provider.")
-            self.info_panel.log_text("Registeration successful.")
+                self.info_panel.log_text("Client: Pin created locally.")
+                self.info_panel.log_text("Client: Generating asymmetric key-pair.")
+                self.info_panel.log_text("Server: Registering user public key in identity provider.")
+                self.info_panel.log_text("Registeration successful.")
 
-            self.message_service.send(self, "Registered", None)
+                self.message_service.send(self, "Registered", None)
 
 
 class PinAuthenticateViewModel(AuthenticationBaseViewModel):
@@ -128,18 +128,9 @@ class PinAuthenticateViewModel(AuthenticationBaseViewModel):
         self.submit_btn.clicked.connect(lambda: self.send())
 
         self.clear_btn.installEventFilter(ButtonHoverWatcher(self.clear_btn, "delete", "delete-red"))
-        self.clear_btn.setStyleSheet("""
-            QPushButton:hover {
-                background-color: none;
-            }
-        """)
-
         self.submit_btn.installEventFilter(ButtonHoverWatcher(self.submit_btn, "tick-circle", "tick-circle-green"))
-        self.submit_btn.setStyleSheet("""
-            QPushButton:hover {             
-                background-color: none;
-            }
-        """)
+        self.frame.adjust_shadow(30, 50, 2, 2)
+
         self.initalise_infopanel()
 
     def initalise_infopanel(self) -> None:

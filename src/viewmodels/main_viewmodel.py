@@ -39,6 +39,8 @@ class MainViewModel(QMainWindow):
         self.stackedWidget.addWidget(self.manage_page)
 
         # Data LOAD
+        self.fact_label.setText(self.data_service.get_fun_fact())
+        
         self.coin_count.setText(str(self.data_service.get_user_coins()))
 
         badge_count = self.data_service.get_user_badges_count()
@@ -76,6 +78,9 @@ class MainViewModel(QMainWindow):
                 self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"star-medal.png"), "You've been awarded with a MFA badge!")
         elif message_title == "Show Notification":
             self.show_notification(args[0], args[1])
+
+        # update fun fact once a while, while being every time when there is new message
+        self.fact_label.setText(self.data_service.get_fun_fact())
     
     def setup_ui(self) -> None:
         # USE CUSTOM TITLE BAR
