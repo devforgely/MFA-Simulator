@@ -134,6 +134,7 @@ class SystemData():
     def __init__(self):
         self.start_up_index = 0
         self.custom_quiz_expand = False
+        self.show_notification = True
 
     def get_start_up(self) -> int:
         return self.start_up_index
@@ -146,6 +147,12 @@ class SystemData():
     
     def set_custom_quiz_expand(self, state: bool) -> None:
         self.custom_quiz_expand = state
+
+    def is_show_notification(self) -> bool:
+        return self.show_notification
+    
+    def set_show_notification(self, state: bool) -> None:
+        self.show_notification = state
 
     def to_json(self) -> str:
         return json.dumps(self.__dict__)
@@ -318,6 +325,14 @@ class DataService():
                 print("File is not found")
                 return "Where are all the MFA facts :("
         return random.choice(self.cached_facts)
+    
+    def is_system_show_notification(self) -> bool:
+        return self.system.is_show_notification()
+    
+    def set_system_show_notification(self, state) -> None:
+        self.signal_update = True
+        self.system.set_show_notification(state)
+        self.message_service.send(self, "Update Notification", state)
 
     """
     =====================================================================================

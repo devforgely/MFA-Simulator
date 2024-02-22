@@ -1,11 +1,13 @@
 import sys
 import ctypes
 from typing import Any
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QWidget
 from services.container import ApplicationContainer
 from data.data_service import DataService
 from PyQt5.QtGui import QIcon
 from viewmodels.main_viewmodel import MainViewModel
+from viewmodels.help_viewmodel import HelpViewModel
+from PyQt5.QtCore import QTimer
 
 
 class App(QApplication):
@@ -16,20 +18,27 @@ class App(QApplication):
 
         self.message_service = ApplicationContainer.message_service()
         self.message_service.subscribe(self, DataService, self.on_message)
+        self.message_service.subscribe(self, MainViewModel, self.on_message)
+
         self.main = MainViewModel()
+        self.help = None
     
     def on_message(self, message_title: str, *args: Any) -> None:
-        if message_title == "Reboot":
+        if message_title == "Help":
+            self.help = HelpViewModel()
+        elif message_title == "Reboot":
             self.message_service.unsubscribe_all()
 
             widgets = self.allWidgets()
             for widget in widgets:
                 widget.deleteLater()
             
-            old_main = self.main
+            old_main = self.main  # Reboot will restart the GUI however if repeated multiple times it will terminate the app
             self.main = MainViewModel()
             old_main.close()
-            
+
+            self.message_service.subscribe(self, DataService, self.on_message)
+            self.message_service.subscribe(self, MainViewModel, self.on_message)
 
 
 if __name__ == '__main__':

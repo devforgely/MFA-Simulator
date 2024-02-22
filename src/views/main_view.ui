@@ -57,7 +57,7 @@ QToolTip {
 }
 
 /* Top Bar */
-#topBar {
+#top_bar {
 	background-color: white;
 	border-bottom: 3px solid #eeeeee;
 }
@@ -76,19 +76,6 @@ QToolTip {
 	background-color: transparent;
 }
 
-#search_field {
-	background-color: #ecedf1;
-	border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-	padding-left: 20px;
-}
-
-#search_icon {
-	background-color: #ecedf1;
-	border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-	padding: 5px;
-}
 
 /* Top Bar Buttons */
 #rightSection .QPushButton { background-color: transparent; border: none;  border-radius: 5px; }
@@ -165,7 +152,7 @@ QToolTip {
         <number>0</number>
        </property>
        <item>
-        <widget class="QFrame" name="topBar">
+        <widget class="QFrame" name="top_bar">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -508,6 +495,38 @@ QToolTip {
              <property name="bottomMargin">
               <number>0</number>
              </property>
+             <item>
+              <widget class="QPushButton" name="help_btn">
+               <property name="minimumSize">
+                <size>
+                 <width>28</width>
+                 <height>28</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>28</width>
+                 <height>28</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>../resources/icons/help-question-1.png</normaloff>../resources/icons/help-question-1.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QPushButton" name="minimise_btn">
                <property name="minimumSize">
@@ -995,7 +1014,6 @@ QToolTip {
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <resources/>
  <connections/>

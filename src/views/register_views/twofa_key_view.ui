@@ -320,7 +320,7 @@
   <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
-   <header>widgets/clickables.h</header>
+   <header location="global">widgets/clickables.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

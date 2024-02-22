@@ -214,6 +214,8 @@ class AuthenticateViewModel(QWidget):
         self.authentication_service = ApplicationContainer.authentication_service()
         self.message_service = ApplicationContainer.message_service()
 
+        self.congrats_dialog = None
+
         self.type_to_authenticate = {
             Method.PIN: PinAuthenticateViewModel,
             Method.PASSWORD: PasswordAuthenticateViewModel,
@@ -270,10 +272,10 @@ class AuthenticateViewModel(QWidget):
             self.back_btn.setEnabled(True)
         else:
             # congratulation dialog
-            dialog = GifDialog(self.width(), self.height(), self.authentication_service.complete_simulation, self)
-            dialog.move(0, 0)
-            dialog.show()
-            dialog.destroyed.connect(lambda: self.message_service.send(self, "Creator View", None))
+            self.congrats_dialog = GifDialog(self.authentication_service.complete_simulation, self)
+            self.congrats_dialog.move(0, 0)
+            self.congrats_dialog.show()
+            self.congrats_dialog.destroyed.connect(self.close_congrats_dialog)
 
     def go_backward(self) -> None:
         self.authentication_service.backward()
@@ -281,5 +283,14 @@ class AuthenticateViewModel(QWidget):
         if self.authentication_service.at == 0:
             self.back_btn.setEnabled(False)
         self.next_btn.setEnabled(True)
+
+    def close_congrats_dialog(self) -> None:
+        self.congrats_dialog = None
+        self.message_service.send(self, "Creator View", None)
+
+    def resizeEvent(self, event):
+        if self.congrats_dialog is not None:
+            self.congrats_dialog.resize(self.size())
+        super(AuthenticateViewModel, self).resizeEvent(event)
         
         

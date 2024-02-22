@@ -3,6 +3,7 @@ from PyQt5.QtCore import QTimer, Qt, QPropertyAnimation
 from PyQt5.QtGui import QMovie
 from typing import Callable
 from configuration.app_configuration import Settings
+from PyQt5 import uic
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -43,23 +44,22 @@ class Notification(QDialog):
         self.close()
 
 class GifDialog(QDialog):
-    def __init__(self, width: int, height: int, func: Callable[[], None], parent=None):
+    def __init__(self, func: Callable[[], None], parent=None):
         super(GifDialog, self).__init__(parent)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         self.trigger = func
-
-        self.overlay = QWidget(self)
-        self.overlay.setFixedSize(width, height)
-        self.overlay.setStyleSheet("background-color: rgba(0, 0, 0, 0.6);")
-        self.adjustSize()
+        self.setObjectName("form")
+        self.setStyleSheet("#form {background-color: rgba(0, 0, 0, 0.6)}")
+        if parent is not None:
+            self.resize(parent.size())
 
         self.container = QWidget(self)
         self.container.setObjectName("container")
         self.container.setFixedSize(600, 500)
         self.container.setStyleSheet("#container {background-color: white; border-radius: 15%}")
-        self.container.move(width // 2 - self.container.width() // 2, height // 2 - self.container.height() // 2)
+        self.container.move(self.width() // 2 - self.container.width() // 2, self.height() // 2 - self.container.height() // 2)
         
         self.title = QLabel("Congratulations for finishing the simulation!")
         self.title.setStyleSheet("font-weight: bold; font-size: 12pt;")
@@ -88,3 +88,24 @@ class GifDialog(QDialog):
     def close_dialog(self) -> None:
         self.trigger()
         self.close()
+
+    def resizeEvent(self, event):
+        self.container.move(self.width() // 2 - self.container.width() // 2, self.height() // 2 - self.container.height() // 2)
+        super(GifDialog, self).resizeEvent(event)
+
+class AboutDialog(QDialog):
+    def __init__(self, parent=None):
+        super(AboutDialog, self).__init__(parent)
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
+        uic.loadUi("views/about_view.ui", self)
+
+        if parent is not None:
+            self.resize(parent.size())
+
+        self.exit_about.clicked.connect(self.close_dialog)
+
+    def close_dialog(self) -> None:
+        self.close()
+        

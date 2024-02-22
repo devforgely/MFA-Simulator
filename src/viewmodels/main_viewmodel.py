@@ -1,8 +1,8 @@
 from typing import Any
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QPoint, QRect, QTimer
-from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QMainWindow, QGraphicsDropShadowEffect, QSizeGrip, QButtonGroup
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QMainWindow, QSizeGrip, QButtonGroup
 from configuration.app_configuration import Settings
 from widgets.side_grip import SideGrip
 from services.container import ApplicationContainer
@@ -24,6 +24,8 @@ class MainViewModel(QMainWindow):
         self.data_service = ApplicationContainer.data_service()
         self.message_service = ApplicationContainer.message_service()
 
+        self.setWindowTitle("MFA Simulator")
+
         self.notifications = []
 
         # PAGES
@@ -40,8 +42,8 @@ class MainViewModel(QMainWindow):
 
         # Data LOAD
         self.fact_label.setText(self.data_service.get_fun_fact())
-        
         self.coin_count.setText(str(self.data_service.get_user_coins()))
+        self.is_show_notification = self.data_service.is_system_show_notification()
 
         badge_count = self.data_service.get_user_badges_count()
         self.badge_count.setText(f"{badge_count[0]}/{badge_count[1]}")
@@ -78,6 +80,8 @@ class MainViewModel(QMainWindow):
                 self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"star-medal.png"), "You've been awarded with a MFA badge!")
         elif message_title == "Show Notification":
             self.show_notification(args[0], args[1])
+        elif message_title == "Update Notification":
+            self.is_show_notification = args[0]
 
         # update fun fact once a while, while being every time when there is new message
         self.fact_label.setText(self.data_service.get_fun_fact())
@@ -109,8 +113,8 @@ class MainViewModel(QMainWindow):
                     self.move(event.globalPos() - self.dragPos)
                     event.accept()
 
-            self.topBar.mousePressEvent = lambda event: mousePressWindowEvent(event)
-            self.topBar.mouseMoveEvent = lambda event: mouseMoveWindowEvent(event)
+            self.top_bar.mousePressEvent = lambda event: mousePressWindowEvent(event)
+            self.top_bar.mouseMoveEvent = lambda event: mouseMoveWindowEvent(event)
 
             # TOP BAR CONNECTIONS
             self.minimise_btn.clicked.connect(self.showMinimized)
@@ -131,7 +135,6 @@ class MainViewModel(QMainWindow):
 
         else:
         # USE DEFAULT TITLE BAR
-            self.setWindowTitle("MFA Simulator")
             self.rightSection.layout().removeWidget(self.minimise_btn)
             self.rightSection.layout().removeWidget(self.maximise_restore_btn)
             self.rightSection.layout().removeWidget(self.close_btn)
@@ -142,14 +145,10 @@ class MainViewModel(QMainWindow):
         # SET CUSTOM THEME
         if Settings.ENABLE_CUSTOM_THEME:
             self.styleSheet.setStyleSheet(open(Settings.THEME_FILE, 'r').read())
-
-        # DROP SHADOW
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(15)
-        shadow.setColor(QColor(0, 0, 0, 150))
-        shadow.setOffset(0, 0)
-        self.setGraphicsEffect(shadow)
         
+        # HELP
+        self.help_btn.clicked.connect(lambda: self.message_service.send(self, "Help"))
+
         # PAGE INIT
         self.stackedWidget.setCurrentIndex(self.data_service.get_system_start_up())
 
@@ -235,7 +234,7 @@ class MainViewModel(QMainWindow):
                         Exception("Undefined Button Behaviour")
 
     def show_notification(self, icon: QIcon, message: str):
-        if len(self.notifications) < 10:
+        if self.is_show_notification and len(self.notifications) < 10:
             notification = Notification(icon, message, self)
             self.notifications.append(notification)
             notification.move(self.width() // 2 - notification.width() // 2, len(self.notifications) * (notification.height()+7) + 20)

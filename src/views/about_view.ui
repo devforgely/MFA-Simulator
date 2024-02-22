@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>868</width>
+    <height>859</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#Form {
+	background-color: #fff;
+}
+
+#title, #credit_label {
+	color: #999999;
+	font-size: 12pt;
+}
+
+#about_content {
+	background-color: #fff;
+}
+
+#exit_about {
+	border: none;
+	border-radius: 8%;
+	width: 80px;
+	height: 40px;
+	background-color: #000;
+	color: #fff;
+	font-weight: bold;
+}
+
+#exit_about:hover {
+	color: #000;
+	border: 1px solid #000;
+	background: transparent;
+}
+
+#final_line {
+	margin-bottom: 15px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>11</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>11</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="leftMargin">
+      <number>20</number>
+     </property>
+     <property name="rightMargin">
+      <number>40</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="title">
+       <property name="text">
+        <string>About MFA Simulator</string>
+       </property>
+      </widget>
+     </item>
+     <item alignment="Qt::AlignRight">
+      <widget class="QPushButton" name="exit_about">
+       <property name="text">
+        <string>Exit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="about_content">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>-379</y>
+        <width>847</width>
+        <height>1174</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap>../resources/images/9712739_4140045.jpg</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>&lt;p&gt;That's where the Multi-factor Authentication Simulator comes in. It aim to diverge from the conventional authentication methods—and bring back some of the robust security measures of the early pioneers. The first step is to create a comprehensive learning platform that allows you to explore various authentication methods.&lt;p&gt;
+
+&lt;p&gt;Need to understand how memorised secret works? Or how biometric authentication provides security? Or how 2FA security key operate? The simulator provides interactive modules for each of these authenticators, allowing you to combine them and see how they work together to enhance security.&lt;/p&gt;</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap>../resources/images/20943502.jpg</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="label">
+           <property name="maximumSize">
+            <size>
+             <width>400</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap>../resources/images/4799410.jpg</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>&lt;p&gt;Greetings! If you're here, you're likely immersed in the world of education and care about you internet identity.&lt;/p&gt;
+
+&lt;p&gt;You probably have multiple tabs open: one for your email, one for your project management tool, one for your cloud storage, and so forth… But have you ever wondered about the security of these &quot;digital tools&quot;? Or why there's such a variety of login methods? To answer these questions, and to explain why we need to delve into the realm of cybersecurity.&lt;/p&gt;</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>&lt;p&gt;Don't just stop at the simulations. The app also includes quizzes to test your understanding and readings to deepen your knowledge. You can tailor your learning journey, choosing the modules and resources that best meet your needs.&lt;/p&gt;
+
+&lt;p&gt;With The Multi-factor Authentication Simulator, you're not just learning about security - you're experiencing it, testing it, and understanding it on a deeper level. Address your security concerns your way, limited only by your thirst for knowledge.&lt;p&gt;</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="QLabel" name="final_line">
+           <property name="text">
+            <string>By now, you should have a clear understanding of the Multi-factor Authentication Simulator. Challenging the established order is no easy feat. Explore the product! We need pioneers like you to instigate a revolution in digital security.</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="leftMargin">
+          <number>20</number>
+         </property>
+         <property name="topMargin">
+          <number>20</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="credit_label">
+           <property name="text">
+            <string>Credits</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>&lt;a href=&quot;https://www.flaticon.com/free-icons/simulation&quot; title=&quot;simulation icons&quot;&gt;Simulation icons - Flaticon&lt;/a&gt;
+&lt;br&gt;
+&lt;a href=&quot;https://www.flaticon.com/free-icons/quiz&quot; title=&quot;quiz icons&quot;&gt;Quiz icons - Flaticon&lt;/a&gt;
+&lt;br&gt;
+&lt;a href=&quot;https://www.freepik.com/icon/light-bulb_2987996#fromView=keyword&amp;term=Light+Bulb&amp;page=1&amp;position=7&amp;uuid=e342f6c8-f8e5-42e4-b435-0c2260614076&quot;&gt;Lighbulb icon by Freepik&lt;/a&gt;
+&lt;br&gt;
+&lt;a href=&quot;https://www.flaticon.com/free-icons/prize&quot; title=&quot;prize icons&quot;&gt;Prize icons created by vectorsmarket15 - Flaticon&lt;/a&gt;
+&lt;br&gt;
+&lt;a href=&quot;https://www.pixabay.com&quot; title=&quot;pixabay&quot;&gt;Pixabay images (resized to 350px X 350px) under Content License.&lt;/a&gt;
+&lt;br&gt;
+&lt;a href=&quot;https://www.freepik.com/free-vector/coding-website-development-technical-support-programming-engineering-coder-web-developer-computer-software-programmer-male-flat-character-concept-illustration_11667257.htm#query=software%20illustration&amp;position=3&amp;from_view=keyword&amp;track=ais&amp;uuid=d23ecae3-8db0-444a-b256-5e3b71623939&quot;&gt;Image by vectorjuice&lt;/a&gt;
+&lt;br&gt;
+&lt;a href=&quot;https://www.freepik.com/free-vector/isometric-cms-concept_11788713.htm#query=software%20illustration&amp;position=6&amp;from_view=keyword&amp;track=ais&amp;uuid=d23ecae3-8db0-444a-b256-5e3b71623939&quot;&gt;Image by Freepik&lt;/a&gt;
+&lt;br&gt;
+&lt;a href=&quot;https://www.freepik.com/free-vector/my-password-concept-illustration_9712739.htm#query=authentication%20illustration&amp;position=4&amp;from_view=search&amp;track=ais&amp;uuid=98563fdb-a58a-4cb4-a167-77d74d64bfba&quot;&gt;Image by storyset&lt;/a&gt;</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
