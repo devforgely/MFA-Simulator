@@ -266,7 +266,7 @@
   <customwidget>
    <class>ShadowFrame</class>
    <extends>QFrame</extends>
-   <header>widgets/shadow.h</header>
+   <header location="global">widgets/shadow.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

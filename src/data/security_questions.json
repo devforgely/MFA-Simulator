@@ -1,6 +1,6 @@
 {
   "security_questions": [
-    "What obscure childhood hobby did you pick up at a specific age?",
+    "What obscure childhood hobby did you pick up?",
     "What inside joke did you share with a specific person?",
     "What foreign song holds significance for a personal reason?",
     "What fictional character did you relate to most as a child?",
@@ -19,6 +19,10 @@
     "What specific smell evokes strong memories?",
     "What is your favorite food?",
     "What specific fear did you overcome?",
-    "What specific dream do you still remember vividly?"
+    "What specific dream do you still remember vividly?",
+    "What was your driving instructor's first name?",
+    "What was the name of your first stuffed toy?",
+    "What is the name of a college you applied to but didn't attend?",
+    "Where was the destination of your most memorable school field trip?"
   ]
 }

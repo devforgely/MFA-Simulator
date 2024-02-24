@@ -13,14 +13,25 @@ class AuthenticationService():
         self.auth_count = 0
 
         self.type_to_strategy = {
-            Method.PIN: PinStrategy,
             Method.PASSWORD: PasswordStrategy,
             Method.SECRET_QUESTION: SecurityQuestionStrategy,
-            Method.IMAGE_PASSWORD: ImagePasswordStrategy,
-            Method.FINGER_PRINT: FingerPrintStrategy,
+            Method.PICTURE_PASSWORD: PicturePasswordStrategy,
+            Method.FINGERPRINT: FingerPrintStrategy,
+            Method.CARD_PIN: CardPinStrategy,
             Method.TOTP: TOTPStrategy,
             Method.TWOFA_KEY: TwoFAKeyStrategy
         }
+
+        self.type_to_string = {
+            Method.PASSWORD: "password",
+            Method.SECRET_QUESTION: "security_question",
+            Method.PICTURE_PASSWORD: "picture_password",
+            Method.FINGERPRINT: "fingerprint",
+            Method.CARD_PIN: "card_pin",
+            Method.TOTP: "totp",
+            Method.TWOFA_KEY: "twofa_key"
+        }
+
 
     def can_simulate(self) -> bool:
         return len(self.strategy) > 0 and (not self.all_registered() or not self.all_authenticated())
@@ -41,9 +52,9 @@ class AuthenticationService():
             self.measure = 0
             return self.measure
 
-        knowledge_based = {Method.PASSWORD, Method.PIN, Method.SECRET_QUESTION, Method.IMAGE_PASSWORD}
-        biometric_based = {Method.FINGER_PRINT}
-        possession_based = {Method.TOTP}
+        knowledge_based = {Method.PASSWORD, Method.SECRET_QUESTION, Method.PICTURE_PASSWORD, Method.CARD_PIN}
+        biometric_based = {Method.FINGERPRINT}
+        possession_based = {Method.TOTP, Method.CARD_PIN, Method.FINGERPRINT}
 
         if Method.TWOFA_KEY in methods:
             self.measure = 3
@@ -98,6 +109,12 @@ class AuthenticationService():
         if self.at > 0:
             self.at -= 1
 
+    def get_display_details(self) -> dict:
+        if not self.all_registered():
+            return self.data_service.get_simulation_details(self.type_to_string[self.strategy.get_type(self.at)])["registeration"]
+        else:
+            return self.data_service.get_simulation_details(self.type_to_string[self.strategy.get_type(self.at)])["authentication"]
+
     def register(self, *data: Any) -> bool:
         state = self.strategy.register(self.at, *data)
         if state:
@@ -109,6 +126,14 @@ class AuthenticationService():
     def authenticate(self, *data: Any) -> bool:
         state = self.strategy.authenticate(self.at, *data)
         if state:
+            if self.at == self.auth_count:
+                self.auth_count += 1
+            return True
+        return False
+    
+    def bypass(self) -> bool:
+        if self.data_service.update_user_coin(-100):
+            self.strategy.bypass(self.at)
             if self.at == self.auth_count:
                 self.auth_count += 1
             return True

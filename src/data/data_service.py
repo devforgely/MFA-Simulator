@@ -14,14 +14,14 @@ class Note:
         self.content = content
 
 class Badge(Enum):
-    ONE_FA = (0, "b5.png")
-    TWO_FA = (1, "b6.png")
-    MFA = (2, "b7.png")
-    LEARNER = (3, "b9.png")
-    SECURITY_SAVY = (4, "b1.png")
-    QUIZ_WHIZ = (5, "b2.png")
-    SECURITY_SCHOLAR = (6, "b3.png")
-    COIN_HUNTER = (7, "b10.png")
+    ONE_FA = [0, "b5.png"]
+    TWO_FA = [1, "b6.png"]
+    MFA = [2, "b7.png"]
+    LEARNER = [3, "b9.png"]
+    SECURITY_SAVY = [4, "b1.png"]
+    QUIZ_WHIZ = [5, "b2.png"]
+    SECURITY_SCHOLAR = [6, "b3.png"]
+    COIN_HUNTER = [7, "b10.png"]
 
 class User:
     def __init__(self):
@@ -33,11 +33,11 @@ class User:
         self.improvements = []
         self.readings = []
         self.unlocked_simulations = {
-            Method.PIN.value: True,
-            Method.PASSWORD.value: False,
+            Method.PASSWORD.value: True,
             Method.SECRET_QUESTION.value: False,
-            Method.IMAGE_PASSWORD.value: False,
-            Method.FINGER_PRINT.value: False,
+            Method.PICTURE_PASSWORD.value: False,
+            Method.FINGERPRINT.value: False,
+            Method.CARD_PIN.value: False,
             Method.TOTP.value: False,
             Method.TWOFA_KEY.value: False
         }
@@ -179,7 +179,6 @@ class DataService():
                 self.user = User.from_json(json.dumps(data["user"]))
                 self.system = SystemData.from_json(json.dumps(data["system"]))
 
-        self.notes_directory = 'data/notes'
         self.notes = self.read_notes_titles()
         self.cached_quiz_bank = []
         self.cached_security_questions = []
@@ -187,7 +186,6 @@ class DataService():
 
     def save_data(self) -> None:
         if self.signal_update:
-            print("Saving Data...")
             with open(self.file_path, 'w') as f:
                 json.dump({"user": json.loads(self.user.to_json()), "system": json.loads(self.system.to_json())}, f)
             self.signal_update = False
@@ -208,16 +206,21 @@ class DataService():
     =====================================================================================
     """
 
-    def update_user_coin(self, value: int) -> None:
-        self.signal_update = True
-        self.user.update_coins(value)
+    def update_user_coin(self, value: int) -> bool:
+        if self.user.get_coins() + value >= 0:
+            self.signal_update = True
+            self.user.update_coins(value)
 
-        #BADGE CONDITION
-        if self.user.get_coins() >= 1000:
-            self.update_user_badge(Badge.COIN_HUNTER)
-        #BADGE END
+            #BADGE CONDITION
+            if self.user.get_coins() >= 1000:
+                self.update_user_badge(Badge.COIN_HUNTER)
+            #BADGE END
 
-        self.message_service.send(self, "Update Coins", self.user.get_coins(), value > 0)
+            self.message_service.send(self, "Update Coins", self.user.get_coins(), value > 0)
+            return True
+        else:
+            self.message_service.send(self, "Insufficient Coins", value*-1 - self.user.get_coins())
+            return False
 
     def update_user_quiz(self, correct: int) -> None:
         self.signal_update = True
@@ -234,16 +237,15 @@ class DataService():
         self.message_service.send(self, "Update Simulation", self.user.get_simulation_played())
 
     def update_user_badge(self, badge: Badge) -> None:
-        updated = self.user.add_badge(badge)
-
-        #BADGE CONDITION
-        current, total = self.user.get_badges_count()
-        if current == total-1:
-            updated = self.user.add_badge(Badge.SECURITY_SAVY) | updated
-        #BADGE END
-            
-        self.signal_update = self.signal_update | updated
-        self.message_service.send(self, "Update Badges", self.user.get_badges_count(), updated)
+        if self.user.add_badge(badge):
+            self.signal_update = True
+            count = 1
+            #BADGE CONDITION
+            current, total = self.user.get_badges_count()
+            if current == total-1:
+                if self.user.add_badge(Badge.SECURITY_SAVY): count += 1
+            #BADGE END
+            self.message_service.send(self, "Update Badges", self.user.get_badges_count(), count)
 
     def update_user_improvement(self, improvements: list[tuple]) -> None:
         self.signal_update = True
@@ -339,6 +341,13 @@ class DataService():
     SIMULATION SECTION
     =====================================================================================
     """
+    def get_simulation_details(self, name: str) -> dict:
+        try:
+            with open(f'data/authentication_details/{name}.json', 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            print("File is not found")
+            return {}
 
     def get_security_questions(self) -> list:
         if not self.cached_security_questions:
@@ -360,7 +369,7 @@ class DataService():
 
     def read_notes_titles(self) -> list:
         notes = []
-        for filename in os.listdir(self.notes_directory):
+        for filename in os.listdir(Settings.NOTE_FILE_PATH):
             if filename.endswith('.md'):
                 title = os.path.splitext(filename)[0].replace("_", " ")
                 if not title.isupper():
@@ -377,7 +386,7 @@ class DataService():
     
     def read_note(self, index) -> Note:
         if self.notes[index].content == None:
-            with open(os.path.join(self.notes_directory, os.listdir(self.notes_directory)[index]), 'r') as file:
+            with open(os.path.join(Settings.NOTE_FILE_PATH, os.listdir(Settings.NOTE_FILE_PATH)[index]), 'r') as file:
                 self.notes[index].content = markdown.markdown(file.read())
         return self.notes[index]
     

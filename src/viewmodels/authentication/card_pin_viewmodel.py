@@ -26,9 +26,9 @@ class ButtonHoverWatcher(QObject):
             self.button.setIcon(QIcon(f"{Settings.ICON_FILE_PATH}{self.default_icon}.svg"))
         return super().eventFilter(watched, event)
 
-class PinRegisterViewModel(AuthenticationBaseViewModel):
+class CardPinRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__("views/register_views/pin_view.ui", info_panel)
+        super().__init__("views/register_views/card_pin_view.ui", info_panel)
 
         self.device_id = str(uuid.uuid4())
         self.pin_entered = ""
@@ -109,9 +109,9 @@ class PinRegisterViewModel(AuthenticationBaseViewModel):
                 self.message_service.send(self, "Registered", None)
 
 
-class PinAuthenticateViewModel(AuthenticationBaseViewModel):
+class CardPinAuthenticateViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__("views/authenticate_views/pin_view.ui", info_panel)
+        super().__init__("views/authenticate_views/card_pin_view.ui", info_panel)
 
         self.pin_field.setEchoMode(QLineEdit.Password)
         self.btn0.clicked.connect(lambda: self.update_field("0"))

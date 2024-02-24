@@ -5,8 +5,8 @@ import os
 import random
 
 
-class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
-    def __init__(self, info_panel: QWidget, ui="views/register_views/image_password_view.ui") -> None:
+class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
+    def __init__(self, info_panel: QWidget, ui="views/register_views/picture_password_view.ui") -> None:
         super().__init__(ui, info_panel)
 
         self.MAX_SELECT_COUNT = 7
@@ -130,9 +130,9 @@ class ImagePasswordRegisterViewModel(AuthenticationBaseViewModel):
 
 
 
-class ImagePasswordAuthenticateViewModel(ImagePasswordRegisterViewModel):
+class PicturePasswordAuthenticateViewModel(PicturePasswordRegisterViewModel):
     def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel, ui="views/authenticate_views/image_password_view.ui")
+        super().__init__(info_panel, ui="views/authenticate_views/picture_password_view.ui")
 
     def initalise_infopanel(self) -> None:
         self.info_panel.add_client_data("images", [])

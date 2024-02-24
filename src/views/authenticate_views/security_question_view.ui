@@ -10,11 +10,11 @@
     <height>450</height>
    </rect>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>600</width>
-    <height>16777215</height>
-   </size>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -82,8 +82,20 @@ QPushButton {
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
-    <widget class="QFrame" name="frame">
+   <item alignment="Qt::AlignHCenter">
+    <widget class="ShadowFrame" name="frame">
+     <property name="minimumSize">
+      <size>
+       <width>600</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>600</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -142,7 +154,7 @@ QPushButton {
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="warning_label">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -150,7 +162,7 @@ QPushButton {
            </size>
           </property>
           <property name="text">
-           <string>Your answer must be atleast three characters long and case-sensitive is ignored.</string>
+           <string>The answers have case-sensitive ignored.</string>
           </property>
           <property name="wordWrap">
            <bool>true</bool>
@@ -217,6 +229,14 @@ QPushButton {
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ShadowFrame</class>
+   <extends>QFrame</extends>
+   <header location="global">widgets/shadow.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -1,28 +1,41 @@
 from typing import Any
+from models.authentication.authentication import AuthenticationStrategy, Method
 import hashlib
 import datetime
-from models.authentication.authentication import AuthenticationStrategy, Method
 import rsa
 import hmac
 import math
 import secrets
 import time
 
-class BaseHashStrategy(AuthenticationStrategy):
+# For purpose of simulation, the strategy is simplified
+
+class SaltStrategy(AuthenticationStrategy): #Salted Challenge Response Authentication Mechanism
     def __init__(self) -> None:
         self.data = {}
 
-    def get_type(self) -> Method:
-        return Method.BASEHASH
+    def hash_secret(self, secret, salt):
+        return hashlib.pbkdf2_hmac('sha256', secret.encode('utf-8'), salt, 100000)
+    
+    def generate_salt(self, length=16):
+        return secrets.token_bytes(length)
 
-    def register(self, key: str) -> bool:
+    def register(self, shared_secret: str) -> bool:
         self.data["timestamp_register"] = str(datetime.datetime.now())
-        self.data["key"] = hashlib.sha256(key.encode()).hexdigest()
+
+        salt = self.generate_salt()
+        self.data["salt"] = salt
+        self.data["hashed_secret"] = self.hash_secret(shared_secret, salt)
+
         return True
 
-    def authenticate(self, key: str) -> bool:
+    def authenticate(self, shared_secret: str) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-        return hashlib.sha256(key.encode()).hexdigest() == self.data["key"]
+        
+        return self.data["hashed_secret"] == self.hash_secret(shared_secret, self.data["salt"])
+    
+    def bypass(self) -> None:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
     
     def store(self, data: dict) -> None:
         self.data |= data
@@ -30,44 +43,13 @@ class BaseHashStrategy(AuthenticationStrategy):
     def get_stored(self) -> dict:
         return self.data
     
-class FingerPrintStrategy(BaseHashStrategy):
+
+class CardPinStrategy(SaltStrategy):
     def __init__(self) -> None:
         super().__init__()
     
     def get_type(self) -> Method:
-        return Method.FINGER_PRINT
-
-class ImagePasswordStrategy(BaseHashStrategy):
-    def __init__(self) -> None:
-        super().__init__()
-    
-    def get_type(self) -> Method:
-        return Method.IMAGE_PASSWORD
-
-
-class PasswordStrategy(BaseHashStrategy):
-    def __init__(self) -> None:
-        super().__init__()
-    
-    def get_type(self) -> Method:
-        return Method.PASSWORD
-    
-    def register(self, username: str, password: str) -> bool:
-        self.data["user_registered"] = username
-        self.data["user_password"] = hashlib.sha256(password.encode()).hexdigest()
-        self.data["timestamp_register"] = str(datetime.datetime.now())
-        return True
-    
-    def authenticate(self, username: str, password: str) -> bool:
-        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-        return username == self.data["user_registered"] and hashlib.sha256(password.encode()).hexdigest() == self.data["user_password"]
-
-class PinStrategy(BaseHashStrategy):
-    def __init__(self) -> None:
-        super().__init__()
-    
-    def get_type(self) -> Method:
-        return Method.PIN
+        return Method.CARD_PIN
     
     def register(self, public_key: bytes) -> bool:
         self.data["public_key"] = public_key
@@ -85,8 +67,48 @@ class PinStrategy(BaseHashStrategy):
             return True
         except rsa.VerificationError:
             return False
+
+
+class FingerPrintStrategy(SaltStrategy):
+    def __init__(self) -> None:
+        super().__init__()
     
-class TOTPStrategy(BaseHashStrategy):
+    def get_type(self) -> Method:
+        return Method.FINGERPRINT
+
+class PicturePasswordStrategy(SaltStrategy):
+    def __init__(self) -> None:
+        super().__init__()
+    
+    def get_type(self) -> Method:
+        return Method.PICTURE_PASSWORD
+
+
+class PasswordStrategy(SaltStrategy):
+    def __init__(self) -> None:
+        super().__init__()
+    
+    def get_type(self) -> Method:
+        return Method.PASSWORD
+    
+    def register(self, username: str, password: str) -> bool:
+        self.data["timestamp_register"] = str(datetime.datetime.now())
+
+        self.data["user_registered"] = username
+        self.data["user_password"] = password # For bypass
+        salt = self.generate_salt()
+        self.data["salt"] = salt
+        self.data["hashed_secret"] = self.hash_secret(f"{username}${password}", salt)
+        
+        return True
+    
+    def authenticate(self, username: str, password: str) -> bool:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        return username == self.data["user_registered"] \
+                and self.hash_secret(f"{username}${password}", self.data["salt"]) == self.data["hashed_secret"]
+
+    
+class TOTPStrategy(SaltStrategy):
     def __init__(self) -> None:
         super().__init__()
     
@@ -126,12 +148,27 @@ class TOTPStrategy(BaseHashStrategy):
         passcode = binary % 10 ** digits
         return str(passcode).zfill(digits)
 
-class SecurityQuestionStrategy(BaseHashStrategy):
+class SecurityQuestionStrategy(SaltStrategy):
     def __init__(self) -> None:
         super().__init__()
     
     def get_type(self) -> Method:
         return Method.SECRET_QUESTION
+    
+    def register(self, questions: list[str], answers: str) -> bool:
+        self.data["timestamp_register"] = str(datetime.datetime.now())
+
+        self.data["user_questions"] = questions
+        self.data["user_answers"] = answers # For bypass
+        salt = self.generate_salt()
+        self.data["salt"] = salt
+        self.data["hashed_secret"] = self.hash_secret(answers, salt)
+        return True
+    
+    def authenticate(self, answers: str) -> bool:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+
+        return self.hash_secret(answers, self.data["salt"]) == self.data["hashed_secret"]
     
 
 class TwoFAKeyStrategy(TOTPStrategy):

@@ -6,6 +6,8 @@ class Settings():
 
     IMAGE_FILE_PATH = "resources/images/"
 
+    NOTE_FILE_PATH =  "data/notes"
+
     # APP SETTINGS
     ENABLE_CUSTOM_TITLE_BAR = True
     ENABLE_CUSTOM_THEME = False

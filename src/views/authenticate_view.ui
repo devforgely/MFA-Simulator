@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>855</width>
+    <width>1002</width>
     <height>565</height>
    </rect>
   </property>
@@ -22,7 +22,6 @@
 
 #frame QPushButton {
 	padding: 2px;
-	font-size: 11pt;
 	font-weight: 550;
 	color: white;
 	border: 5px solid #e1dfdf;
@@ -30,28 +29,33 @@
 
 #back_btn {
 	border-radius: 17px;
+	font-size: 11pt;
 	background-color: #efa913;
-}
-
-#back_btn:disabled {
-	background-color: #e1dfdf;
-	color: gray;
 }
 
 #next_btn {
 	border-radius: 17px;
+	font-size: 11pt;
 	background-color: #27a37e;
-}
-
-#next_btn:disabled {
-	background-color: #e1dfdf;
-	color: gray;
 }
 
 #end_btn {
 	border-radius: 10px;
+	font-size: 11pt;
 	background-color: #F24942;
-}</string>
+}
+
+#bypass_btn {
+	font-size: 8pt;
+	background-color: #4070f4;
+}
+
+#back_btn:disabled, #next_btn:disabled, #bypass_btn:disabled {
+	background-color: #e1dfdf;
+	color: gray;
+}
+
+</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -73,6 +77,23 @@
        <widget class="QLabel" name="authenticate_label">
         <property name="text">
          <string>Authentication Phase</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="bypass_btn">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string> Bypass Authentication (-100 coins)</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../resources/icons/key.svg</normaloff>../resources/icons/key.svg</iconset>
         </property>
        </widget>
       </item>

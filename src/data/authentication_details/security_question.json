@@ -1,0 +1,28 @@
+{
+    "registeration": {
+        "description": "Security questions and answers are a type of <b>knowledge-based</b> authentication. This is because the user is authenticated based on something they know (i.e., their answers to the security questions).",
+        "advantages": {
+            "User-Friendly": "Security questions are generally easy to set up and understand for users. They often involve personal information or preferences that users are familiar with.",
+            "Fallback Option": "Security questions can serve as a fallback option if a user forgets their password, allowing them to regain access to their account without needing immediate assistance from support."
+        },
+        "disadvantages": {
+            "Limited Security": "Security questions often rely on personal information that may be publicly available or easily guessed, such as the user's mother's maiden name or the city they were born in. This makes them vulnerable to social engineering attacks or data breaches.",
+            "Forgetfulness": "Users may forget the answers to their security questions over time, especially if they don't use them frequently. This can lead to frustration and difficulty accessing their accounts, particularly if they haven't set up alternative authentication methods.",
+            "Privacy Concerns": "Some users may feel uncomfortable providing personal information for security questions, especially if they consider it intrusive or irrelevant to the service they are using. This can lead to reluctance to use security questions or to provide accurate answers, which undermines their effectiveness as a security measure."
+        },
+        "notes": ["<p><b>Confidentiality</b>: No one else should be able to guess, research, or otherwise obtain the answer. This is the most important trait for an answer to have-if the answer is easy to find out, then it sabotages an account's security. If a piece of information is known to anyone around the user or can be found online, it isn't confidential.</p><p><b>Memorability</b>: Users need to remember the answer, potentially for a long time after creating an account. Ideally, the user can immediately recall the answer; they shouldn't have to write it down or look it up.</p><p><b>Multiplicity</b>: There should be multiple possible answers to the question. The more possible answers, the better the security-it'll be less likely that someone manages to guess or brute force the answer. Many service providers will even lock users out of an account after a number of failed attempts.</p>",
+                  "<p>The answers to security questions may contain personal information about the user, and may also be re-used by the user between different applications. As such, they should be treated in the same way as passwords, and stored using a secure hashing algorithm.</p>"]
+    },
+    "authentication": {
+        "description": "<p><b>Authentication</b> is a process used to verify the identity of a user, particularly in the context of security questions. When a user enters their security question answers, the system checks these responses against its stored data.</p>",
+        "usability": {
+            "Easy to Learn": "YES",
+            "Infrequent Errors": "Quasi-YES",
+            "Scalable for Users": "NO",
+            "Easy Recovery": "YES",
+            "Nothing to Carry": "YES"
+        },
+        "notes": ["<p><b>Comparing Answers</b>: To simplify user verification, answers are normalised so that it is case-insensitive, no punctuation and no space. Additionally, guiding users on answer format during input, such as specifying 'DD/MM/YYYY' for dates, enhances user experience and accuracy.</p>",
+                  "<p><b>Multiple Security Questions</b>: An advantage of using multiple security questions is that it increases the difficulty for attackers to gain unauthorised access. By employing a mixture of user-defined and system-defined questions, attackers would need to obtain more information about the target user, making it harder to guess or obtain the answers. Additionally, maintaining a consistent set of questions until the user answers them correctly reduces the likelihood of attackers successfully guessing the answers by trying different questions.</p>"]
+    }
+}

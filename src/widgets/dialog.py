@@ -108,4 +108,50 @@ class AboutDialog(QDialog):
 
     def close_dialog(self) -> None:
         self.close()
+
+
+class DetailViewDialog(QDialog):
+    def __init__(self, title: str, details: str, parent=None):
+        super(DetailViewDialog, self).__init__(parent)
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
+        self.setObjectName("form")
+        self.setStyleSheet("#form {background-color: rgba(0, 0, 0, 0.6)}")
+        if parent is not None:
+            self.resize(parent.size())
+
+        self.container = QWidget(self)
+        self.container.setObjectName("container")
+        self.container.setFixedSize(600, 500)
+        self.container.setStyleSheet("#container {background-color: white; border-radius: 15%; padding: 20px 30px;}")
+        self.container.move(self.width() // 2 - self.container.width() // 2, self.height() // 2 - self.container.height() // 2)
+        
+        self.header = QWidget(self)
+        self.header.setStyleSheet("font-weight: bold; font-size: 12pt; border-bottom: 2px solid #1b232f;")
+        layout = QVBoxLayout(self.header)
+        self.title = QLabel(title)
+        layout.addWidget(self.title)
+
+        # Create a QLabel to hold the details
+        self.detail_label = QLabel(details)
+
+        self.close_button = QPushButton("Close")
+        self.close_button.setMinimumWidth(200)
+        self.close_button.setCursor(Qt.PointingHandCursor)
+        self.close_button.setStyleSheet("background-color: #545aea; color: #fff; border-radius: 15%; padding: 7px 15px; font-weight: bold;")
+        self.close_button.clicked.connect(self.close_dialog)
+        
+        layout = QVBoxLayout(self.container)
+        layout.addWidget(self.header)
+        layout.addWidget(self.detail_label)
+        layout.addStretch()
+        layout.addWidget(self.close_button, alignment=Qt.AlignCenter | Qt.AlignBottom)
+
+    def close_dialog(self) -> None:
+        self.close()
+
+    def resizeEvent(self, event):
+        self.container.move(self.width() // 2 - self.container.width() // 2, self.height() // 2 - self.container.height() // 2)
+        super(DetailViewDialog, self).resizeEvent(event)
         

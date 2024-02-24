@@ -74,10 +74,11 @@ class MainViewModel(QMainWindow):
             self.coin_count.setText(str(args[0]))
             if args[1]: # bool to determine whether if you have earned coins or not
                 self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"coin.png"), "You've just earned some coins!")
+        elif message_title == "Insufficient Coins":
+            self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"coin.png"), f"Requires {args[0]} more coins.")
         elif message_title == "Update Badges":
             self.badge_count.setText(f"{args[0][0]}/{args[0][1]}")
-            if args[1]: # bool to determine whether if you have earned badge or not
-                self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"star-medal.png"), "You've been awarded with a MFA badge!")
+            self.show_notification(QIcon(Settings.IMAGE_FILE_PATH+"star-medal.png"), f"You've been awarded with {args[1]} MFA badge!")
         elif message_title == "Show Notification":
             self.show_notification(args[0], args[1])
         elif message_title == "Update Notification":

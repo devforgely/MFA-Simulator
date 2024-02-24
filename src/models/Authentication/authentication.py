@@ -2,25 +2,27 @@ from typing import Protocol, Any, List
 from enum import Enum
 
 class Method(Enum):
-    COMPOUND = -1
-    BASEHASH = 0
-    PIN = 1
-    PASSWORD = 2
-    SECRET_QUESTION = 3
-    IMAGE_PASSWORD = 4
-    FINGER_PRINT = 5
+    NULL = 0
+    PASSWORD = 1
+    SECRET_QUESTION = 2
+    PICTURE_PASSWORD = 3
+    FINGERPRINT = 4
+    CARD_PIN = 5
     TOTP = 6
     TWOFA_KEY = 7
 
 
 class AuthenticationStrategy(Protocol):
     def get_type(self) -> Method:
-        ...
+        return Method.NULL
     
     def register(self, index: int, *data: Any) -> str:
         ...
 
     def authenticate(self, index: int, *data: Any) -> bool:
+        ...
+
+    def bypass(self) -> None:
         ...
 
     def store(self, index: int, data: dict) -> None:
@@ -37,8 +39,8 @@ class CompoundAuthentication(AuthenticationStrategy):
     def __len__(self) -> int:
         return len(self.childens)
     
-    def get_type(self) -> Method:
-        return Method.COMPOUND
+    def get_type(self, index: int) -> Method:
+        return self.childens[index].get_type()
     
     def get_all_types(self) -> List[Method]:
         return [t.get_type() for t in self.childens]
@@ -54,6 +56,9 @@ class CompoundAuthentication(AuthenticationStrategy):
 
     def authenticate(self, index: int, *data: Any) -> bool:
         return self.childens[index].authenticate(*data)
+    
+    def bypass(self, index) -> None:
+        self.childens[index].bypass()
 
     def store(self, index: int, data: dict) -> None:
         self.childens[index].store(data)

@@ -1,19 +1,20 @@
 from typing import Any
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QStackedWidget, QHBoxLayout, QMainWindow
+from PyQt5.QtWidgets import QWidget, QStackedWidget, QHBoxLayout
 from PyQt5.QtGui import QColor
 from services.container import ApplicationContainer
 from models.authentication.authentication import Method
 from viewmodels.authentication.password_viewmodel import *
-from viewmodels.authentication.pin_viewmodel import *
+from viewmodels.authentication.card_pin_viewmodel import *
 from viewmodels.authentication.security_question_viewmodel import *
-from viewmodels.authentication.image_password_viewmodel import *
+from viewmodels.authentication.picture_password_viewmodel import *
 from viewmodels.authentication.fingerprint_viewmodel import *
 from viewmodels.authentication.totp_viewmodel import *
 from viewmodels.authentication.twofa_key_viewmodel import *
 from widgets.number_button import LockableNumberButton
 from widgets.info_panel import *
-from widgets.dialog import GifDialog
+from widgets.dialog import GifDialog, DetailViewDialog
+from widgets.info_panel import *
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -58,11 +59,11 @@ class CreatorViewModel(QWidget):
         self.max_col = 3
         # Map type val to string
         self.type_to_string = {
-            Method.PIN.value: "Pin",
             Method.PASSWORD.value: "Password",
             Method.SECRET_QUESTION.value: "Security Questions",
-            Method.IMAGE_PASSWORD.value: "Image Password",
-            Method.FINGER_PRINT.value: "Fingerprint",
+            Method.PICTURE_PASSWORD.value: "Picture Password",
+            Method.FINGERPRINT.value: "Fingerprint Device",
+            Method.CARD_PIN.value: "Card && Pin",
             Method.TOTP.value: "TOTP",
             Method.TWOFA_KEY.value: "2FA Key"
         }
@@ -144,12 +145,14 @@ class RegisterViewModel(QWidget):
         self.authentication_service = ApplicationContainer.authentication_service()
         self.message_service = ApplicationContainer.message_service()
 
+        self.detail_dialog = None
+
         self.type_to_register = {
-            Method.PIN: PinRegisterViewModel,
             Method.PASSWORD: PasswordRegisterViewModel,
             Method.SECRET_QUESTION: SecurityQuestionRegisterViewModel,
-            Method.IMAGE_PASSWORD: ImagePasswordRegisterViewModel,
-            Method.FINGER_PRINT: FingerPrintRegisterViewModel,
+            Method.PICTURE_PASSWORD: PicturePasswordRegisterViewModel,
+            Method.FINGERPRINT: FingerPrintRegisterViewModel,
+            Method.CARD_PIN: CardPinRegisterViewModel,
             Method.TOTP: TOTPRegisterViewModel,
             Method.TWOFA_KEY: TwoFAKeyRegisterViewModel
         }
@@ -157,6 +160,8 @@ class RegisterViewModel(QWidget):
         self.next_btn.clicked.connect(self.go_forward)
         self.back_btn.clicked.connect(self.go_backward)
         self.end_btn.clicked.connect(lambda: self.message_service.send(self, "Creator View", None))
+
+        self.message_service.subscribe(self, InfoPanel, self.on_message)
 
     def setup(self) -> None:
         self.clear_stack()
@@ -168,7 +173,7 @@ class RegisterViewModel(QWidget):
             
             if viewmodel_factory:
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
-                info_panel = InfoPanel()
+                info_panel = InfoPanel(self.authentication_service.get_display_details(), 0)
                 hbox = QWidget()
                 hlayout = QHBoxLayout(hbox)
                 hlayout.addWidget(viewmodel_factory(info_panel))
@@ -181,6 +186,11 @@ class RegisterViewModel(QWidget):
     def on_message(self, message_title: str, *args: Any)  -> None:
         if message_title == "Registered":
             self.next_btn.setEnabled(True)
+        elif message_title == "Register Show Details":
+            self.detail_dialog = DetailViewDialog(args[0], args[1], self)
+            self.detail_dialog.move(0, 0)
+            self.detail_dialog.show()
+            self.detail_dialog.destroyed.connect(self.on_detail_dialog_destroyed)
 
     def clear_stack(self) -> None:
         while self.stackedWidget.count() > 0:
@@ -205,6 +215,14 @@ class RegisterViewModel(QWidget):
         if self.authentication_service.at == 0:
             self.back_btn.setEnabled(False)
         self.next_btn.setEnabled(True)
+
+    def on_detail_dialog_destroyed(self):
+        self.detail_dialog = None
+
+    def resizeEvent(self, event):
+        if self.detail_dialog is not None:
+            self.detail_dialog.resize(self.size())
+        super(RegisterViewModel, self).resizeEvent(event)
         
 
 class AuthenticateViewModel(QWidget):
@@ -215,13 +233,14 @@ class AuthenticateViewModel(QWidget):
         self.message_service = ApplicationContainer.message_service()
 
         self.congrats_dialog = None
+        self.detail_dialog = None
 
         self.type_to_authenticate = {
-            Method.PIN: PinAuthenticateViewModel,
             Method.PASSWORD: PasswordAuthenticateViewModel,
             Method.SECRET_QUESTION: SecurityQuestionAuthenticateViewModel,
-            Method.IMAGE_PASSWORD: ImagePasswordAuthenticateViewModel,
-            Method.FINGER_PRINT: FingerPrintAuthenticateViewModel,
+            Method.PICTURE_PASSWORD: PicturePasswordAuthenticateViewModel,
+            Method.FINGERPRINT: FingerPrintAuthenticateViewModel,
+            Method.CARD_PIN: CardPinAuthenticateViewModel,
             Method.TOTP: TOTPAuthenticateViewModel,
             Method.TWOFA_KEY: TwoFAKeyAuthenticateViewModel
         }
@@ -229,6 +248,9 @@ class AuthenticateViewModel(QWidget):
         self.next_btn.clicked.connect(self.go_forward)
         self.back_btn.clicked.connect(self.go_backward)
         self.end_btn.clicked.connect(lambda: self.message_service.send(self, "Creator View", None))
+        self.bypass_btn.clicked.connect(self.bypass)
+
+        self.message_service.subscribe(self, InfoPanel, self.on_message)
     
     def setup(self) -> None:
         self.clear_stack()
@@ -240,7 +262,7 @@ class AuthenticateViewModel(QWidget):
             
             if viewmodel_factory:
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
-                info_panel = InfoPanel()
+                info_panel = InfoPanel(self.authentication_service.get_display_details(), 1)
                 hbox = QWidget()
                 hlayout = QHBoxLayout(hbox)
                 hlayout.addWidget(viewmodel_factory(info_panel))
@@ -261,7 +283,12 @@ class AuthenticateViewModel(QWidget):
 
     def on_message(self, message_title: str, *args: Any)  -> None:
         if message_title == "Authenticated":
-            self.next_btn.setEnabled(True)       
+            self.next_btn.setEnabled(True)
+        elif message_title == "Authenticate Show Details":
+            self.detail_dialog = DetailViewDialog(args[0], args[1], self)
+            self.detail_dialog.move(0, 0)
+            self.detail_dialog.show()
+            self.detail_dialog.destroyed.connect(self.on_detail_dialog_destroyed)
 
     def go_forward(self) -> None:
         if not self.authentication_service.all_authenticated():
@@ -269,13 +296,15 @@ class AuthenticateViewModel(QWidget):
             self.stackedWidget.setCurrentIndex(self.authentication_service.at)     
             if self.authentication_service.at == self.authentication_service.auth_count:
                 self.next_btn.setEnabled(False)
+                self.bypass_btn.setEnabled(True)
             self.back_btn.setEnabled(True)
+            
         else:
             # congratulation dialog
             self.congrats_dialog = GifDialog(self.authentication_service.complete_simulation, self)
             self.congrats_dialog.move(0, 0)
             self.congrats_dialog.show()
-            self.congrats_dialog.destroyed.connect(self.close_congrats_dialog)
+            self.congrats_dialog.destroyed.connect(self.on_congrats_dialog_destroyed)
 
     def go_backward(self) -> None:
         self.authentication_service.backward()
@@ -283,14 +312,29 @@ class AuthenticateViewModel(QWidget):
         if self.authentication_service.at == 0:
             self.back_btn.setEnabled(False)
         self.next_btn.setEnabled(True)
+        self.bypass_btn.setEnabled(False)
 
-    def close_congrats_dialog(self) -> None:
+    def bypass(self) -> None:
+        if self.authentication_service.bypass():
+            container = self.stackedWidget.widget(self.authentication_service.at)
+            if container:
+                method_item = container.layout().itemAt(0)
+                if method_item:
+                    method_item.widget().authenticated(1)
+
+
+    def on_congrats_dialog_destroyed(self):
         self.congrats_dialog = None
         self.message_service.send(self, "Creator View", None)
+
+    def on_detail_dialog_destroyed(self):
+        self.detail_dialog = None
 
     def resizeEvent(self, event):
         if self.congrats_dialog is not None:
             self.congrats_dialog.resize(self.size())
+        if self.detail_dialog is not None:
+            self.detail_dialog.resize(self.size())
         super(AuthenticateViewModel, self).resizeEvent(event)
         
         
