@@ -1,5 +1,5 @@
-import base64
 import string
+import base64
 
 def normalise_text(text: str) -> str:
     # only include lower case alphabet and number (no punctuation, no space)
@@ -36,3 +36,28 @@ def calculate_security_level(text: str) -> int:
         score += 15
 
     return score
+
+def image_byte(image_dir):
+    with open(image_dir, 'rb') as img_file:
+        # Read the image file as bytes
+        img_bytes = img_file.read()
+    return img_bytes
+
+def images_to_bytes(image_dirs):
+    # Initialize an empty list to store image bytes
+    image_bytes = []
+
+    # Iterate through each image directory
+    for img_dir in image_dirs:
+        # Open the image
+        with open(img_dir, 'rb') as img_file:
+            # Read the image file as bytes
+            img_bytes = img_file.read()
+        
+        # Append the image bytes to the list
+        image_bytes.append(img_bytes)
+
+    # Combine the image bytes into a single byte string
+    combined_bytes = b''.join(image_bytes)
+
+    return combined_bytes

@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>501</width>
+    <height>709</height>
    </rect>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>400</width>
-    <height>300</height>
-   </size>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -24,71 +24,81 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#frame {
-	background-color: white;
-	border-radius: 20px;
+	background-color: #f4f4f4;
 }
 
-QPushButton {
+#title {
+	font-weight: bold;
+	font-size: 12pt;
+}
+
+#fingerprint_btn {
 	border: none;
 	margin: 20px 0px;
+}
+
+#finger_container QPushButton {
+	max-width: 80px;
+	height: 100px;
+	border: none;
+	background-color: #fff;
+	border-radius: 15%;
+}
+
+#finger_container QPushButton:checked {
+	border: 3px solid #4070f4;
+}
+
+#phone_frame {
+	border: 10px solid black;
+	border-radius: 25px;
+	background-color: white;
+}
+
+#phone_top, #phone_bottom {
+	background-color: black;
+}
+
+#phone_top_design {
+	background-color: lightgrey;
+	border: 1px solid;
+	border-radius: 5px;
+}
+
+#phone_bottom_design {
+	background-color: lightgrey;
+	border: 1px solid;
+	border-radius: 15px;
+}
+
+#warning_label {
+	color: #d5786c;
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
-    <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+    <widget class="QWidget" name="finger_container" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+     <property name="minimumSize">
+      <size>
+       <width>150</width>
+       <height>0</height>
+      </size>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Verify Your Identity</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item alignment="Qt::AlignHCenter">
-       <widget class="QPushButton" name="fingerprint_btn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>200</height>
-         </size>
-        </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>30</number>
+      </property>
+      <item alignment="Qt::AlignRight">
+       <widget class="ShadowButton" name="fp3_btn">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
@@ -97,31 +107,421 @@ QPushButton {
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>../../resources/images/fp0.png</normaloff>../../resources/images/fp0.png</iconset>
+          <normaloff>../../data/fingerprints/fp1.png</normaloff>../../data/fingerprints/fp1.png</iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>100</width>
-          <height>300</height>
+          <width>70</width>
+          <height>100</height>
          </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLabel" name="instruction_label">
-        <property name="text">
-         <string>Hover &amp; Press Sensor</string>
+      <item alignment="Qt::AlignRight">
+       <widget class="ShadowButton" name="fp2_btn">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../data/fingerprints/fp2.png</normaloff>../../data/fingerprints/fp2.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>70</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignRight">
+       <widget class="ShadowButton" name="fp1_btn">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../data/fingerprints/fp3.png</normaloff>../../data/fingerprints/fp3.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>70</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignRight">
+       <widget class="ShadowButton" name="fp4_btn">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../data/fingerprints/fp4.png</normaloff>../../data/fingerprints/fp4.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>70</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignRight">
+       <widget class="ShadowButton" name="fp5_btn">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../data/fingerprints/fp5.png</normaloff>../../data/fingerprints/fp5.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>70</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
+   <item>
+    <widget class="ShadowFrame" name="phone_frame">
+     <property name="minimumSize">
+      <size>
+       <width>315</width>
+       <height>500</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>315</width>
+       <height>662</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="phone_top" native="true">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>30</height>
+         </size>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>7</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>9</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="phone_top_design">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="frame">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="topMargin">
+            <number>10</number>
+           </property>
+           <property name="bottomMargin">
+            <number>30</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="maximumSize">
+              <size>
+               <width>36</width>
+               <height>36</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap>../../resources/icons/finger.svg</pixmap>
+             </property>
+             <property name="scaledContents">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="title">
+             <property name="text">
+              <string>Verify Your Identity</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="short_instruction">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font-size: 12pt;
+font-weight: 400;</string>
+           </property>
+           <property name="text">
+            <string>Lift, then touch again if fail</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="warning_label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font-size: 8pt;</string>
+           </property>
+           <property name="text">
+            <string>Your credentials does not match our records.</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QPushButton" name="fingerprint_btn">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>200</height>
+            </size>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>../../resources/images/fp0.png</normaloff>../../resources/images/fp0.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>100</width>
+             <height>300</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="instruction_label">
+           <property name="text">
+            <string>Hover &amp; Press Sensor</string>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>157</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="phone_bottom" native="true">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>35</height>
+         </size>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="phone_bottom_design">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ShadowFrame</class>
+   <extends>QFrame</extends>
+   <header location="global">widgets/shadow.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ShadowButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">widgets/shadow.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

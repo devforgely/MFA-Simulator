@@ -1,5 +1,6 @@
 from typing import Protocol, Any, List
 from enum import Enum
+import datetime
 
 class Method(Enum):
     NULL = 0
@@ -65,3 +66,17 @@ class CompoundAuthentication(AuthenticationStrategy):
 
     def get_stored(self, index: int) -> dict:
         return self.childens[index].get_stored()
+    
+
+class BaseStrategy(AuthenticationStrategy):
+    def __init__(self) -> None:
+        self.data = {}
+
+    def bypass(self) -> None:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+    
+    def store(self, data: dict) -> None:
+        self.data |= data
+
+    def get_stored(self) -> dict:
+        return self.data

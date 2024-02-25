@@ -10,8 +10,8 @@ from services.container import ApplicationContainer
 # pyright: reportAttributeAccessIssue=false
 
 class InfoPanel(QWidget):
-    def __init__(self, display_details: dict, mode: int) -> None:
-        QWidget.__init__(self)
+    def __init__(self, display_details: dict, mode: int, parent=None) -> None:
+        QWidget.__init__(self, parent)
         self.message_service = ApplicationContainer.message_service()
 
         self.notes = display_details["notes"]

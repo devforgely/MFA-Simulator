@@ -48,8 +48,9 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
         self.info_panel.add_server_data("User Security Answers", ("User Security Answers", "NULL"), "expand")
         self.info_panel.add_server_data("Salt", ("Salt Value", "NULL"), "expand")
 
+        self.info_panel.log_text("Server: Generate a set of security questions and send to client.")
         self.info_panel.log_text("Waiting for security questions and answers...")
-        self.info_panel.set_measure_level(50)
+        self.info_panel.set_measure_level(40)
 
     def add_question(self, required: bool) -> None:
         if len(self.question_form) < self.MAXIMUM_QUESTION:
@@ -143,8 +144,8 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
             self.info_panel.update_data_note(1)
 
             self.info_panel.log_text(f"Client: {len(questions)} security question selected and all answers entered.")
-            self.info_panel.log_text("Client: Sending data through secure communication channel.")
-            self.info_panel.log_text("Server: Hashing the answers to security questions")
+            self.info_panel.log_text("Client: Sending data through a secure communication channel.")
+            self.info_panel.log_text("Server: Hashing the answers to the security questions")
             self.info_panel.log_text("Server: Registering user with security questions and hashed secret.")
             self.info_panel.log_text("Registeration successful.")
 
@@ -199,6 +200,8 @@ class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
         self.info_panel.add_server_data("User Security Answers", ("User Security Answers", byte_str(self.authentication_service.get_session_stored()["hashed_secret"])), "expand")
         self.info_panel.add_server_data("Salt", ("Salt Value", byte_str(self.authentication_service.get_session_stored()["salt"])), "expand")
 
+        self.info_panel.log_text("Client: Request to access account.")
+        self.info_panel.log_text("Server: Sending security questions of the user to the client.")
         self.info_panel.log_text("Waiting for answers to security questions...")
 
     def authenticated(self, mode: int = 0) -> None:
@@ -213,7 +216,7 @@ class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
             self.info_panel.update_client_data("Answers", ("Answers", self.authentication_service.get_session_stored()["user_answers"]), "expand")
 
         self.info_panel.log_text(f"Client: {len(self.answer_widgets)} security question displayed and all answers entered.")
-        self.info_panel.log_text("Client: Sending data through secure communication channel.")
+        self.info_panel.log_text("Client: Sending answers through a secure communication channel.")
         self.info_panel.log_text("Server: Received answers to security questions")
         self.info_panel.log_text("Server: Hashing and salting the received answers")
         self.info_panel.log_text("Server: Verifying user by comparing the stored hash with the newly computed hash.")
@@ -226,9 +229,7 @@ class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
         plain_key = ""
         for answer_lineedit in self.answer_widgets:
             plain_key += normalise_text(answer_lineedit.text()) + "$"
-        
-        self.info_panel.update_client_data("Answers", ("Answers", plain_key), "expand")
-        
+
         if self.authentication_service.authenticate(plain_key):
             self.authenticated()
         else:
@@ -239,8 +240,10 @@ class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
             self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
             self.info_panel.update_data_note(1)
 
-            self.info_panel.log_text("Client: Sending answers through secure communication channel.")
+            self.info_panel.log_text("Client: Sending answers through a secure communication channel.")
             self.info_panel.log_text("Server: Received answers to security questions")
             self.info_panel.log_text("Server: Hashing and salting the received answers")
             self.info_panel.log_text("Server: Verifying user by comparing the stored hash with the newly computed hash.")
             self.info_panel.log_text("Authentication unsuccessful.")
+
+        self.info_panel.update_client_data("Answers", ("Answers", plain_key), "expand")

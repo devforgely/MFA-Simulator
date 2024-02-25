@@ -3,6 +3,7 @@ from PyQt5.QtGui import QPixmap
 from viewmodels.authentication.authentication_base import *
 import os
 import random
+from models.utils import images_to_bytes, byte_str
 
 
 class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
@@ -12,6 +13,7 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
         self.MAX_SELECT_COUNT = 7
 
         self.selected_images = []
+        self.viewed_images = []
 
         # Specify the folder path of images
         self.folder_path = 'data/images/'
@@ -19,10 +21,11 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
         self.images = [self.folder_path+f for f in os.listdir(self.folder_path) if f.endswith(('.png', '.jpg', '.jpeg'))]
 
         self.visible_check.clicked.connect(self.toggle_border_visibility)
-        self.password_field.setEchoMode(QLineEdit.Password)
         self.refresh_btn.clicked.connect(self.refresh_images)
         self.reset_btn.clicked.connect(self.reset)
         self.submit_btn.clicked.connect(self.send)
+
+        self.warning_label.setVisible(False)
 
         layout = self.image_view.layout()
         for i in range(layout.count()):
@@ -33,15 +36,15 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
         self.refresh_images()
 
         self.initalise_infopanel()
+        self.frame.adjust_shadow(30, 50, 2, 2)
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("images", [])
-        self.info_panel.add_client_data("password", "null")
+        self.info_panel.add_client_data("Images", ("Images in Bytes", "NULL"), "expand")
         
-        self.info_panel.add_server_data("user_images", [])
-        self.info_panel.add_server_data("user_password", "null")
+        self.info_panel.add_server_data("User Images", ("User Images Stored as Shared Secret", "NULL"),  "expand")
 
-        self.info_panel.log_text("Waiting for images and password...")
+        self.info_panel.log_text("Sending the pictures to the client from the server's database.")
+        self.info_panel.log_text("Waiting for the user to select pictures...")
     
     def toggle_border_visibility(self) -> None:
         layout = self.image_view.layout()
@@ -67,13 +70,78 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
         layout = self.image_view.layout()
 
         # filter over selected images
-        temp_images = [x for x in self.images if x not in self.selected_images][:9]
+        temp_images = [x for x in self.images if x not in self.selected_images and x not in self.viewed_images][:9] #copy
+
+        if len(temp_images) < 9:
+            random.shuffle(self.viewed_images)
+            temp_images.extend(random.sample(self.viewed_images, 9-len(temp_images)))
+            self.viewed_images.clear()
 
         for i in range(layout.count()):
             border_image_label = layout.itemAt(i).widget()
             border_image_label.setPixmap(QPixmap(temp_images[i]))
             border_image_label.set_image(temp_images[i])
             border_image_label.hide_border()
+
+        self.viewed_images.extend(temp_images)
+
+    def on_image_click(self, widget: QWidget) -> None:
+        if widget.image in self.selected_images:
+            if self.visible_check.isChecked():
+                widget.hide_border()
+            self.selected_images.remove(widget.image)
+        elif len(self.selected_images) < self.MAX_SELECT_COUNT:
+            if self.visible_check.isChecked():
+                widget.show_border()
+            self.selected_images.append(widget.image)
+        self.select_lbl.setText(f"Selected Image Count: {len(self.selected_images)}")
+        self.info_panel.set_measure_level(len(self.selected_images)*10)
+
+    def reset(self) -> None:
+        self.selected_images.clear()
+        self.select_lbl.setText("Selected Image Count: 0")
+        self.info_panel.set_measure_level(0)
+
+        layout = self.image_view.layout()
+        for i in range(layout.count()):
+                item = layout.itemAt(i)
+                if item is not None:
+                    widget = item.widget()
+                    if widget is not None:
+                        widget.hide_border()
+
+    def send(self) -> None:
+        if len(self.selected_images) == 0:
+            self.warning_label.setVisible(True)
+        else:
+            self.warning_label.setStyleSheet("color: #049c84")
+            self.warning_label.setText("Account has been registered.")
+            self.warning_label.setVisible(True)
+            self.submit_btn.setEnabled(False)
+
+            images_byte = images_to_bytes(self.selected_images)
+
+            if self.authentication_service.register(images_byte):
+                self.info_panel.update_client_status("Registration", self.authentication_service.get_session_stored()["timestamp_register"])
+                self.info_panel.update_server_status("ACCEPTED", "202", "User Registered")
+
+                self.info_panel.update_client_data("Images", ("Images in Bytes", str(images_byte.hex())), "expand")
+
+                self.info_panel.update_server_data("User Images", ("User Images Stored as Shared Secret", byte_str(self.authentication_service.get_session_stored()["hashed_secret"])),  "expand")
+
+                self.info_panel.update_data_note(1)
+
+                self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected.")
+                self.info_panel.log_text("Client: Sending data through a secure communication channel.")
+                self.info_panel.log_text("Server: Hashing the images in byte using sha-256.")
+                self.info_panel.log_text("Registeration successful.")
+
+                self.message_service.send(self, "Registered", None)
+
+
+class PicturePasswordAuthenticateViewModel(PicturePasswordRegisterViewModel):
+    def __init__(self, info_panel: QWidget) -> None:
+        super().__init__(info_panel, ui="views/authenticate_views/picture_password_view.ui")
 
     def on_image_click(self, widget: QWidget) -> None:
         if widget.image in self.selected_images:
@@ -89,7 +157,6 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
     def reset(self) -> None:
         self.selected_images.clear()
         self.select_lbl.setText("Selected Image Count: 0")
-        self.password_field.clear()
 
         layout = self.image_view.layout()
         for i in range(layout.count()):
@@ -99,91 +166,67 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
                     if widget is not None:
                         widget.hide_border()
 
-    def send(self) -> None:
-        imgs_combined = ""
-        self.selected_images.sort()
-        for img in self.selected_images:
-            imgs_combined += img + ";"
-
-        plain_key = imgs_combined+self.password_field.text()
-        if self.authentication_service.register(plain_key):
-            self.authentication_service.session_store({"user_images":self.selected_images})
-
-            self.info_panel.update_client_status("request", "registration")
-            self.info_panel.update_client_status("timestamp", self.authentication_service.get_session_stored()["timestamp_register"])
-
-            self.info_panel.update_server_status("status", "200")
-            self.info_panel.update_server_status("message", "user registered")
-
-            self.info_panel.update_client_data("images", self.selected_images)
-            self.info_panel.update_client_data("password", plain_key)
-
-            self.info_panel.update_server_data("user_images", self.authentication_service.get_session_stored()["user_images"])
-            self.info_panel.update_server_data("user_password", self.authentication_service.get_session_stored()["key"])
-
-            self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected and password entered.")
-            self.info_panel.log_text("Client: Sending data through HTTPS protocol.")
-            self.info_panel.log_text("Server: Registering user with images and password.")
-            self.info_panel.log_text("Registeration successful.")
-
-            self.message_service.send(self, "Registered", None)
-
-
-
-class PicturePasswordAuthenticateViewModel(PicturePasswordRegisterViewModel):
-    def __init__(self, info_panel: QWidget) -> None:
-        super().__init__(info_panel, ui="views/authenticate_views/picture_password_view.ui")
-
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("images", [])
-        self.info_panel.add_client_data("password", "null")
+        self.info_panel.add_client_data("Images", ("Images in Bytes", "NULL"), "expand")
+        self.info_panel.add_client_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), "expand")
+        self.info_panel.add_client_data("Signed Challenge", ("Signed Challenge", "NULL"), "expand")
         
-        self.info_panel.add_server_data("user_images", self.authentication_service.get_session_stored()["user_images"])
-        self.info_panel.add_server_data("user_password", self.authentication_service.get_session_stored()["key"])
+        self.info_panel.add_server_data("User Images", ("User Images Stored as Shared Secret", byte_str(self.authentication_service.get_session_stored()["hashed_secret"])),  "expand")
+        self.info_panel.add_server_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), "expand")
+        self.info_panel.add_server_data("Expected Response", ("Expected Response", "NULL"), "expand")
 
-        self.info_panel.log_text("Waiting for images and password...")
+        self.info_panel.log_text("Server: Combining user selected images with decoy images and sent to client.")
+        self.info_panel.log_text("Waiting for images...")
 
-    def refresh_images(self) -> None:
-        random.shuffle(self.images)
-        layout = self.image_view.layout()
 
-        # filter over selected images
-        temp_images = [x for x in self.images if x not in self.selected_images][:9] #copy
-        # get a copy of the user_image and filter over selected images
-        stored = [x for x in self.authentication_service.get_session_stored()["user_images"] if x not in self.selected_images]
-        
-        if random.random() < 0.5 and len(stored) > 0:
-            if stored[0] not in temp_images:
-                    temp_images.insert(random.randint(0, 8), stored[0])
+    def authenticated(self, mode: int = 0) -> None:
+        self.warning_label.setStyleSheet("color: #049c84")
+        self.warning_label.setText("The user has been authenticated.")
+        self.submit_btn.setEnabled(False)
 
-        for i in range(layout.count()):
-            border_image_label = layout.itemAt(i).widget()
-            border_image_label.setPixmap(QPixmap(temp_images[i]))
-            border_image_label.set_image(temp_images[i])
-            border_image_label.hide_border()
+        self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+        self.info_panel.update_server_status("ACCEPTED", "202", "User Authenticated")
+
+        if mode:
+            self.info_panel.update_client_data("Images", ("Images in Bytes", str(self.authentication_service.get_session_stored()["images"].hex())), "expand")
+            self.info_panel.update_client_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(self.authentication_service.get_session_stored()["nonce"])), "expand")
+            self.info_panel.update_client_data("Signed Challenge", ("Signed Challenge", byte_str(self.authentication_service.get_session_stored()["signed_challenge"])), "expand")
+
+            self.info_panel.update_server_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(self.authentication_service.get_session_stored()["nonce"])), "expand")
+            self.info_panel.update_server_data("Expected Response", ("Expected Response", byte_str(self.authentication_service.get_session_stored()["expected_response"])), "expand")
+
+        self.info_panel.log_text(f"Client: Some images selected.")
+        self.info_panel.log_text(f"Client: Request to verify identity.")
+        self.info_panel.log_text("Server: Generate nonce and send the challenge to the client.")
+        self.info_panel.log_text("Client: Signed challenge by hashing the image data and using sha-256, along with a nonce, to create an HMAC.")
+        self.info_panel.log_text("Client: Sending signed challenge to the server across the established communication channel.")
+        self.info_panel.log_text("Server: Calculate the expected response and verify against the signed challenge.")
+        self.info_panel.log_text("Authentication successful.")
+
+        self.message_service.send(self, "Authenticated", None)
 
     def send(self) -> None:
-        imgs_combined = ""
-        self.selected_images.sort()
-        for img in self.selected_images:
-            imgs_combined += img + ";"
+        images_byte = images_to_bytes(self.selected_images)
 
-        plain_key = imgs_combined+self.password_field.text()
-        if self.authentication_service.authenticate(plain_key):
-            self.info_panel.update_client_status("request", "authentication")
-            self.info_panel.update_client_status("timestamp", self.authentication_service.get_session_stored()["timestamp_authenticate"])
-
-            self.info_panel.update_server_status("status", "200")
-            self.info_panel.update_server_status("message", "user authenticated")
-
-            self.info_panel.update_client_data("images", self.selected_images)
-            self.info_panel.update_client_data("password", plain_key)
-
-            self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected and password entered.")
-            self.info_panel.log_text("Client: Sending data through HTTPS protocol.")
-            self.info_panel.log_text("Server: Verifying user against database.")
-            self.info_panel.log_text("Authentication successful.")
-
-            self.message_service.send(self, "Authenticated", None)
+        if self.authentication_service.authenticate(images_byte):
+            self.authenticated()
         else:
-            print("wrong key")
+            self.warning_label.setVisible(True)
+            self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+            self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
+            self.info_panel.update_data_note(1)
+
+            self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected.")
+            self.info_panel.log_text(f"Client: Request to verify identity.")
+            self.info_panel.log_text("Server: Generate nonce and send the challenge to the client.")
+            self.info_panel.log_text("Client: Signed challenge by hashing the image data and using sha-256, along with a nonce, to create an HMAC.")
+            self.info_panel.log_text("Client: Sending signed challenge to the server across the established communication channel.")
+            self.info_panel.log_text("Server: Calculate the expected response and verify against the signed challenge.")
+            self.info_panel.log_text("Authentication unsuccessful.")
+
+        self.info_panel.update_client_data("Images", ("Images in Bytes", str(images_byte.hex())), "expand")
+        self.info_panel.update_client_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(self.authentication_service.get_session_stored()["nonce"])), "expand")
+        self.info_panel.update_client_data("Signed Challenge", ("Signed Challenge", byte_str(self.authentication_service.get_session_stored()["signed_challenge"])), "expand")
+
+        self.info_panel.update_server_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(self.authentication_service.get_session_stored()["nonce"])), "expand")
+        self.info_panel.update_server_data("Expected Response", ("Expected Response", byte_str(self.authentication_service.get_session_stored()["expected_response"])), "expand")

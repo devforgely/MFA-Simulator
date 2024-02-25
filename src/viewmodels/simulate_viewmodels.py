@@ -173,15 +173,18 @@ class RegisterViewModel(QWidget):
             
             if viewmodel_factory:
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
-                info_panel = InfoPanel(self.authentication_service.get_display_details(), 0)
                 hbox = QWidget()
                 hlayout = QHBoxLayout(hbox)
-                hlayout.addWidget(viewmodel_factory(info_panel))
-                hlayout.addWidget(info_panel)
+                info_panel = InfoPanel(self.authentication_service.get_display_details(), 0, hbox)
                 
+                hlayout.addWidget(viewmodel_factory(info_panel))
+                hlayout.addWidget(info_panel) 
                 self.stackedWidget.addWidget(hbox)
+                self.authentication_service.forward()
             else:
                 raise ValueError("Unknown authentication method")
+        self.authentication_service.at = 0
+        
 
     def on_message(self, message_title: str, *args: Any)  -> None:
         if message_title == "Registered":
@@ -194,13 +197,13 @@ class RegisterViewModel(QWidget):
 
     def clear_stack(self) -> None:
         while self.stackedWidget.count() > 0:
-            widget = self.stackedWidget.widget(0)
+            widget = self.stackedWidget.widget(self.stackedWidget.count() - 1)
             if widget:
                 self.stackedWidget.removeWidget(widget)
                 widget.deleteLater()
 
     def go_forward(self) -> None:
-        if not self.authentication_service.all_registered():
+        if not self.authentication_service.go_authenticate():
             self.authentication_service.forward()
             self.stackedWidget.setCurrentIndex(self.authentication_service.at)     
             if self.authentication_service.at == self.authentication_service.register_count:
@@ -262,9 +265,10 @@ class AuthenticateViewModel(QWidget):
             
             if viewmodel_factory:
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
-                info_panel = InfoPanel(self.authentication_service.get_display_details(), 1)
                 hbox = QWidget()
                 hlayout = QHBoxLayout(hbox)
+                info_panel = InfoPanel(self.authentication_service.get_display_details(), 1, hbox)
+                
                 hlayout.addWidget(viewmodel_factory(info_panel))
                 hlayout.addWidget(info_panel)
                 self.stackedWidget.addWidget(hbox)
@@ -276,7 +280,7 @@ class AuthenticateViewModel(QWidget):
 
     def clear_stack(self) -> None:
         while self.stackedWidget.count() > 0:
-            widget = self.stackedWidget.widget(0)
+            widget = self.stackedWidget.widget(self.stackedWidget.count() - 1)
             if widget:
                 self.stackedWidget.removeWidget(widget)
                 widget.deleteLater()
@@ -291,7 +295,7 @@ class AuthenticateViewModel(QWidget):
             self.detail_dialog.destroyed.connect(self.on_detail_dialog_destroyed)
 
     def go_forward(self) -> None:
-        if not self.authentication_service.all_authenticated():
+        if not self.authentication_service.go_finish():
             self.authentication_service.forward()
             self.stackedWidget.setCurrentIndex(self.authentication_service.at)     
             if self.authentication_service.at == self.authentication_service.auth_count:

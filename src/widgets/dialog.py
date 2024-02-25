@@ -61,7 +61,7 @@ class GifDialog(QDialog):
         self.container.setStyleSheet("#container {background-color: white; border-radius: 15%}")
         self.container.move(self.width() // 2 - self.container.width() // 2, self.height() // 2 - self.container.height() // 2)
         
-        self.title = QLabel("Congratulations for finishing the simulation!")
+        self.title = QLabel("Congratulations on finishing the simulation!")
         self.title.setStyleSheet("font-weight: bold; font-size: 12pt;")
         self.title.setAlignment(Qt.AlignCenter)
 
@@ -135,6 +135,8 @@ class DetailViewDialog(QDialog):
 
         # Create a QLabel to hold the details
         self.detail_label = QLabel(details)
+        self.detail_label.setStyleSheet("padding: 10px;")
+        self.detail_label.setWordWrap(True)
 
         self.close_button = QPushButton("Close")
         self.close_button.setMinimumWidth(200)

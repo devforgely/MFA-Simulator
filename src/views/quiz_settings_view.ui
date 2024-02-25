@@ -633,7 +633,7 @@ font-size: 12pt;</string>
   <customwidget>
    <class>ShadowFrame</class>
    <extends>QFrame</extends>
-   <header>widgets/shadow.h</header>
+   <header location="global">widgets/shadow.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -645,7 +645,7 @@ font-size: 12pt;</string>
   <customwidget>
    <class>ShadowButton</class>
    <extends>QPushButton</extends>
-   <header>widgets/shadow.h</header>
+   <header location="global">widgets/shadow.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

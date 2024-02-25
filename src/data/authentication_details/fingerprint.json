@@ -1,0 +1,29 @@
+{
+    "registeration": {
+        "description": "Fingerprint authentication is a type of <b>biometric-based</b> authentication. This is because the user is authenticated based on something they are (i.e., their unique fingerprint pattern).",
+        "advantages": {
+            "Ease of Use": "Fingerprints are always with the user, eliminating the need to remember passwords or carry ID cards.",
+            "Non-Transferable": "Fingerprints cannot be transferred or shared, providing accurate tracking of individuals and additional security against theft.",
+            "Non-Repudiation": "Fingerprint authentication provides strong evidence of identity, which is valuable in legal and forensic contexts. Once a fingerprint is matched, it's difficult to deny involvement."
+        },
+        "disadvantages": {
+            "False Rejection and False Acceptance Rates": "Fingerprint recognition systems are susceptible to false rejection (where valid users are incorrectly denied access) and false acceptance (where unauthorized users are incorrectly granted access). Balancing these error rates is challenging and requires continuous optimization of the system's algorithms and hardware.",
+            "Privacy and Data Security Concerns": "Storing and managing fingerprint data raises significant privacy and data security concerns. If the fingerprint database is compromised, it could lead to serious privacy breaches and identity theft. Robust encryption and security measures are essential to mitigate these risks.",
+            "Hardware and Infrastructure Costs": "Implementing fingerprint recognition systems requires investment in specialised hardware such as fingerprint scanners and associated infrastructure. This initial investment can be substantial, particularly for large-scale deployments across multiple locations."
+        },
+        "notes": ["<p><b>Template Creation</b>: Instead of storing the actual fingerprint image, systems typically store a mathematical representation (or template) of the fingerprint. This template is created from the unique features of the fingerprint and cannot be reversed to reproduce the original fingerprint.</p><p><b>Secure Storage</b>: The fingerprint template is stored either locally (on the device) or in a central database, depending on the system and application. Regardless of where it's stored, encryption is crucial to protect the data even if the database gets breached.",
+                  "<p><b>Liveness Detection</b>: This is the ability of a system to detect if a fingerprint is real (from a live person present at the point of capture) or fake (from a spoof artifact or lifeless body part). It comprises a set of technical features to counter biometric spoofing attacks where a replica imitating a person's unique biometrics (like a fingerprint mold or 3D mask made of silicone) is presented to the biometric scanner.</p><p><b>Artificial Intelligence and Deep Learning</b>: With AI and, more precisely, deep learning - where a system can learn from data - biometric technologies have become measurably more accurate and resilient to attacks.</p>"]
+    },
+    "authentication": {
+        "description": "<b>Authentication</b> is a process used to verify the identity of a user, particularly in the context of a fingerprint biometric method of authentication. When a user presents their fingerprint, the system captures and analyses the unique patterns and characteristics of the fingerprint. This captured fingerprint data is then compared against the stored biometric templates in the system's database. If the presented fingerprint matches one of the stored templates within an acceptable margin of error, the user is authenticated.",
+        "usability": {
+            "Easy to Learn": "YES",
+            "Infrequent Errors": "Quasi-YES",
+            "Scalable for Users": "YES",
+            "Easy Recovery": "NO",
+            "Nothing to Carry": "YES"
+        },
+        "notes": ["<p><b>Minutiae</b> in a fingerprint template are specific friction ridge characteristics that are used for comparison and identification. The two most prominent local ridge characteristics are ridge endings, where a ridge ends abruptly, and ridge bifurcations, where a ridge forks or diverges into branch ridges. These features, collectively known as minutiae, are unique to each individual and play a crucial role in fingerprint recognition.</p><p>A fingerprint template is composed of a set of these minutiae. In embedded systems, a secure element is generally used to store and compare fingerprint templates to meet security and privacy requirements. However, due to storage and computation constraints, it is necessary to select a subset of minutiae from a template.</p>",
+                  "<p><b>Spoofing</b>: While modern fingerprint recognition systems are designed to detect spoofing attempts (e.g., using a fake fingerprint), they are not foolproof. Advanced spoofing techniques, such as creating a replica of a fingerprint, can sometimes bypass these systems.</p>"]
+    }
+}

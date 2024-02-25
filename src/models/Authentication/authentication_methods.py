@@ -1,5 +1,5 @@
 from typing import Any
-from models.authentication.authentication import AuthenticationStrategy, Method
+from models.authentication.authentication import BaseStrategy, Method
 import hashlib
 import datetime
 import rsa
@@ -7,41 +7,19 @@ import hmac
 import math
 import secrets
 import time
+import random
 
 # For purpose of simulation, the strategy is simplified
 
-class SaltStrategy(AuthenticationStrategy): #Salted Challenge Response Authentication Mechanism
+class SaltStrategy(BaseStrategy): # Salted hashing
     def __init__(self) -> None:
-        self.data = {}
+        super().__init__()
 
     def hash_secret(self, secret, salt):
         return hashlib.pbkdf2_hmac('sha256', secret.encode('utf-8'), salt, 100000)
     
     def generate_salt(self, length=16):
         return secrets.token_bytes(length)
-
-    def register(self, shared_secret: str) -> bool:
-        self.data["timestamp_register"] = str(datetime.datetime.now())
-
-        salt = self.generate_salt()
-        self.data["salt"] = salt
-        self.data["hashed_secret"] = self.hash_secret(shared_secret, salt)
-
-        return True
-
-    def authenticate(self, shared_secret: str) -> bool:
-        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-        
-        return self.data["hashed_secret"] == self.hash_secret(shared_secret, self.data["salt"])
-    
-    def bypass(self) -> None:
-        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-    
-    def store(self, data: dict) -> None:
-        self.data |= data
-
-    def get_stored(self) -> dict:
-        return self.data
     
 
 class CardPinStrategy(SaltStrategy):
@@ -69,19 +47,75 @@ class CardPinStrategy(SaltStrategy):
             return False
 
 
-class FingerPrintStrategy(SaltStrategy):
+class FingerPrintStrategy(BaseStrategy):
     def __init__(self) -> None:
         super().__init__()
     
     def get_type(self) -> Method:
         return Method.FINGERPRINT
+    
+    def register(self, fingerprint: bytes) -> bool:
+        self.data["timestamp_register"] = str(datetime.datetime.now())
 
-class PicturePasswordStrategy(SaltStrategy):
+        self.data["fingerprint"] = fingerprint #For bypass
+
+        # Assuming doing fingerprint to fingerprint template
+        self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
+
+        return True
+    
+    def authenticate(self, fingerprint: bytes) -> bool:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+
+        # Assuming doing fingerprint to fingerprint template
+        template = bytes([byte ^ 0xFA for byte in fingerprint])
+
+        # Account for False negative
+        if template == self.data["fingerprint_template"] and random.random() > 0.2:
+            return True
+        return False
+
+class PicturePasswordStrategy(BaseStrategy):
     def __init__(self) -> None:
         super().__init__()
     
     def get_type(self) -> Method:
         return Method.PICTURE_PASSWORD
+    
+    def generate_challenge(self, length=16) -> bytes:
+        return secrets.token_bytes(length)
+    
+    def register(self, images: bytes) -> bool:
+        self.data["timestamp_register"] = str(datetime.datetime.now())
+
+        self.data["images"] = images #For bypass
+        self.data["hashed_secret"] = hashlib.sha256(images).digest()
+        
+        return True
+    
+    def challenge_response(self, images: bytes) -> None:
+        # server send challenge
+        nonce = self.generate_challenge()
+        self.data["nonce"] = nonce
+
+        # client send to server
+        image_hash = hashlib.sha256(images).digest()
+        signed_challenge =hmac.new(image_hash, nonce, hashlib.sha256).digest()
+        self.data["signed_challenge"] = signed_challenge
+
+        # server calculate the expected response
+        expected_response = hmac.new(self.data["hashed_secret"], nonce, hashlib.sha256).digest()
+        self.data["expected_response"] = expected_response
+    
+    def authenticate(self, images: bytes) -> bool:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        self.challenge_response(images)
+
+        return self.data["expected_response"] == self.data["signed_challenge"]
+    
+    def bypass(self) -> None:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        self.challenge_response(self.data["images"])
 
 
 class PasswordStrategy(SaltStrategy):

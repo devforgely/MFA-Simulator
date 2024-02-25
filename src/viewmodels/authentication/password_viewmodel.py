@@ -61,7 +61,7 @@ class PasswordRegisterViewModel(AuthenticationBaseViewModel):
                 self.info_panel.update_data_note(1)
 
                 self.info_panel.log_text("Client: Username and password entered.")
-                self.info_panel.log_text("Client: Sending data through secure communication channel.")
+                self.info_panel.log_text("Client: Sending data through a secure communication channel.")
                 self.info_panel.log_text("Server: Registering username and hashing username + password with salt.")
                 self.info_panel.log_text("Registeration successful.")
 
@@ -112,7 +112,7 @@ class PasswordAuthenticateViewModel(AuthenticationBaseViewModel):
             self.info_panel.update_client_data("Password", self.authentication_service.get_session_stored()["user_password"])
 
         self.info_panel.log_text("Client: Username and password entered.")
-        self.info_panel.log_text("Client: Sending data through secure communication channel.")
+        self.info_panel.log_text("Client: Sending data through a secure communication channel.")
         self.info_panel.log_text("Server: Received username and password.")
         self.info_panel.log_text("Server: Hashing and salting the received username + password.")
         self.info_panel.log_text("Server: Verifying user by comparing the stored hash with the newly computed hash.")
@@ -121,9 +121,6 @@ class PasswordAuthenticateViewModel(AuthenticationBaseViewModel):
         self.message_service.send(self, "Authenticated", None)
 
     def send(self) -> None:
-        self.info_panel.update_client_data("Username", self.username_field.text())
-        self.info_panel.update_client_data("Password", self.password_field.text())
-
         if self.authentication_service.authenticate(self.username_field.text(), self.password_field.text()):
             self.authenticated()
         else:
@@ -135,8 +132,11 @@ class PasswordAuthenticateViewModel(AuthenticationBaseViewModel):
             self.info_panel.update_data_note(1)
 
             self.info_panel.log_text("Client: Username and password entered.")
-            self.info_panel.log_text("Client: Sending data through secure communication channel.")
+            self.info_panel.log_text("Client: Sending data through a secure communication channel.")
             self.info_panel.log_text("Server: Received username and password.")
             self.info_panel.log_text("Server: Hashing and salting the received username + password.")
             self.info_panel.log_text("Server: Verifying user by comparing the stored hash with the newly computed hash.")
             self.info_panel.log_text("Authentication unsuccessful.")
+
+        self.info_panel.update_client_data("Username", self.username_field.text())
+        self.info_panel.update_client_data("Password", self.password_field.text())

@@ -54,7 +54,7 @@ class AuthenticationService():
 
         knowledge_based = {Method.PASSWORD, Method.SECRET_QUESTION, Method.PICTURE_PASSWORD, Method.CARD_PIN}
         biometric_based = {Method.FINGERPRINT}
-        possession_based = {Method.TOTP, Method.CARD_PIN, Method.FINGERPRINT}
+        possession_based = {Method.TOTP, Method.CARD_PIN}
 
         if Method.TWOFA_KEY in methods:
             self.measure = 3
@@ -67,11 +67,16 @@ class AuthenticationService():
         return self.measure
     
     def all_registered(self) -> bool:
-        return len(self.strategy) == self.register_count and self.at == self.register_count - 1
+        return len(self.strategy) == self.register_count
+    
+    def go_authenticate(self) -> bool:
+        return self.all_registered() and self.at == self.register_count - 1
     
     def all_authenticated(self) -> bool:
-        bool = len(self.strategy) == self.auth_count and self.at == self.auth_count - 1
-        return bool
+        return len(self.strategy) == self.auth_count
+    
+    def go_finish(self) -> bool:
+        return self.all_authenticated() and self.at == self.auth_count - 1
     
     def complete_simulation(self) -> None:
         #BADGE CONDITION
