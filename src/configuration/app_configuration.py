@@ -1,6 +1,6 @@
 class Settings():
     # System FIle Path
-    SYSTEM_FILE_PATH = "data/system.json"
+    SYSTEM_FILE_PATH = "data/config.json"
 
     ICON_FILE_PATH = "resources/icons/"
 
@@ -13,4 +13,4 @@ class Settings():
     ENABLE_CUSTOM_THEME = False
 
     # CUSTOM THEME FILE
-    THEME_FILE = "resources/themes/light.css" # Not Implemented
+    THEME_FILE = "resources/themes/light.css" # Not Implemented due to limited PyQt functionalities

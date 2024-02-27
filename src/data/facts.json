@@ -12,7 +12,8 @@
         "For maximum security, use a combination of different MFA factors.",
         "Never share your MFA codes with anyone, even if they claim to be from a trusted source.",
         "Ensure your MFA apps and devices are always up-to-date for optimal security.",
-        "Encourage your friends and family to use MFA to protect their online accounts."
+        "Encourage your friends and family to use MFA to protect their online accounts.",
+        "To ensure further privacy and security protection, any data you enter here should be fictional. "
     ]
 
 }

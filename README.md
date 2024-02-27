@@ -1,11 +1,16 @@
 # MFA-Simulator
 A Multi-factor Authentication Simulator
 
-<a href="https://www.flaticon.com/free-icons/simulation" title="simulation icons">Simulation icons created by Flat Icons - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/quiz" title="quiz icons">Quiz icons created by Freepik - Flaticon</a>
-<a href="https://www.freepik.com/icon/light-bulb_2987996#fromView=keyword&term=Light+Bulb&page=1&position=7&uuid=e342f6c8-f8e5-42e4-b435-0c2260614076">Icon by Freepik</a>
-<a href="https://www.flaticon.com/free-icons/prize" title="prize icons">Prize icons created by vectorsmarket15 - Flaticon</a>
-<a href="https://www.pixabay.com" title="pixabay">credit to pixabay.com for providing free to images (resized to 350px X 350px) under Content License.</a>
-<a href="https://www.freepik.com/free-vector/coding-website-development-technical-support-programming-engineering-coder-web-developer-computer-software-programmer-male-flat-character-concept-illustration_11667257.htm#query=software%20illustration&position=3&from_view=keyword&track=ais&uuid=d23ecae3-8db0-444a-b256-5e3b71623939">Image by vectorjuice</a> on Freepik
-Image by <a href="https://www.freepik.com/free-vector/isometric-cms-concept_11788713.htm#query=software%20illustration&position=6&from_view=keyword&track=ais&uuid=d23ecae3-8db0-444a-b256-5e3b71623939">Freepik</a>
-<a href="https://www.freepik.com/free-vector/my-password-concept-illustration_9712739.htm#query=authentication%20illustration&position=4&from_view=search&track=ais&uuid=98563fdb-a58a-4cb4-a167-77d74d64bfba">Image by storyset</a> on Freepik
+Greetings! If you're here, you're likely immersed in the world of education and care about you internet identity.
+
+You probably have multiple tabs open: one for your email, one for your project management tool, one for your cloud storage, and so forth… But have you ever wondered about the security of these "digital tools"? Or why there's such a variety of login methods? To answer these questions, and to explain why we need to delve into the realm of cybersecurity.
+
+That's where the Multi-factor Authentication Simulator comes in. It aims to diverge from the conventional authentication methods and bring back some of the robust security measures of the early pioneers. The first step is to create a comprehensive learning platform that allows you to explore various authentication methods.
+
+Need to understand how memorised secret works? Or how biometric authentication provides security? Or how 2FA security key operate? The simulator provides interactive modules for each of these authenticators, allowing you to combine them and see how they work together to enhance security.
+
+Don't just stop at the simulations. The app also includes quizzes to test your understanding and readings to deepen your knowledge. You can tailor your learning journey, choosing the modules and resources that best meet your needs.
+
+With The Multi-factor Authentication Simulator, you're not just learning about security - you're experiencing it, testing it, and understanding it on a deeper level. Address your security concerns your way, limited only by your thirst for knowledge.
+
+By now, you should have a clear understanding of the Multi-factor Authentication Simulator. Challenging the established order is no easy feat. Explore the product! We need pioneers like you to instigate a revolution in digital security.

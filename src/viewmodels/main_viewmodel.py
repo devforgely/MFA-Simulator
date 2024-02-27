@@ -30,13 +30,13 @@ class MainViewModel(QMainWindow):
 
         # PAGES
         self.simulate_page = SimulateViewModel()
-        self.quiz_page = QuizViewModel()
         self.learn_page = LearnViewModel()
+        self.quiz_page = QuizViewModel()
         self.profile_page = ProfileViewModel()
         self.manage_page = ManageViewModel()
         self.stackedWidget.addWidget(self.simulate_page)
-        self.stackedWidget.addWidget(self.quiz_page)
         self.stackedWidget.addWidget(self.learn_page)
+        self.stackedWidget.addWidget(self.quiz_page)
         self.stackedWidget.addWidget(self.profile_page)
         self.stackedWidget.addWidget(self.manage_page)
 
