@@ -8,7 +8,7 @@ class Method(Enum):
     SECRET_QUESTION = 2
     PICTURE_PASSWORD = 3
     FINGERPRINT = 4
-    CARD_PIN = 5
+    CHIP_PIN = 5
     TOTP = 6
     TWOFA_KEY = 7
 

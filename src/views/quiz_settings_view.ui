@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1148</width>
-    <height>821</height>
+    <height>849</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -152,10 +152,13 @@
     <number>20</number>
    </property>
    <property name="topMargin">
-    <number>15</number>
+    <number>7</number>
    </property>
    <property name="rightMargin">
     <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -167,10 +170,22 @@
        <item>
         <widget class="ShadowButton" name="improvement_btn">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
@@ -183,10 +198,22 @@
        <item>
         <widget class="ShadowButton" name="classic_btn">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
@@ -199,10 +226,22 @@
        <item>
         <widget class="ShadowButton" name="timed_btn">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>110</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>400</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
@@ -217,7 +256,7 @@
      <item>
       <widget class="ShadowFrame" name="note_container">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -268,6 +307,18 @@
    </item>
    <item>
     <widget class="QWidget" name="custom_content" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>380</height>
+      </size>
+     </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="leftMargin">
        <number>0</number>
@@ -316,14 +367,14 @@ font-size: 12pt;</string>
       <item alignment="Qt::AlignTop">
        <widget class="QWidget" name="config_box" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="maximumSize">
          <size>
-          <width>1286</width>
+          <width>1280</width>
           <height>16777215</height>
          </size>
         </property>
@@ -338,7 +389,7 @@ font-size: 12pt;</string>
           <number>20</number>
          </property>
          <property name="bottomMargin">
-          <number>10</number>
+          <number>0</number>
          </property>
          <property name="spacing">
           <number>13</number>
@@ -588,7 +639,7 @@ font-size: 12pt;</string>
           </property>
          </spacer>
         </item>
-        <item alignment="Qt::AlignRight">
+        <item>
          <widget class="QLabel" name="setting_warning">
           <property name="text">
            <string>Oops! Please make sure all settings are correctly typed and within the valid range.</string>
@@ -611,19 +662,6 @@ font-size: 12pt;</string>
         </item>
        </layout>
       </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
      </layout>
     </widget>
    </item>
@@ -637,15 +675,15 @@ font-size: 12pt;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>ShadowButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">widgets/shadow.h</header>
+  </customwidget>
+  <customwidget>
    <class>ClickableFrame</class>
    <extends>QWidget</extends>
    <header>widgets/clickables.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ShadowButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">widgets/shadow.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

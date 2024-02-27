@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1215</width>
-    <height>816</height>
+    <height>948</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -363,6 +363,12 @@
         </item>
         <item>
          <widget class="ShadowFrame" name="frame">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>630</height>
+           </size>
+          </property>
           <property name="styleSheet">
            <string notr="true"/>
           </property>
@@ -724,7 +730,7 @@
   <customwidget>
    <class>ShadowFrame</class>
    <extends>QFrame</extends>
-   <header>widgets/shadow.h</header>
+   <header location="global">widgets/shadow.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -63,7 +63,7 @@ class PasswordRegisterViewModel(AuthenticationBaseViewModel):
                 self.info_panel.log_text("Client: Username and password entered.")
                 self.info_panel.log_text("Client: Sending data through a secure communication channel.")
                 self.info_panel.log_text("Server: Registering username and hashing username + password with salt.")
-                self.info_panel.log_text("Registeration successful.")
+                self.info_panel.log_text("Registration successful.")
 
                 self.message_service.send(self, "Registered", None)
         else:

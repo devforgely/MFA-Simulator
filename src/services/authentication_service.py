@@ -17,7 +17,7 @@ class AuthenticationService():
             Method.SECRET_QUESTION: SecurityQuestionStrategy,
             Method.PICTURE_PASSWORD: PicturePasswordStrategy,
             Method.FINGERPRINT: FingerPrintStrategy,
-            Method.CARD_PIN: CardPinStrategy,
+            Method.CHIP_PIN: ChipPinStrategy,
             Method.TOTP: TOTPStrategy,
             Method.TWOFA_KEY: TwoFAKeyStrategy
         }
@@ -27,7 +27,7 @@ class AuthenticationService():
             Method.SECRET_QUESTION: "security_question",
             Method.PICTURE_PASSWORD: "picture_password",
             Method.FINGERPRINT: "fingerprint",
-            Method.CARD_PIN: "card_pin",
+            Method.CHIP_PIN: "chip_pin",
             Method.TOTP: "totp",
             Method.TWOFA_KEY: "twofa_key"
         }
@@ -52,9 +52,9 @@ class AuthenticationService():
             self.measure = 0
             return self.measure
 
-        knowledge_based = {Method.PASSWORD, Method.SECRET_QUESTION, Method.PICTURE_PASSWORD, Method.CARD_PIN}
+        knowledge_based = {Method.PASSWORD, Method.SECRET_QUESTION, Method.PICTURE_PASSWORD, Method.CHIP_PIN}
         biometric_based = {Method.FINGERPRINT}
-        possession_based = {Method.TOTP, Method.CARD_PIN}
+        possession_based = {Method.TOTP, Method.CHIP_PIN}
 
         if Method.TWOFA_KEY in methods:
             self.measure = 3
@@ -116,7 +116,7 @@ class AuthenticationService():
 
     def get_display_details(self) -> dict:
         if not self.all_registered():
-            return self.data_service.get_simulation_details(self.type_to_string[self.strategy.get_type(self.at)])["registeration"]
+            return self.data_service.get_simulation_details(self.type_to_string[self.strategy.get_type(self.at)])["registration"]
         else:
             return self.data_service.get_simulation_details(self.type_to_string[self.strategy.get_type(self.at)])["authentication"]
 
@@ -137,7 +137,7 @@ class AuthenticationService():
         return False
     
     def bypass(self) -> bool:
-        if self.data_service.update_user_coin(-100):
+        if not self.all_authenticated() and self.at == self.auth_count and self.data_service.update_user_coin(-100):
             self.strategy.bypass(self.at)
             if self.at == self.auth_count:
                 self.auth_count += 1

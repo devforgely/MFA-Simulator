@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>338</width>
-    <height>500</height>
+    <width>618</width>
+    <height>582</height>
    </rect>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>340</width>
-    <height>500</height>
-   </size>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -25,11 +25,29 @@
 	border-radius: 20px;
 }
 
+#generate_pin_btn {
+	height: 35px;
+	padding: 7px;
+	background-color: #4070f4;
+	border: none;
+	border-radius: 8%;
+	color: #fff;
+	font-weight: bold;
+}
+
+#generate_pin_btn:hover {
+	background-color: #0e4bf1;
+}
+
 #pin_field {
 	color: #2681a6;
 	font-size: 14pt;
 	font-weight: 600;
 	border: none;
+}
+
+#warning_label {
+	color: #d5786c;
 }
 
 #gridFrame .QPushButton {
@@ -50,7 +68,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>0</number>
+    <number>20</number>
    </property>
    <property name="leftMargin">
     <number>0</number>
@@ -65,7 +83,64 @@
     <number>0</number>
    </property>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="leftMargin">
+      <number>30</number>
+     </property>
+     <item alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="chip_card">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>280</width>
+         <height>180</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../../resources/images/chip_card_black.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item alignment="Qt::AlignLeft">
+      <widget class="ShadowButton" name="generate_pin_btn">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Auto Generate PIN</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item alignment="Qt::AlignHCenter">
     <widget class="ShadowFrame" name="frame">
+     <property name="minimumSize">
+      <size>
+       <width>340</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>340</width>
+       <height>500</height>
+      </size>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -93,6 +168,19 @@
         </property>
         <property name="placeholderText">
          <string>Choose PIN</string>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="warning_label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>PIN must be atleast 4 digits long.</string>
         </property>
        </widget>
       </item>
@@ -268,6 +356,11 @@
    <extends>QFrame</extends>
    <header location="global">widgets/shadow.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ShadowButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">widgets/shadow.h</header>
   </customwidget>
   <customwidget>
    <class>ClickableButton</class>

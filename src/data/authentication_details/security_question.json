@@ -1,5 +1,5 @@
 {
-    "registeration": {
+    "registration": {
         "description": "Security questions and answers are a type of <b>knowledge-based</b> authentication. This is because the user is authenticated based on something they know (i.e., their answers to the security questions).",
         "advantages": {
             "User-Friendly": "Security questions are generally easy to set up and understand for users. They often involve personal information or preferences that users are familiar with.",

@@ -1,11 +1,11 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIntValidator, QColor
-from PyQt5.QtWidgets import QMessageBox, QGraphicsDropShadowEffect
+from PyQt5.QtGui import QIntValidator, QPixmap
+from PyQt5.QtWidgets import QLabel, QVBoxLayout
 from viewmodels.authentication.authentication_base import *
 from widgets.timer import TimeThread
-import uuid
 from datetime import datetime, timezone
-import re
+import time
+from configuration.app_configuration import Settings
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -13,54 +13,25 @@ class TOTPRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
         super().__init__("views/register_views/totp_view.ui", info_panel)
 
-        self.country_dialing_codes = {
-            "United Kingdom": "+44",
-            "United States": "+1",
-            "France": "+33",
-            "Germany": "+49",
-            "Australia": "+61",
-            "Italy": "+39",
-            "Spain": "+34",
-            "China": "+86"
-        }
-        self.device_id = str(uuid.uuid4())
-
-        self.number_layout.setAlignment(Qt.AlignLeft)
-
-        self.country_box.currentIndexChanged.connect(lambda: 
-            self.dialing_code.setText(self.country_dialing_codes[self.country_box.currentText()]))
-        
-        self.number_field.setValidator(QIntValidator())
-
-        self.setup_btn.clicked.connect(self.next_instruction)
-        self.continue_btn.clicked.connect(self.continue_after_number)
+        self.setup_btn.clicked.connect(self.start_setup)
         self.scan_btn.clicked.connect(self.next_phone_screen)
         self.link_btn.clicked.connect(self.send)
         self.cancel_btn.clicked.connect(self.cancel)
+
+        self.success_label.setVisible(False)
         self.initalise_infopanel()
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("device_id", self.device_id)
-        self.info_panel.add_client_data("phone_number", "null")
-        self.info_panel.add_client_data("shared_key", "null")
+        self.info_panel.add_client_data("Shared Key", ("Shared Key", "NULL"), "expand")
         
-        self.info_panel.add_server_data("user_device_id", "null")
-        self.info_panel.add_server_data("user_phone_number", "null")
-        self.info_panel.add_server_data("shared_key", "null")
+        self.info_panel.add_server_data("Shared Key", ("Shared Key", "NULL"), "expand")
 
-        self.info_panel.log_text("Waiting for phone number...")
+        self.info_panel.log_text("Waiting for scanning of QR code to receive shared key...")
+        self.info_panel.set_measure_level(65)
 
-    def validate_number(self) -> bool:
-        dialing_code = self.dialing_code.text()
-
-        # Create a regex pattern for the phone number
-        pattern = re.compile(r"^" + re.escape(dialing_code) + r"\d{8,15}$")
-
-        # Check if the number matches the pattern
-        return bool(pattern.match(dialing_code+self.number_field.text()))
-
-    def next_instruction(self) -> None:
+    def start_setup(self) -> None:
         self.left_stacked.setCurrentIndex(self.left_stacked.currentIndex() + 1)
+        self.next_phone_screen()
     
     def next_phone_screen(self) -> None:
         self.phone_container.setCurrentIndex(self.phone_container.currentIndex() + 1)
@@ -69,43 +40,39 @@ class TOTPRegisterViewModel(AuthenticationBaseViewModel):
             self.time_label.setText(datetime.now(timezone.utc).strftime("%H:%M %Z"))
             self.device_label.setText("79.195.101.141")
             self.user_label.setText("m91341fa")
-
-    def continue_after_number(self) -> None:
-        if self.number_field.text() != "" and self.validate_number():
-            self.next_instruction()
-            self.next_phone_screen()
     
     def cancel(self) -> None:
         self.left_stacked.setCurrentIndex(0)
         self.phone_container.setCurrentIndex(0)
-        self.number_field.setText("")
 
     def send(self) -> None:
         if self.authentication_service.register():
+            tick_label = QLabel()
+            tick_label.setScaledContents(True)
+            tick_label.setAlignment(Qt.AlignCenter)
+            tick_label.setPixmap(QPixmap(Settings.ICON_FILE_PATH+"tick-circle-filled.svg"))
+            layout = QVBoxLayout(self.qr)
+            layout.addWidget(tick_label)
+
+            self.success_label.setVisible(True)
             self.link_btn.setEnabled(False)
-            self.cancel_btn.hide()
-            self.authentication_service.session_store({"user_device_id":self.device_id, 
-                                                       "user_phone_number": self.dialing_code.text()+self.number_field.text()})
+            self.cancel_btn.setEnabled(False)
             
-            self.info_panel.update_client_status("request", "registration")
-            self.info_panel.update_client_status("timestamp", self.authentication_service.get_session_stored()["timestamp_register"])
+            self.info_panel.update_client_status("Registration", self.authentication_service.get_session_stored()["timestamp_register"])
+            self.info_panel.update_server_status("ACCEPTED", "202", "User Registered")
 
-            self.info_panel.update_server_status("status", "200")
-            self.info_panel.update_server_status("message", "user registered")
+            self.info_panel.update_client_data("Shared Key", ("Shared Key", self.authentication_service.get_session_stored()["shared_key"]), "expand")
 
-            self.info_panel.update_client_data("device_id", self.device_id)
-            self.info_panel.update_client_data("phone_number", self.dialing_code.text()+self.number_field.text())
-            self.info_panel.update_client_data("shared_key", self.authentication_service.get_session_stored()["shared_key"])
+            self.info_panel.update_server_data("Shared Key", ("Shared Key", self.authentication_service.get_session_stored()["shared_key"]), "expand")
 
-            self.info_panel.update_server_data("user_device_id", self.authentication_service.get_session_stored()["user_device_id"])
-            self.info_panel.update_server_data("user_phone_number", self.authentication_service.get_session_stored()["user_phone_number"])
-            self.info_panel.update_server_data("shared_key", self.authentication_service.get_session_stored()["shared_key"])
+            self.info_panel.update_data_note(1)
 
-            self.info_panel.log_text("Client: phone number entered.")
-            self.info_panel.log_text("Client: Sending data through HTTPS protocol.")
-            self.info_panel.log_text("Server: Sending QR code for shared key")
-            self.info_panel.log_text("Client: Storing shared key")
-            self.info_panel.log_text("Registeration successful.")
+            self.info_panel.log_text("Client: Initiates the TOTP registration process.")
+            self.info_panel.log_text("Server: Generates a unique shared secret key encoded as a QR code along with other registration data.")
+            self.info_panel.log_text("Server: Present a QR code for the distribution of the shared key.")
+            self.info_panel.log_text("Client: Scans the QR code.")
+            self.info_panel.log_text("Authentication app extracts the shared secret key and other registration data encoded within the QR code.")
+            self.info_panel.log_text("Registration successful.")
 
             self.message_service.send(self, "Registered", None)
 
@@ -119,95 +86,139 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         self.threading._signal.connect(self.signal_update)
         self.time_bar.setMaximum(self.threading.MaxValue())
 
-        number = self.authentication_service.get_session_stored()["user_phone_number"]
-        self.hidden_number = number[:3] + (len(number)-6)*"x"+number[-3:]
-
-        self.left_frame.layout().setAlignment(Qt.AlignTop)
-        self.instruction_layout.setAlignment(Qt.AlignHCenter)
-        self.bottom_layout.setAlignment(Qt.AlignHCenter)
-        self.button_group_layout.setAlignment(Qt.AlignHCenter)
-
-        shadow_effect = QGraphicsDropShadowEffect()
-        shadow_effect.setColor(QColor(0, 0, 0, 40))
-        shadow_effect.setBlurRadius(40)
-        shadow_effect.setXOffset(2)
-        self.left_frame.setGraphicsEffect(shadow_effect)
+        self.left_frame.adjust_shadow(40, 40, 2, 0)
 
         self.time_bar.setVisible(False)
 
-        self.code_field.setValidator(QIntValidator())
+        sp_retain = self.warning_label.sizePolicy()
+        sp_retain.setRetainSizeWhenHidden(True)
+        self.warning_label.setSizePolicy(sp_retain)
+        self.warning_label.setVisible(False)
+
+        self.input_boxes = []
+        self.input_count = 0
+        self.input_boxes.append(self.code1)
+        self.input_boxes.append(self.code2)
+        self.input_boxes.append(self.code3)
+        self.input_boxes.append(self.code4)
+        self.input_boxes.append(self.code5)
+        self.input_boxes.append(self.code6)
+
+        for i in range(len(self.input_boxes)):
+            self.input_boxes[i].setValidator(QIntValidator())
+            self.input_boxes[i].textChanged.connect(lambda text, i=i: self.focus_next_input(i))
+            
         
-        self.code_btn.clicked.connect(self.get_code)
+        self.code_btn.clicked.connect(self.start_code)
         self.verify_btn.clicked.connect(self.send)
-        self.not_login_btn.clicked.connect(self.cancel)
         self.initalise_infopanel()
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("device_id", self.authentication_service.get_session_stored()["user_device_id"])
-        self.info_panel.add_client_data("phone_number", self.authentication_service.get_session_stored()["user_phone_number"])
-        self.info_panel.add_client_data("shared_key", self.authentication_service.get_session_stored()["shared_key"])
-        self.info_panel.add_client_data("totp", "null")
+        self.info_panel.add_client_data("Shared Key", ("Shared Key", self.authentication_service.get_session_stored()["shared_key"]), "expand")
+        self.info_panel.add_client_data("TOTP", "NULL")
         
-        self.info_panel.add_server_data("user_device_id", self.authentication_service.get_session_stored()["user_device_id"])
-        self.info_panel.add_server_data("user_phone_number", self.authentication_service.get_session_stored()["user_phone_number"])
-        self.info_panel.add_server_data("shared_key", self.authentication_service.get_session_stored()["shared_key"])
-        self.info_panel.add_server_data("sha1_hash", "null")
-        self.info_panel.add_server_data("totp", "null")
+        self.info_panel.add_server_data("Shared Key", ("Shared Key", self.authentication_service.get_session_stored()["shared_key"]), "expand")
+        self.info_panel.add_server_data("Sha1 Hash", ("Sha1 Hash", "NULL"), "expand")
+        self.info_panel.add_server_data("TOTP", "NULL")
 
         self.info_panel.log_text("Waiting for TOTP...")
-    
-    def cancel(self) -> None:
-        self.code_label.setText("000000")
-        self.code_field.setText("")
-        self.phone_container.setCurrentIndex(0)
+
+    def focus_next_input(self, index: int) -> None:
+        flag = False
+        for i in range(index, len(self.input_boxes)):
+            if self.input_boxes[i].text() == "":
+                flag = True
+                self.input_boxes[i].setFocus()
+                break
+        
+        if not flag:
+            for i in range(0, index):
+                if self.input_boxes[i].text() == "":
+                    self.input_boxes[i].setFocus()
+                    break
+
+    def start_code(self) -> None:
+        self.code_btn.setVisible(False)
+        self.get_code()
+        self.threading.set_max(int(self.max_time - (time.time() % self.max_time))) # remaining time before totp expire
+        self.threading.start()
 
     def get_code(self) -> None:
-        # generate totp if empty string
-        self.authentication_service.authenticate("")
-        self.time_bar.setVisible(True)
-        self.sent_label.setText(f"Sent to mobile ({self.hidden_number})")
+        # generate new totp
+        self.authentication_service.authenticate("GENERATE")
         totp = self.authentication_service.get_session_stored()["totp"]
-        self.code_label.setText(totp)
-        self.phone_container.setCurrentIndex(self.phone_container.currentIndex() + 1)
-        self.location_label.setText("Manchester, ENG, GB")
-        self.time_label.setText(datetime.now(timezone.utc).strftime("%H:%M %Z"))
-        self.code_btn.setVisible(False)
 
-        self.threading.start()
+        self.code_label.setText(totp)
+        
+        for input in self.input_boxes:
+            input.setText("")
+        self.input_boxes[0].setFocus()
+
+        self.time_label.setText(datetime.now(timezone.utc).strftime("%H:%M %Z"))        
+        self.time_bar.setVisible(True) 
 
     def signal_update(self, val: int):
         self.time_bar.setValue(val)
         self.time_bar.update()
         
         if val == 0:
-            self.time_bar.setVisible(False)
-            self.sent_label.setText(f"Code expired, please try again.")
-            self.code_btn.setVisible(True)
+            # Stop the old thread
+            if hasattr(self, 'threading'):
+                self.threading.quit()
+                self.threading.wait()
+
+            self.threading = TimeThread(self.max_time) # Now we are in sync
+            self.threading._signal.connect(self.signal_update)
+            self.threading.start()
+            self.get_code()
+            
+
+    def authenticated(self, mode: int = 0) -> None:
+        self.threading.stop()
+        self.time_bar.setVisible(False)
+        
+        for input in self.input_boxes:
+            input.setEnabled(False)
+        
+        self.verify_btn.setEnabled(False)
+        self.warning_label.setStyleSheet("color: #049c84")
+        self.warning_label.setText("The user has been authenticated.")
+        self.warning_label.setVisible(True)
+
+        self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+        self.info_panel.update_server_status("ACCEPTED", "202", "User Authenticated")
+
+        if mode: #bypass
+            self.info_panel.update_client_data("TOTP", self.authentication_service.get_session_stored()["totp"])
+            self.info_panel.update_server_data("Sha1 Hash", ("Sha1 Hash", self.authentication_service.get_session_stored()["sha1_hash"]), "expand")
+            self.info_panel.update_server_data("TOTP", self.authentication_service.get_session_stored()["totp"])
+
+        self.info_panel.log_text("Authentication app generates TOTP based on the current time and the shared key.")
+        self.info_panel.log_text("Client: Enter TOTP and send it to the server.")
+        self.info_panel.log_text("Server: Calculate TOTP based on the current time and the shared key then verify user sent TOTP.")
+        self.info_panel.log_text("Authentication successful.")
+
+        self.message_service.send(self, "Authenticated", None)
 
     def send(self) -> None:
-        self.info_panel.update_client_data("totp", self.code_field.text())
+        code = ""
+        for input in self.input_boxes:
+            code += input.text()
 
-        if self.authentication_service.authenticate(self.code_field.text()):
-            self.threading.stop()
-            self.code_field.setEnabled(False)
-            self.verify_btn.setEnabled(False)
-            self.time_bar.setVisible(False)
-            self.not_login_btn.hide()
-
-            self.info_panel.update_client_status("request", "authentication")
-            self.info_panel.update_client_status("timestamp", self.authentication_service.get_session_stored()["timestamp_authenticate"])
-
-            self.info_panel.update_server_status("status", "200")
-            self.info_panel.update_server_status("message", "user authenticated")
-
-            self.info_panel.log_text("Client: TOTP entered.")
-            self.info_panel.log_text("Client: Sending data through HTTPS protocol.")
-            self.info_panel.log_text("Server: Verifying TOTP.")
-            self.info_panel.log_text("Authentication successful.")
-
-            self.message_service.send(self, "Authenticated", None)
+        if self.authentication_service.authenticate(code):
+            self.authenticated()
         else:
-            QMessageBox.warning(self, "Error", "Authentication failed. Try again.")
-        
-        self.info_panel.update_server_data("sha1_hash", self.authentication_service.get_session_stored()["sha1_hash"])
-        self.info_panel.update_server_data("totp", self.authentication_service.get_session_stored()["totp"])
+            self.warning_label.setVisible(True)
+
+            self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+            self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
+            self.info_panel.update_data_note(1)
+
+            self.info_panel.log_text("Authentication app generates TOTP based on the current time and the shared key.")
+            self.info_panel.log_text("Client: Enter TOTP and send it to the server.")
+            self.info_panel.log_text("Server: Calculate TOTP based on the current time and the shared key then verify user sent TOTP.")
+            self.info_panel.log_text("Authentication unsuccessful.")
+
+        self.info_panel.update_client_data("TOTP", code) 
+        self.info_panel.update_server_data("Sha1 Hash", ("Sha1 Hash", self.authentication_service.get_session_stored()["sha1_hash"]), "expand")
+        self.info_panel.update_server_data("TOTP", self.authentication_service.get_session_stored()["totp"])

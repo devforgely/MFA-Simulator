@@ -83,8 +83,12 @@ class ProfileViewModel(QWidget):
 
         improvements = self.data_service.get_user_improvements()
         if len(improvements) == 0:
-            widget = QListWidgetItem("""🔍 No improvement analysed yet: It appears that the quiz hasn't been completed.\n      Once you finish a quiz, area of improvement will be assessed. Keep going! 🌟""", self.improvement_list)
+            widget = QListWidgetItem(self.improvement_list)
+            label = QLabel("""🔍 No improvement analysed yet: It appears that the quiz hasn't been completed or you have improved your weakness.\nOnce you finish more quiz, area of improvement will be assessed. Keep going! 🌟""")
+            label.setWordWrap(True)
+            widget.setSizeHint(label.sizeHint())
             self.improvement_list.addItem(widget)
+            self.improvement_list.setItemWidget(widget, label)
         else: 
             for category, val in improvements:
                 widget = QListWidgetItem(category, self.improvement_list)

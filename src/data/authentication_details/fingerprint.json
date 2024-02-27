@@ -1,5 +1,5 @@
 {
-    "registeration": {
+    "registration": {
         "description": "Fingerprint authentication is a type of <b>biometric-based</b> authentication. This is because the user is authenticated based on something they are (i.e., their unique fingerprint pattern).",
         "advantages": {
             "Ease of Use": "Fingerprints are always with the user, eliminating the need to remember passwords or carry ID cards.",
@@ -7,7 +7,7 @@
             "Non-Repudiation": "Fingerprint authentication provides strong evidence of identity, which is valuable in legal and forensic contexts. Once a fingerprint is matched, it's difficult to deny involvement."
         },
         "disadvantages": {
-            "False Rejection and False Acceptance Rates": "Fingerprint recognition systems are susceptible to false rejection (where valid users are incorrectly denied access) and false acceptance (where unauthorized users are incorrectly granted access). Balancing these error rates is challenging and requires continuous optimization of the system's algorithms and hardware.",
+            "False Rejection and False Acceptance Rates": "Fingerprint recognition systems are susceptible to false rejection (where valid users are incorrectly denied access) and false acceptance (where unauthorised users are incorrectly granted access). Balancing these error rates is challenging and requires continuous optimisation of the system's algorithms and hardware.",
             "Privacy and Data Security Concerns": "Storing and managing fingerprint data raises significant privacy and data security concerns. If the fingerprint database is compromised, it could lead to serious privacy breaches and identity theft. Robust encryption and security measures are essential to mitigate these risks.",
             "Hardware and Infrastructure Costs": "Implementing fingerprint recognition systems requires investment in specialised hardware such as fingerprint scanners and associated infrastructure. This initial investment can be substantial, particularly for large-scale deployments across multiple locations."
         },

@@ -81,7 +81,7 @@
       <item>
        <widget class="QLabel" name="register_label">
         <property name="text">
-         <string>Registeration Phase</string>
+         <string>Registration Phase</string>
         </property>
        </widget>
       </item>

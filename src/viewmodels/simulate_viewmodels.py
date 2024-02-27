@@ -5,7 +5,7 @@ from PyQt5.QtGui import QColor
 from services.container import ApplicationContainer
 from models.authentication.authentication import Method
 from viewmodels.authentication.password_viewmodel import *
-from viewmodels.authentication.card_pin_viewmodel import *
+from viewmodels.authentication.chip_pin_viewmodel import *
 from viewmodels.authentication.security_question_viewmodel import *
 from viewmodels.authentication.picture_password_viewmodel import *
 from viewmodels.authentication.fingerprint_viewmodel import *
@@ -63,7 +63,7 @@ class CreatorViewModel(QWidget):
             Method.SECRET_QUESTION.value: "Security Questions",
             Method.PICTURE_PASSWORD.value: "Picture Password",
             Method.FINGERPRINT.value: "Fingerprint Device",
-            Method.CARD_PIN.value: "Card && Pin",
+            Method.CHIP_PIN.value: "Chip && PIN",
             Method.TOTP.value: "TOTP",
             Method.TWOFA_KEY.value: "2FA Key"
         }
@@ -152,7 +152,7 @@ class RegisterViewModel(QWidget):
             Method.SECRET_QUESTION: SecurityQuestionRegisterViewModel,
             Method.PICTURE_PASSWORD: PicturePasswordRegisterViewModel,
             Method.FINGERPRINT: FingerPrintRegisterViewModel,
-            Method.CARD_PIN: CardPinRegisterViewModel,
+            Method.CHIP_PIN: ChipPinRegisterViewModel,
             Method.TOTP: TOTPRegisterViewModel,
             Method.TWOFA_KEY: TwoFAKeyRegisterViewModel
         }
@@ -243,7 +243,7 @@ class AuthenticateViewModel(QWidget):
             Method.SECRET_QUESTION: SecurityQuestionAuthenticateViewModel,
             Method.PICTURE_PASSWORD: PicturePasswordAuthenticateViewModel,
             Method.FINGERPRINT: FingerPrintAuthenticateViewModel,
-            Method.CARD_PIN: CardPinAuthenticateViewModel,
+            Method.CHIP_PIN: ChipPinAuthenticateViewModel,
             Method.TOTP: TOTPAuthenticateViewModel,
             Method.TWOFA_KEY: TwoFAKeyAuthenticateViewModel
         }
@@ -259,6 +259,7 @@ class AuthenticateViewModel(QWidget):
         self.clear_stack()
         self.next_btn.setEnabled(False)
         self.back_btn.setEnabled(False)
+        self.bypass_btn.setEnabled(True)
         self.authentication_service.at = 0
         for method in self.authentication_service.get_all_types():
             viewmodel_factory = self.type_to_authenticate.get(method)
@@ -320,6 +321,7 @@ class AuthenticateViewModel(QWidget):
 
     def bypass(self) -> None:
         if self.authentication_service.bypass():
+            self.bypass_btn.setEnabled(False)
             container = self.stackedWidget.widget(self.authentication_service.at)
             if container:
                 method_item = container.layout().itemAt(0)

@@ -2,12 +2,12 @@ from typing import Any
 from models.authentication.authentication import BaseStrategy, Method
 import hashlib
 import datetime
-import rsa
 import hmac
 import math
 import secrets
 import time
 import random
+import uuid
 
 # For purpose of simulation, the strategy is simplified
 
@@ -21,31 +21,43 @@ class SaltStrategy(BaseStrategy): # Salted hashing
     def generate_salt(self, length=16):
         return secrets.token_bytes(length)
     
-
-class CardPinStrategy(SaltStrategy):
+class ChipPinStrategy(BaseStrategy):
     def __init__(self) -> None:
         super().__init__()
     
     def get_type(self) -> Method:
-        return Method.CARD_PIN
+        return Method.CHIP_PIN
     
-    def register(self, public_key: bytes) -> bool:
-        self.data["public_key"] = public_key
+    def generate_arqc(self) -> bytes:
+        # Simulating ARQC generation
+        return hashlib.sha256(str(self.data["chip_details"]).encode() + self.data["chip_digital_signature"] + b"transaction_data").digest()
+    
+    def generate_arpc(self, arqc: bytes) -> bytes:
+        # Simulating ARPC generation
+        return hashlib.sha256(str(self.data["chip_details"]).encode() + self.data["chip_digital_signature"] + arqc).digest()
+    
+    def register(self, pin: str) -> bool:
         self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        # prepare for authentication
-        self.data["server_challenge"] = ("Approval").encode()
+        self.data["pin"] = pin #For bypass
+        self.data["hashed_pin"] = hashlib.sha256(bytes(pin, "utf-8")).digest()
+        self.data["chip_details"] = uuid.uuid4()
+        self.data["chip_digital_signature"] = secrets.token_bytes(32)
 
         return True
 
-    def authenticate(self, signature: bytes) -> bool:
+    def authenticate(self, pin: str) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-        try:
-            rsa.verify(self.data["server_challenge"], signature, rsa.PublicKey.load_pkcs1(self.data["public_key"]))
-            return True
-        except rsa.VerificationError:
-            return False
 
+        # Simulate card verifying PIN against hashed PIN
+        if hashlib.sha256(bytes(pin, "utf-8")).digest() == self.data["hashed_pin"]:
+            self.data["arqc"] = self.generate_arqc()
+            self.data["arpc"] = self.generate_arpc(self.data["arqc"])
+            return True
+        return False
+    
+    def bypass(self) -> None:
+        self.authenticate(self.data["pin"])
 
 class FingerPrintStrategy(BaseStrategy):
     def __init__(self) -> None:
@@ -114,9 +126,7 @@ class PicturePasswordStrategy(BaseStrategy):
         return self.data["expected_response"] == self.data["signed_challenge"]
     
     def bypass(self) -> None:
-        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-        self.challenge_response(self.data["images"])
-
+        self.authenticate(self.data["images"])
 
 class PasswordStrategy(SaltStrategy):
     def __init__(self) -> None:
@@ -140,7 +150,6 @@ class PasswordStrategy(SaltStrategy):
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
         return username == self.data["user_registered"] \
                 and self.hash_secret(f"{username}${password}", self.data["salt"]) == self.data["hashed_secret"]
-
     
 class TOTPStrategy(SaltStrategy):
     def __init__(self) -> None:
@@ -155,17 +164,17 @@ class TOTPStrategy(SaltStrategy):
         return True
     
     def authenticate(self, key: str) -> bool:
-        if key:
+        if key != "GENERATE":
             self.data["timestamp_authenticate"] = str(datetime.datetime.now())
             self.data["totp"] = self.generate_TOTP()
             return key == self.data["totp"]
         else:
-            self.data["totp"] = self.generate_TOTP()
+            self.data["totp"] = self.generate_TOTP() # Simulate TOTP generation on the device
             return False
     
     def generate_TOTP(self) -> str:
         current_time = time.time()
-        time_step = 50 # In seconds
+        time_step = 30 # In seconds
         t = math.floor(current_time / time_step)
         h = hmac.new(
             bytes(self.data["shared_key"], encoding="utf-8"),
@@ -181,6 +190,9 @@ class TOTPStrategy(SaltStrategy):
         binary = int(digest[(offset * 2):((offset * 2) + 8)], 16) & 0x7fffffff
         passcode = binary % 10 ** digits
         return str(passcode).zfill(digits)
+    
+    def bypass(self) -> None:
+        self.authenticate(self.generate_TOTP())
 
 class SecurityQuestionStrategy(SaltStrategy):
     def __init__(self) -> None:
@@ -204,7 +216,6 @@ class SecurityQuestionStrategy(SaltStrategy):
 
         return self.hash_secret(answers, self.data["salt"]) == self.data["hashed_secret"]
     
-
 class TwoFAKeyStrategy(TOTPStrategy):
     def __init__(self) -> None:
         super().__init__()

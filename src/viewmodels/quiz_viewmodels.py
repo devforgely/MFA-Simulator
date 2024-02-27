@@ -101,6 +101,10 @@ class QuizSettingsViewModel(QWidget):
 
         self.is_collasped = not self.data_service.get_custom_quiz_expand()
 
+        sp_retain = self.config_box.sizePolicy()
+        sp_retain.setRetainSizeWhenHidden(True)
+        self.config_box.setSizePolicy(sp_retain)
+
         self.config_box.setVisible(not self.is_collasped)
         self.amend_btn.setVisible(not self.is_collasped)
         self.arrow = Arrow(collapsed=self.is_collasped)

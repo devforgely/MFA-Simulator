@@ -147,7 +147,7 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
             self.info_panel.log_text("Client: Sending data through a secure communication channel.")
             self.info_panel.log_text("Server: Hashing the answers to the security questions")
             self.info_panel.log_text("Server: Registering user with security questions and hashed secret.")
-            self.info_panel.log_text("Registeration successful.")
+            self.info_panel.log_text("Registration successful.")
 
             self.message_service.send(self, "Registered", None)
 

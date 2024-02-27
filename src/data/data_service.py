@@ -37,7 +37,7 @@ class User:
             Method.SECRET_QUESTION.value: False,
             Method.PICTURE_PASSWORD.value: False,
             Method.FINGERPRINT.value: False,
-            Method.CARD_PIN.value: False,
+            Method.CHIP_PIN.value: False,
             Method.TOTP.value: False,
             Method.TWOFA_KEY.value: False
         }

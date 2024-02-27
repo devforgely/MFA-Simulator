@@ -99,9 +99,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-379</y>
+        <y>0</y>
         <width>847</width>
-        <height>1174</height>
+        <height>1189</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -129,7 +129,7 @@
          <item row="1" column="1">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>&lt;p&gt;That's where the Multi-factor Authentication Simulator comes in. It aim to diverge from the conventional authentication methods—and bring back some of the robust security measures of the early pioneers. The first step is to create a comprehensive learning platform that allows you to explore various authentication methods.&lt;p&gt;
+            <string>&lt;p&gt;That's where the Multi-factor Authentication Simulator comes in. It aims to diverge from the conventional authentication methods and bring back some of the robust security measures of the early pioneers. The first step is to create a comprehensive learning platform that allows you to explore various authentication methods.&lt;p&gt;
 
 &lt;p&gt;Need to understand how memorised secret works? Or how biometric authentication provides security? Or how 2FA security key operate? The simulator provides interactive modules for each of these authenticators, allowing you to combine them and see how they work together to enhance security.&lt;/p&gt;</string>
            </property>

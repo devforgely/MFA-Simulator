@@ -30,7 +30,6 @@
 	border: 1px solid #ced4da;
 	border-radius: 4px;
 	padding-left: 10px;
-	margin-left: 10px;
 }
 
 #manage_content QComboBox::drop-down {
@@ -433,7 +432,7 @@ font-weight: 500;</string>
   <customwidget>
    <class>ShadowFrame</class>
    <extends>QFrame</extends>
-   <header>widgets/shadow.h</header>
+   <header location="global">widgets/shadow.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

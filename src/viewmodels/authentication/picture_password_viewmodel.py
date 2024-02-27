@@ -134,7 +134,7 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
                 self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected.")
                 self.info_panel.log_text("Client: Sending data through a secure communication channel.")
                 self.info_panel.log_text("Server: Hashing the images in byte using sha-256.")
-                self.info_panel.log_text("Registeration successful.")
+                self.info_panel.log_text("Registration successful.")
 
                 self.message_service.send(self, "Registered", None)
 

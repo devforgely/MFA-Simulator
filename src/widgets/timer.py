@@ -11,11 +11,15 @@ class TimeThread(QThread):
 
     def MaxValue(self) -> float:
         return self.max_val
+    
+    def set_max(self, val: int) -> None:
+        self.max_val = int(val / self.step_duration)
 
     def stop(self):
         self.is_running = False
 
     def run(self):
+        self.is_running = True
         for i in range(self.max_val, -1, -1):
             if not self.is_running:
                 break

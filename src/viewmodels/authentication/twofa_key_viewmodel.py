@@ -79,7 +79,7 @@ class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
             self.progress += step
             if self.progress >= 5:
                 self.progress = 5
-                self.instruction_label.setText("Registeration Completed")
+                self.instruction_label.setText("Registration Completed")
                 self.send()
             self.fingerprint.setPixmap(QPixmap(f"{Settings.IMAGE_FILE_PATH}fp_{self.progress}.png"))
                 
@@ -115,7 +115,7 @@ class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
             self.info_panel.log_text("Client: Converting fingerprint to fingerprint template and store inside 2FA key.")
             self.info_panel.log_text("Client: Generate and send shared_key through HTTPS protocol.")
             self.info_panel.log_text("Server: Storing shared key and user identification.")
-            self.info_panel.log_text("Registeration successful.")
+            self.info_panel.log_text("Registration successful.")
 
             self.message_service.send(self, "Registered", None)
             

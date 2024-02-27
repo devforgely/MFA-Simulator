@@ -115,7 +115,7 @@ class QuizService():
                 correct += 1
         
         #BADGE CONDITION
-        if len(self.current_answers) >= 30 and correct == len(self.current_answers):
+        if len(self.current_answers) >= 20 and correct == len(self.current_answers):
             self.data_service.update_user_badge(Badge.QUIZ_WHIZ)
         #BADGE END
             

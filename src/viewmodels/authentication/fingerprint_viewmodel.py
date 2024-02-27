@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMessageBox, QButtonGroup
+from PyQt5.QtWidgets import QButtonGroup
 from PyQt5.QtGui import QPixmap, QIcon
 from viewmodels.authentication.authentication_base import *
 from configuration.app_configuration import Settings
@@ -34,7 +34,7 @@ class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
         self.info_panel.add_server_data("User Fingerprint Template", ("User Fingerprint Template", "NULL"), "expand")
 
         self.info_panel.log_text("Waiting for fingerprint data...")
-        self.info_panel.set_measure_level(80)
+        self.info_panel.set_measure_level(75)
 
     def on_finger_changed(self, button, checked) -> None:
         if checked:
@@ -86,7 +86,7 @@ class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
             self.info_panel.log_text("Client: Sending data through a secure communication channel.")
             self.info_panel.log_text("Server: Converting fingerprint into fingerprint template.")
             self.info_panel.log_text("Server: Securely store the fingerprint template.")
-            self.info_panel.log_text("Registeration successful.")
+            self.info_panel.log_text("Registration successful.")
 
             self.message_service.send(self, "Registered", None)
             
