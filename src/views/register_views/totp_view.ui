@@ -85,10 +85,10 @@ QPushButton {
 }
 
 #qr_section {
-	background-color: rgba(255,255,255,0.85);
+	background-color: rgba(255,255,255,0.75);
 	border: none;
 	border-radius: 20px;
-	margin: 20px 10px;
+	margin: 20px 5px;
 }
 
 #link_btn, #scan_btn {

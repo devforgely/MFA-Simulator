@@ -1,6 +1,7 @@
 import string
 import base64
 
+
 def normalise_text(text: str) -> str:
     # only include lower case alphabet and number (no punctuation, no space)
     text = ''.join(char for char in text if char.isalnum())
@@ -11,6 +12,9 @@ def parse_array(arr: list[str]) -> str:
 
 def byte_str(bytes_val: bytes) -> str:
     return base64.b64encode(bytes_val).decode('utf-8')
+
+def decode_key(key) -> str:
+    return key.save_pkcs1().decode()
 
 def calculate_security_level(text: str) -> int:
     score = 0

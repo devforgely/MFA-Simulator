@@ -8,6 +8,7 @@ import secrets
 import time
 import random
 import uuid
+import rsa
 
 # For purpose of simulation, the strategy is simplified
 
@@ -158,9 +159,12 @@ class TOTPStrategy(SaltStrategy):
     def get_type(self) -> Method:
         return Method.TOTP
     
-    def register(self) -> bool:
-        self.data["timestamp_register"] = str(datetime.datetime.now())
-        self.data["shared_key"] = secrets.token_hex(16)
+    def register(self, request: str) -> bool:
+        if not request:
+            self.data["shared_key"] = secrets.token_hex(20)
+        else:
+            self.data["timestamp_register"] = str(datetime.datetime.now())
+        
         return True
     
     def authenticate(self, key: str) -> bool:
@@ -216,9 +220,58 @@ class SecurityQuestionStrategy(SaltStrategy):
 
         return self.hash_secret(answers, self.data["salt"]) == self.data["hashed_secret"]
     
-class TwoFAKeyStrategy(TOTPStrategy):
+class TwoFAKeyStrategy(BaseStrategy):
     def __init__(self) -> None:
         super().__init__()
     
     def get_type(self) -> Method:
         return Method.TWOFA_KEY
+    
+    def generate_challenge(self, length=16) -> bytes:
+        return secrets.token_bytes(length)
+    
+    def challenge_response(self) -> bool:
+        # server send challenge
+        nonce = self.generate_challenge()
+        self.data["nonce"] = nonce
+
+        # security key signs the challenge then client send to server
+        signed_challenge = rsa.sign(nonce, self.data["private_key"], 'SHA-256')
+        self.data["signed_challenge"] = signed_challenge
+
+        # server calculate the expected response
+        try:
+            rsa.verify(nonce, signed_challenge, self.data["public_key"])
+            return True
+        except rsa.VerificationError:
+            return False
+    
+    def register(self, fingerprint: bytes) -> bool:
+        self.data["timestamp_register"] = str(datetime.datetime.now())
+
+        self.data["fingerprint"] = fingerprint #For bypass
+
+        # Assuming doing fingerprint to fingerprint template
+        self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
+        
+        self.data["public_key"], self.data["private_key"] = rsa.newkeys(512) # small bits for simulation
+
+        # Key handle to match to correct private key
+        self.data["key_handle"] = hashlib.sha256(b'link_to_private_key').hexdigest()
+
+        return True
+    
+    def authenticate(self, fingerprint: bytes) -> bool:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+
+        # Assuming doing fingerprint to fingerprint template
+        template = bytes([byte ^ 0xFA for byte in fingerprint])
+
+        # Account for False negative
+        if template == self.data["fingerprint_template"] and random.random() > 0.2:
+            return self.challenge_response()
+        return False
+    
+    def bypass(self) -> None:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        self.challenge_response()

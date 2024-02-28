@@ -52,11 +52,29 @@
     border-bottom: 1.5px solid #0067c0;
 }
 
-#key_frame QPushButton {
+#connect_btn {
 	border: 1px solid gray;
 	height: 30px;
 	width: 100px;
 }
+
+#fp1_btn, #fp4_btn {
+	max-width: 80px;
+	height: 100px;
+	border: none;
+	background-color: #fff;
+	border-radius: 15%;
+}
+
+#fp1_btn:checked, #fp4_btn:checked {
+	border: 3px solid #4070f4;
+}
+
+#warning_label {
+	color: #d5786c;
+}
+
+
 
 </string>
   </property>
@@ -176,21 +194,46 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="key_name_field">
-         <property name="font">
-          <font>
-           <pointsize>8</pointsize>
-          </font>
+        <widget class="QWidget" name="verticalWidget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="maxLength">
-          <number>32767</number>
-         </property>
-         <property name="frame">
-          <bool>false</bool>
-         </property>
-         <property name="placeholderText">
-          <string>Name of Key</string>
-         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLineEdit" name="key_name_field">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="maxLength">
+             <number>36</number>
+            </property>
+            <property name="frame">
+             <bool>false</bool>
+            </property>
+            <property name="placeholderText">
+             <string>Name of Key</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="warning_label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string> Key name too short.</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -259,43 +302,54 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Simulate physical 2FA Cryptographic Key</string>
-        </property>
-       </widget>
-      </item>
       <item>
-       <layout class="QHBoxLayout" name="key_tool">
+       <layout class="QHBoxLayout" name="finger_container">
+        <property name="spacing">
+         <number>20</number>
+        </property>
         <item alignment="Qt::AlignHCenter">
-         <widget class="QPushButton" name="connect_btn">
+         <widget class="ShadowButton" name="fp1_btn">
           <property name="cursor">
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="text">
-           <string>Connect</string>
+           <string/>
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../resources/icons/electric-cord-1.svg</normaloff>../../resources/icons/electric-cord-1.svg</iconset>
+            <normaloff>../../data/fingerprints/fp3.png</normaloff>../../data/fingerprints/fp3.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>70</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
         <item alignment="Qt::AlignHCenter">
-         <widget class="QPushButton" name="on_btn">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
+         <widget class="ShadowButton" name="fp4_btn">
           <property name="cursor">
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="text">
-           <string>Turn On</string>
+           <string/>
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../resources/icons/power.svg</normaloff>../../resources/icons/power.svg</iconset>
+            <normaloff>../../data/fingerprints/fp4.png</normaloff>../../data/fingerprints/fp4.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>70</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -311,6 +365,20 @@
         </property>
        </widget>
       </item>
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QPushButton" name="connect_btn">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="text">
+         <string>Connect</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../resources/icons/electric-cord-1.svg</normaloff>../../resources/icons/electric-cord-1.svg</iconset>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -321,6 +389,11 @@
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header location="global">widgets/clickables.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ShadowButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">widgets/shadow.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

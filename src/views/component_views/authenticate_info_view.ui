@@ -273,11 +273,20 @@ QTabBar::tab:!selected:hover {
                <property name="bottomMargin">
                 <number>10</number>
                </property>
-               <property name="spacing">
+               <property name="horizontalSpacing">
+                <number>10</number>
+               </property>
+               <property name="verticalSpacing">
                 <number>20</number>
                </property>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_5">
+                 <property name="maximumSize">
+                  <size>
+                   <width>130</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Request</string>
                  </property>
@@ -285,6 +294,12 @@ QTabBar::tab:!selected:hover {
                </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="label">
+                 <property name="maximumSize">
+                  <size>
+                   <width>130</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Connection</string>
                  </property>
@@ -306,6 +321,12 @@ QTabBar::tab:!selected:hover {
                </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_7">
+                 <property name="maximumSize">
+                  <size>
+                   <width>130</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Timestamp</string>
                  </property>
@@ -383,6 +404,12 @@ QTabBar::tab:!selected:hover {
                </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="label_9">
+                 <property name="maximumSize">
+                  <size>
+                   <width>130</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Status</string>
                  </property>
@@ -390,6 +417,12 @@ QTabBar::tab:!selected:hover {
                </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_11">
+                 <property name="maximumSize">
+                  <size>
+                   <width>130</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Response</string>
                  </property>
@@ -404,6 +437,12 @@ QTabBar::tab:!selected:hover {
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_13">
+                 <property name="maximumSize">
+                  <size>
+                   <width>130</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Status Code</string>
                  </property>
@@ -433,7 +472,7 @@ QTabBar::tab:!selected:hover {
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-42</y>
+               <y>0</y>
                <width>509</width>
                <height>250</height>
               </rect>
@@ -630,8 +669,8 @@ QTabBar::tab:!selected:hover {
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>530</width>
-                  <height>373</height>
+                  <width>100</width>
+                  <height>38</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_16">

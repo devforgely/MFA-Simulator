@@ -2,10 +2,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator, QPixmap
 from PyQt5.QtWidgets import QLabel, QVBoxLayout
 from viewmodels.authentication.authentication_base import *
+from configuration.app_configuration import Settings
 from widgets.timer import TimeThread
 from datetime import datetime, timezone
 import time
-from configuration.app_configuration import Settings
+import qrcode
+from io import BytesIO
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -31,6 +33,23 @@ class TOTPRegisterViewModel(AuthenticationBaseViewModel):
 
     def start_setup(self) -> None:
         self.left_stacked.setCurrentIndex(self.left_stacked.currentIndex() + 1)
+        self.authentication_service.register("")
+
+        qr = qrcode.QRCode()
+        qr.add_data(self.authentication_service.get_session_stored()["shared_key"])
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        buf = BytesIO()
+        img.save(buf, format='PNG')
+
+        # Create a QPixmap from the BytesIO object
+        pixmap = QPixmap()
+        pixmap.loadFromData(buf.getvalue(), 'PNG')
+        pixmap = pixmap.scaled(250, 250, Qt.KeepAspectRatio)
+
+        self.qr.setPixmap(pixmap)
+        self.qr_section.setPixmap(pixmap)
+        
         self.next_phone_screen()
     
     def next_phone_screen(self) -> None:
@@ -46,7 +65,7 @@ class TOTPRegisterViewModel(AuthenticationBaseViewModel):
         self.phone_container.setCurrentIndex(0)
 
     def send(self) -> None:
-        if self.authentication_service.register():
+        if self.authentication_service.register("Confirm Key"):
             tick_label = QLabel()
             tick_label.setScaledContents(True)
             tick_label.setAlignment(Qt.AlignCenter)

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QPushButton, QGraphicsOpacityEffect, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QDialog, QPushButton, QGraphicsOpacityEffect, QLabel, QVBoxLayout, QWidget, QTextEdit
 from PyQt5.QtCore import QTimer, Qt, QPropertyAnimation
 from PyQt5.QtGui import QMovie
 from typing import Callable
@@ -134,9 +134,9 @@ class DetailViewDialog(QDialog):
         layout.addWidget(self.title)
 
         # Create a QLabel to hold the details
-        self.detail_label = QLabel(details)
-        self.detail_label.setStyleSheet("padding: 10px;")
-        self.detail_label.setWordWrap(True)
+        self.detail_label = QTextEdit(details)
+        self.detail_label.setReadOnly(True)
+        self.detail_label.setStyleSheet("QTextEdit { border: 1px solid gray; padding: 10px; } QTextEdit::-webkit-scrollbar { width: 0px; }")
 
         self.close_button = QPushButton("Close")
         self.close_button.setMinimumWidth(200)
@@ -147,7 +147,6 @@ class DetailViewDialog(QDialog):
         layout = QVBoxLayout(self.container)
         layout.addWidget(self.header)
         layout.addWidget(self.detail_label)
-        layout.addStretch()
         layout.addWidget(self.close_button, alignment=Qt.AlignCenter | Qt.AlignBottom)
 
     def close_dialog(self) -> None:

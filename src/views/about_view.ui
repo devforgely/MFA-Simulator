@@ -179,7 +179,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>&lt;p&gt;Greetings! If you're here, you're likely immersed in the world of education and care about you internet identity.&lt;/p&gt;
+            <string>&lt;p&gt;Greetings! If you're here, you're likely immersed in the world of education and care about your internet identity.&lt;/p&gt;
 
 &lt;p&gt;You probably have multiple tabs open: one for your email, one for your project management tool, one for your cloud storage, and so forth… But have you ever wondered about the security of these &quot;digital tools&quot;? Or why there's such a variety of login methods? To answer these questions, and to explain why we need to delve into the realm of cybersecurity.&lt;/p&gt;</string>
            </property>
