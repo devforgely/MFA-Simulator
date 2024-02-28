@@ -420,6 +420,7 @@ class QuizResponseViewModel(QWidget):
             self.time_val.setText(self.quiz_service.check_time()+f"<font color='#7c7c7c'>&nbsp;&nbsp;/&nbsp;&nbsp;{timed[1]:02d}:00</font>")
         else:
             self.time_val.setText(self.quiz_service.check_time())
+        self.time_q_label.setText(self.quiz_service.check_time_per_question())
         self.difficulty_float.setText(str(self.quiz_service.check_difficulty()))
 
         result = self.quiz_service.check_answers()

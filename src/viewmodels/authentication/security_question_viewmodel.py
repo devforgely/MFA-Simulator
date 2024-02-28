@@ -4,6 +4,7 @@ from viewmodels.authentication.authentication_base import *
 from services.container import ApplicationContainer
 from configuration.app_configuration import Settings
 from models.utils import normalise_text, parse_array, byte_str
+from widgets.info_panel import InfoMode
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -41,15 +42,15 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
         self.frame.adjust_shadow(30, 50, 2, 2)
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Security Questions", ("Security Questions", "[]"), "expand")
-        self.info_panel.add_client_data("Answers", ("Answers", "NULL"), "expand")
+        self.info_panel.add_client_data("Security Questions", ("Security Questions", "[]"), InfoMode.EXPAND)
+        self.info_panel.add_client_data("Answers", ("Answers", "NULL"), InfoMode.EXPAND)
         
-        self.info_panel.add_server_data("User Security Questions", ("User Security Questions", "[]"), "expand")
-        self.info_panel.add_server_data("User Security Answers", ("User Security Answers", "NULL"), "expand")
-        self.info_panel.add_server_data("Salt", ("Salt Value", "NULL"), "expand")
+        self.info_panel.add_server_data("User Security Questions", ("User Security Questions", "[]"), InfoMode.EXPAND)
+        self.info_panel.add_server_data("User Security Answers", ("User Security Answers", "NULL"), InfoMode.EXPAND)
+        self.info_panel.add_server_data("Salt", ("Salt Value", "NULL"), InfoMode.EXPAND)
 
         self.info_panel.log_text("Server: Generate a set of security questions and send to client.")
-        self.info_panel.log_text("Waiting for security questions and answers...")
+        self.info_panel.log_text("Waiting for security questions and answers...\n")
         self.info_panel.set_measure_level(40)
 
     def add_question(self, required: bool) -> None:
@@ -131,15 +132,17 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
             self.warning_label.setText("Account has been registered.")
             self.submit_btn.setEnabled(False)
 
-            self.info_panel.update_client_status("Registration", self.authentication_service.get_session_stored()["timestamp_register"])
+            data = self.authentication_service.get_session_stored()
+
+            self.info_panel.update_client_status("Registration", data["timestamp_register"])
             self.info_panel.update_server_status("ACCEPTED", "202", "User Registered")
 
-            self.info_panel.update_client_data("Security Questions", ("Security Questions", parse_array(questions)), "expand")
-            self.info_panel.update_client_data("Answers", ("Answers", plain_key), "expand")
+            self.info_panel.update_client_data("Security Questions", ("Security Questions", parse_array(questions)))
+            self.info_panel.update_client_data("Answers", ("Answers", plain_key))
 
-            self.info_panel.update_server_data("User Security Questions", ("User Security Questions", parse_array(self.authentication_service.get_session_stored()["user_questions"])), "expand")
-            self.info_panel.update_server_data("User Security Answers", ("User Security Answers", byte_str(self.authentication_service.get_session_stored()["hashed_secret"])), "expand")
-            self.info_panel.update_server_data("Salt", ("Salt Value", byte_str(self.authentication_service.get_session_stored()["salt"])), "expand")
+            self.info_panel.update_server_data("User Security Questions", ("User Security Questions", parse_array(data["user_questions"])))
+            self.info_panel.update_server_data("User Security Answers", ("User Security Answers", byte_str(data["hashed_secret"])))
+            self.info_panel.update_server_data("Salt", ("Salt Value", byte_str(data["salt"])))
 
             self.info_panel.update_data_note(1)
 
@@ -147,7 +150,7 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
             self.info_panel.log_text("Client: Sending data through a secure communication channel.")
             self.info_panel.log_text("Server: Hashing the answers to the security questions")
             self.info_panel.log_text("Server: Registering user with security questions and hashed secret.")
-            self.info_panel.log_text("Registration successful.")
+            self.info_panel.log_text("Registration successful.\n")
 
             self.message_service.send(self, "Registered", None)
 
@@ -159,6 +162,7 @@ class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
         self.answer_widgets = []
 
         self.submit_btn.clicked.connect(self.send)
+        self.warning_label.setVisible(False)
         self.setup_ui()
         self.initalise_infopanel()
 
@@ -194,33 +198,37 @@ class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
         layout.addStretch()
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Answers", ("Answers", "NULL"), "expand")
+        data = self.authentication_service.get_session_stored()
+
+        self.info_panel.add_client_data("Answers", ("Answers", "NULL"), InfoMode.EXPAND)
         
-        self.info_panel.add_server_data("User Security Questions", ("User Security Questions", parse_array(self.authentication_service.get_session_stored()["user_questions"])), "expand")
-        self.info_panel.add_server_data("User Security Answers", ("User Security Answers", byte_str(self.authentication_service.get_session_stored()["hashed_secret"])), "expand")
-        self.info_panel.add_server_data("Salt", ("Salt Value", byte_str(self.authentication_service.get_session_stored()["salt"])), "expand")
+        self.info_panel.add_server_data("User Security Questions", ("User Security Questions", parse_array(data["user_questions"])), InfoMode.EXPAND)
+        self.info_panel.add_server_data("User Security Answers", ("User Security Answers", byte_str(data["hashed_secret"])), InfoMode.EXPAND)
+        self.info_panel.add_server_data("Salt", ("Salt Value", byte_str(data["salt"])), InfoMode.EXPAND)
 
         self.info_panel.log_text("Client: Request to access account.")
         self.info_panel.log_text("Server: Sending security questions of the user to the client.")
-        self.info_panel.log_text("Waiting for answers to security questions...")
+        self.info_panel.log_text("Waiting for answers to security questions...\n")
 
     def authenticated(self, mode: int = 0) -> None:
         self.warning_label.setStyleSheet("color: #049c84")
         self.warning_label.setText("The user has been authenticated.")
         self.submit_btn.setEnabled(False)
 
-        self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+        data = self.authentication_service.get_session_stored()
+
+        self.info_panel.update_client_status("Authentication", data["timestamp_authenticate"])
         self.info_panel.update_server_status("ACCEPTED", "202", "User Authenticated")
 
         if mode: # bypass mode
-            self.info_panel.update_client_data("Answers", ("Answers", self.authentication_service.get_session_stored()["user_answers"]), "expand")
+            self.info_panel.update_client_data("Answers", ("Answers", data["user_answers"]))
 
         self.info_panel.log_text(f"Client: {len(self.answer_widgets)} security question displayed and all answers entered.")
         self.info_panel.log_text("Client: Sending answers through a secure communication channel.")
         self.info_panel.log_text("Server: Received answers to security questions")
         self.info_panel.log_text("Server: Hashing and salting the received answers")
         self.info_panel.log_text("Server: Verifying user by comparing the stored hash with the newly computed hash.")
-        self.info_panel.log_text("Authentication successful.")
+        self.info_panel.log_text("Authentication successful.\n")
 
         self.message_service.send(self, "Authenticated", None)
         
@@ -230,20 +238,27 @@ class SecurityQuestionAuthenticateViewModel(AuthenticationBaseViewModel):
         for answer_lineedit in self.answer_widgets:
             plain_key += normalise_text(answer_lineedit.text()) + "$"
 
-        if self.authentication_service.authenticate(plain_key):
+        flag = self.authentication_service.authenticate(plain_key)
+        if flag == 0:
             self.authenticated()
         else:
-            self.warning_label.setStyleSheet("color: #d5786c;")
-            self.warning_label.setText("These credentials does not match our records.")
+            if flag == 1:
+                self.warning_label.setText("These credentials does not match our records.")
 
-            self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
-            self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
-            self.info_panel.update_data_note(1)
+                self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+                self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
+                self.info_panel.update_data_note(1)
 
-            self.info_panel.log_text("Client: Sending answers through a secure communication channel.")
-            self.info_panel.log_text("Server: Received answers to security questions")
-            self.info_panel.log_text("Server: Hashing and salting the received answers")
-            self.info_panel.log_text("Server: Verifying user by comparing the stored hash with the newly computed hash.")
-            self.info_panel.log_text("Authentication unsuccessful.")
+                self.info_panel.log_text("Client: Sending answers through a secure communication channel.")
+                self.info_panel.log_text("Server: Received answers to security questions")
+                self.info_panel.log_text("Server: Hashing and salting the received answers")
+                self.info_panel.log_text("Server: Verifying user by comparing the stored hash with the newly computed hash.")
+                self.info_panel.log_text("Authentication unsuccessful.\n")
+            elif flag == 2:
+                self.warning_label.setText("Locked for 10 seconds.")
 
-        self.info_panel.update_client_data("Answers", ("Answers", plain_key), "expand")
+                self.info_panel.log_text("Locking authentication for 10 seconds due to multiple fail attempts.\n")
+
+            self.warning_label.setVisible(True)
+
+        self.info_panel.update_client_data("Answers", ("Answers", plain_key))

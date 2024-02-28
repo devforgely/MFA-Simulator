@@ -5,6 +5,7 @@ from viewmodels.authentication.authentication_base import *
 from configuration.app_configuration import Settings
 import random
 from models.utils import byte_str
+from widgets.info_panel import InfoMode
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -56,14 +57,14 @@ class ChipPinRegisterViewModel(AuthenticationBaseViewModel):
     
     def initalise_infopanel(self) -> None:
         self.info_panel.add_client_data("Pin", "NULL")
-        self.info_panel.add_client_data("Chip Store of Hashed Pin", ("Chip Store of Hashed Pin", "NULL"), "expand")
-        self.info_panel.add_client_data("Chip Details", ("Chip Details in Bytes", "NULL"), "expand")
-        self.info_panel.add_client_data("Chip Digital Signature", ("Chip Digital Signature", "NULL"), "expand")
+        self.info_panel.add_client_data("Chip Store of Hashed Pin", ("Chip Store of Hashed Pin", "NULL"), InfoMode.EXPAND)
+        self.info_panel.add_client_data("Chip Details", ("Chip Details in Bytes", "NULL"), InfoMode.EXPAND)
+        self.info_panel.add_client_data("Chip Digital Signature", ("Chip Digital Signature", "NULL"), InfoMode.EXPAND)
 
-        self.info_panel.add_server_data("User Chip Details", ("User Chip Details in Bytes", "NULL"), "expand")
-        self.info_panel.add_server_data("User Chip Digital Signature", ("User Chip Digital Signature", "NULL"), "expand")
+        self.info_panel.add_server_data("User Chip Details", ("User Chip Details in Bytes", "NULL"), InfoMode.EXPAND)
+        self.info_panel.add_server_data("User Chip Digital Signature", ("User Chip Digital Signature", "NULL"), InfoMode.EXPAND)
         
-        self.info_panel.log_text("Waiting to create a new chip card and assign a pin...")
+        self.info_panel.log_text("Waiting to create a new chip card and assign a pin...\n")
         self.info_panel.set_measure_level(90)
 
     def generate_pin(self) -> None:
@@ -107,16 +108,18 @@ class ChipPinRegisterViewModel(AuthenticationBaseViewModel):
                 self.clear_btn.setEnabled(False)
                 self.allow_pin = False
 
-                self.info_panel.update_client_status("Registration", self.authentication_service.get_session_stored()["timestamp_register"])
+                data = self.authentication_service.get_session_stored()
+
+                self.info_panel.update_client_status("Registration", data["timestamp_register"])
                 self.info_panel.update_server_status("ACCEPTED", "202", "User Registered")
 
                 self.info_panel.update_client_data("Pin", self.pin_entered)
-                self.info_panel.update_client_data("Chip Store of Hashed Pin", ("Chip Store of Hashed Pin", byte_str(self.authentication_service.get_session_stored()["hashed_pin"])), "expand")
-                self.info_panel.update_client_data("Chip Details", ("Chip Details in Bytes", str(self.authentication_service.get_session_stored()["chip_details"])), "expand")
-                self.info_panel.update_client_data("Chip Digital Signature", ("Chip Digital Signature", byte_str(self.authentication_service.get_session_stored()["chip_digital_signature"])), "expand")
+                self.info_panel.update_client_data("Chip Store of Hashed Pin", ("Chip Store of Hashed Pin", byte_str(data["hashed_pin"])))
+                self.info_panel.update_client_data("Chip Details", ("Chip Details in Bytes", str(data["chip_details"])))
+                self.info_panel.update_client_data("Chip Digital Signature", ("Chip Digital Signature", byte_str(data["chip_digital_signature"])))
 
-                self.info_panel.update_server_data("User Chip Details", ("User Chip Details in Bytes", str(self.authentication_service.get_session_stored()["chip_details"])), "expand")
-                self.info_panel.update_server_data("User Chip Digital Signature", ("User Chip Digital Signature", byte_str(self.authentication_service.get_session_stored()["chip_digital_signature"])), "expand")
+                self.info_panel.update_server_data("User Chip Details", ("User Chip Details in Bytes", str(data["chip_details"])))
+                self.info_panel.update_server_data("User Chip Digital Signature", ("User Chip Digital Signature", byte_str(data["chip_digital_signature"])))
 
                 self.info_panel.update_data_note(1)
 
@@ -124,7 +127,7 @@ class ChipPinRegisterViewModel(AuthenticationBaseViewModel):
                 self.info_panel.log_text("Programming hashed pin into the chip, adding chip details and digital signature.")
                 self.info_panel.log_text("Server: Storing chip details and digital signature.")
                 self.info_panel.log_text("Sending chip to the client.")
-                self.info_panel.log_text("Registration successful.")
+                self.info_panel.log_text("Registration successful.\n")
 
                 self.message_service.send(self, "Registered", None)
 
@@ -159,17 +162,19 @@ class ChipPinAuthenticateViewModel(AuthenticationBaseViewModel):
         self.initalise_infopanel()
 
     def initalise_infopanel(self) -> None:
+        data = self.authentication_service.get_session_stored()
+
         self.info_panel.add_client_data("Pin", "NULL")
-        self.info_panel.add_client_data("Chip Store of Hashed Pin", ("Chip Store of Hashed Pin", byte_str(self.authentication_service.get_session_stored()["hashed_pin"])), "expand")
-        self.info_panel.add_client_data("Chip Details", ("Chip Details in Bytes", str(self.authentication_service.get_session_stored()["chip_details"])), "expand")
-        self.info_panel.add_client_data("Chip Digital Signature", ("Chip Digital Signature", byte_str(self.authentication_service.get_session_stored()["chip_digital_signature"])), "expand")
-        self.info_panel.add_client_data("ARQC", ("Authorization Request Cryptogram", "NULL"), "expand")
+        self.info_panel.add_client_data("Chip Store of Hashed Pin", ("Chip Store of Hashed Pin", byte_str(data["hashed_pin"])), InfoMode.EXPAND)
+        self.info_panel.add_client_data("Chip Details", ("Chip Details in Bytes", str(data["chip_details"])), InfoMode.EXPAND)
+        self.info_panel.add_client_data("Chip Digital Signature", ("Chip Digital Signature", byte_str(data["chip_digital_signature"])), InfoMode.EXPAND)
+        self.info_panel.add_client_data("ARQC", ("Authorization Request Cryptogram", "NULL"), InfoMode.EXPAND)
 
-        self.info_panel.add_server_data("User Chip Details", ("User Chip Details in Bytes", str(self.authentication_service.get_session_stored()["chip_details"])), "expand")
-        self.info_panel.add_server_data("User Chip Digital Signature", ("User Chip Digital Signature", byte_str(self.authentication_service.get_session_stored()["chip_digital_signature"])), "expand")
-        self.info_panel.add_server_data("ARPC", ("Authorization Response Cryptogram", "NULL"), "expand")
+        self.info_panel.add_server_data("User Chip Details", ("User Chip Details in Bytes", str(data["chip_details"])), InfoMode.EXPAND)
+        self.info_panel.add_server_data("User Chip Digital Signature", ("User Chip Digital Signature", byte_str(data["chip_digital_signature"])), InfoMode.EXPAND)
+        self.info_panel.add_server_data("ARPC", ("Authorization Response Cryptogram", "NULL"), InfoMode.EXPAND)
 
-        self.info_panel.log_text("Waiting to insert card then validate pin...")
+        self.info_panel.log_text("Waiting to insert card then validate pin...\n")
 
     def insert_card(self) -> None:
         self.terminal.setPixmap(QPixmap(Settings.IMAGE_FILE_PATH+"card_inside.png"))
@@ -191,21 +196,23 @@ class ChipPinAuthenticateViewModel(AuthenticationBaseViewModel):
         self.clear_btn.setEnabled(False)
         self.allow_pin = False
 
-        self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+        data = self.authentication_service.get_session_stored()
+
+        self.info_panel.update_client_status("Authentication", data["timestamp_authenticate"])
         self.info_panel.update_server_status("ACCEPTED", "202", "User Authenticated")
 
         if mode: # bypass mode
-            self.info_panel.update_client_data("Pin", self.authentication_service.get_session_stored()["pin"])
+            self.info_panel.update_client_data("Pin", data["pin"])
 
-        self.info_panel.update_client_data("ARQC", ("Authorization Request Cryptogram", byte_str(self.authentication_service.get_session_stored()["arqc"])), "expand")
-        self.info_panel.update_server_data("ARPC", ("Authorization Response Cryptogram", byte_str(self.authentication_service.get_session_stored()["arpc"])), "expand")
+        self.info_panel.update_client_data("ARQC", ("Authorization Request Cryptogram", byte_str(data["arqc"])))
+        self.info_panel.update_server_data("ARPC", ("Authorization Response Cryptogram", byte_str(data["arpc"])))
 
         self.info_panel.log_text("Client: Pin entered.")
         self.info_panel.log_text("Card: Hashing pin and validate against hashed pin stored in the chip.")
         self.info_panel.log_text("Card: Generate ARQC with request detail and digital signature.")
         self.info_panel.log_text("Card: Sending ARQC to the terminal.")
         self.info_panel.log_text("Server: Received ARQC from terminal, verifying ARQC then sending back ARPC.")
-        self.info_panel.log_text("Authentication successful.")
+        self.info_panel.log_text("Authentication successful.\n")
 
         self.message_service.send(self, "Authenticated", None)
 
@@ -213,19 +220,28 @@ class ChipPinAuthenticateViewModel(AuthenticationBaseViewModel):
         if self.allow_pin:
             plain_pin = self.pin_field.text()
 
-            if self.authentication_service.authenticate(plain_pin):
+            flag = self.authentication_service.authenticate(plain_pin)
+            if flag == 0:
                 self.authenticated()     
             else:
-                self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
-                self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
-                self.info_panel.update_data_note(1)
-
-                self.info_panel.log_text("Client: Pin entered.")
-                self.info_panel.log_text("Card: Hashing pin and validate against hashed pin stored in the chip.")
-                self.info_panel.log_text("Card: The PIN entered does not match in the memory.")
-                self.info_panel.log_text("Authentication unsuccessful.")
-
                 self.pin_field.clear()
+
+                if flag == 1:
+                    self.warning_label.setText("Incorrect PIN entered")
+
+                    self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+                    self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
+                    self.info_panel.update_data_note(1)
+
+                    self.info_panel.log_text("Client: Pin entered.")
+                    self.info_panel.log_text("Card: Hashing pin and validate against hashed pin stored in the chip.")
+                    self.info_panel.log_text("Card: The PIN entered does not match in the memory.")
+                    self.info_panel.log_text("Authentication unsuccessful.\n")
+                elif flag == 2:
+                    self.warning_label.setText("Locked for 10 seconds.")
+
+                    self.info_panel.log_text("Locking authentication for 10 seconds due to multiple fail attempts.\n")
+                    
                 self.warning_label.setVisible(True)
 
             self.info_panel.update_client_data("Pin", plain_pin)

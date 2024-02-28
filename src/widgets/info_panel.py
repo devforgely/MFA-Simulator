@@ -6,22 +6,29 @@ from typing import Any
 from widgets.list_widgets import ToggleListItem
 from widgets.clickables import ClickableLabel
 from services.container import ApplicationContainer
+from enum import Enum
 
 # pyright: reportAttributeAccessIssue=false
 
+class InfoMode(Enum):
+    REGISTER = 0
+    AUTHENTICATE = 1
+    DEFAULT = 2
+    EXPAND = 3
+
 class InfoPanel(QWidget):
-    def __init__(self, display_details: dict, mode: int, parent=None) -> None:
+    def __init__(self, display_details: dict, mode: InfoMode, parent=None) -> None:
         QWidget.__init__(self, parent)
         self.message_service = ApplicationContainer.message_service()
 
         self.notes = display_details["notes"]
         self.mode = mode
 
-        if mode == 0:
+        if mode == InfoMode.REGISTER:
             uic.loadUi("views/component_views/register_info_view.ui", self)
             self.add_advantages(display_details["advantages"])
             self.add_disadvantages(display_details["disadvantages"])
-        else:
+        elif mode == InfoMode.AUTHENTICATE:
             uic.loadUi("views/component_views/authenticate_info_view.ui", self)
             self.add_about(display_details["usability"])
         
@@ -90,7 +97,7 @@ class InfoPanel(QWidget):
         self.server_status_code.setText(status_code)
         self.response_status.setText(response)
 
-    def add_client_data(self, property: str, value: Any, value_type: str = "default") -> None:
+    def add_client_data(self, property: str, value: Any, type: InfoMode = InfoMode.DEFAULT) -> None:
         row = self.client_data_layout.rowCount()
         property_title = QLabel(property)
         property_title.setStyleSheet("width: 50%")
@@ -99,22 +106,22 @@ class InfoPanel(QWidget):
         property_value = None
         property = property.replace(" ", "_")
 
-        if value_type == "default":
+        if type == InfoMode.DEFAULT:
             property_value = QLabel(value)
             property_value.setObjectName(property)
-        elif value_type == "expand":
+        elif type == InfoMode.EXPAND:
             property_value = ClickableLabel("<u>$Click to View$</u>")
             property_value.setObjectName(property)
             property_value.setStyleSheet(f"#{property}:hover {{ color: #0067c0;}}")
 
-            if self.mode == 0:
+            if self.mode == InfoMode.REGISTER:
                 property_value.clicked.connect(lambda: self.message_service.send(self, "Register Show Details", value[0], value[1]))
-            else:
+            elif self.mode == InfoMode.AUTHENTICATE:
                 property_value.clicked.connect(lambda: self.message_service.send(self, "Authenticate Show Details", value[0], value[1]))
             
         self.client_data_layout.addWidget(property_value, row, 1)
 
-    def add_server_data(self, property: str, value: Any, value_type: str = "default") -> None:
+    def add_server_data(self, property: str, value: Any, type: InfoMode = InfoMode.DEFAULT) -> None:
         row = self.server_data_layout.rowCount()
         property_title = QLabel(property)
         property_title.setStyleSheet("width: 50%")
@@ -123,53 +130,53 @@ class InfoPanel(QWidget):
         property_value = None
         property = property.replace(" ", "_")
 
-        if value_type == "default":
+        if type == InfoMode.DEFAULT:
             property_value = QLabel(value)
             property_value.setObjectName(property)
-        elif value_type == "expand":
+        elif type == InfoMode.EXPAND:
             property_value = ClickableLabel("<u>$Click to View$</u>")
             property_value.setObjectName(property)
             property_value.setStyleSheet(f"#{property}:hover {{ color: #0067c0;}}")
 
-            if self.mode == 0:
+            if self.mode == InfoMode.REGISTER:
                 property_value.clicked.connect(lambda: self.message_service.send(self, "Register Show Details", value[0], value[1]))
-            else:
+            elif self.mode == InfoMode.AUTHENTICATE:
                 property_value.clicked.connect(lambda: self.message_service.send(self, "Authenticate Show Details", value[0], value[1]))
         
         self.server_data_layout.addWidget(property_value, row, 1)
     
-    def update_client_data(self, property: str, value: Any, value_type: str = "default") -> None:
+    def update_client_data(self, property: str, value: Any) -> None:
         property = property.replace(" ", "_")
         for i in range(self.client_data_layout.rowCount()):
             item = self.client_data_layout.itemAtPosition(i, 1)
             if item:
                 widget = item.widget()
                 if widget is not None and widget.objectName() == property:
-                    if value_type == "default":
+                    if not isinstance(widget, ClickableLabel) and not isinstance(value, tuple):
                         widget.setText(value)
-                    elif value_type == "expand":
-                        if self.mode == 0:
+                    else:
+                        if self.mode == InfoMode.REGISTER:
                             widget.disconnect()
                             widget.clicked.connect(lambda: self.message_service.send(self, "Register Show Details", value[0], value[1]))
-                        else:
+                        elif self.mode == InfoMode.AUTHENTICATE:
                             widget.disconnect()
                             widget.clicked.connect(lambda: self.message_service.send(self, "Authenticate Show Details", value[0], value[1]))
                     break
 
-    def update_server_data(self, property: str, value: Any, value_type: str = "default") -> None:
+    def update_server_data(self, property: str, value: Any) -> None:
         property = property.replace(" ", "_")
         for i in range(self.server_data_layout.rowCount()):
             item = self.server_data_layout.itemAtPosition(i, 1)
             if item:
                 widget = item.widget()
                 if widget is not None and widget.objectName() == property:
-                    if value_type == "default":
+                    if not isinstance(widget, ClickableLabel) and not isinstance(value, tuple):
                         widget.setText(value)
-                    elif value_type == "expand":
-                        if self.mode == 0:
+                    else:
+                        if self.mode == InfoMode.REGISTER:
                             widget.disconnect()
                             widget.clicked.connect(lambda: self.message_service.send(self, "Register Show Details", value[0], value[1]))
-                        else:
+                        elif self.mode == InfoMode.AUTHENTICATE:
                             widget.disconnect()
                             widget.clicked.connect(lambda: self.message_service.send(self, "Authenticate Show Details", value[0], value[1]))
                     break

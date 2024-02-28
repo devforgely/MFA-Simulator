@@ -4,6 +4,7 @@ from viewmodels.authentication.authentication_base import *
 from configuration.app_configuration import Settings
 import random
 from models.utils import image_byte, byte_str
+from widgets.info_panel import InfoMode
 
 class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
     def __init__(self, info_panel: QWidget) -> None:
@@ -29,11 +30,11 @@ class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
         self.phone_frame.adjust_shadow(40, 60, 5, 5)
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), "expand")
+        self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), InfoMode.EXPAND)
         
-        self.info_panel.add_server_data("User Fingerprint Template", ("User Fingerprint Template", "NULL"), "expand")
+        self.info_panel.add_server_data("User Fingerprint Template", ("User Fingerprint Template", "NULL"), InfoMode.EXPAND)
 
-        self.info_panel.log_text("Waiting for fingerprint data...")
+        self.info_panel.log_text("Waiting for fingerprint data...\n")
         self.info_panel.set_measure_level(75)
 
     def on_finger_changed(self, button, checked) -> None:
@@ -73,12 +74,13 @@ class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
         fingerprint = image_byte("data/fingerprints/"+self.current_finger+".png")
 
         if self.authentication_service.register(fingerprint):
-            self.info_panel.update_client_status("Registration", self.authentication_service.get_session_stored()["timestamp_register"])
+            data = self.authentication_service.get_session_stored()
+            self.info_panel.update_client_status("Registration", data["timestamp_register"])
             self.info_panel.update_server_status("ACCEPTED", "202", "User Registered")
 
-            self.info_panel.update_client_data("Fingerprint", ("Fingerprint in bytes", byte_str(fingerprint)), "expand")
+            self.info_panel.update_client_data("Fingerprint", ("Fingerprint in bytes", byte_str(fingerprint)))
 
-            self.info_panel.update_server_data("User Fingerprint Template", ("User Fingerprint Template",  byte_str(self.authentication_service.get_session_stored()["fingerprint_template"])),  "expand")
+            self.info_panel.update_server_data("User Fingerprint Template", ("User Fingerprint Template",  byte_str(data["fingerprint_template"])))
 
             self.info_panel.update_data_note(1)
 
@@ -86,7 +88,7 @@ class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
             self.info_panel.log_text("Client: Sending data through a secure communication channel.")
             self.info_panel.log_text("Server: Converting fingerprint into fingerprint template.")
             self.info_panel.log_text("Server: Securely store the fingerprint template.")
-            self.info_panel.log_text("Registration successful.")
+            self.info_panel.log_text("Registration successful.\n")
 
             self.message_service.send(self, "Registered", None)
             
@@ -115,11 +117,12 @@ class FingerPrintAuthenticateViewModel(AuthenticationBaseViewModel):
         self.phone_frame.adjust_shadow(40, 60, 5, 5)
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), "expand")
+        data = self.authentication_service.get_session_stored()
+        self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), InfoMode.EXPAND)
         
-        self.info_panel.add_server_data("User Fingerprint Template", ("User Fingerprint Template", byte_str(self.authentication_service.get_session_stored()["fingerprint_template"])), "expand")
+        self.info_panel.add_server_data("User Fingerprint Template", ("User Fingerprint Template", byte_str(data["fingerprint_template"])), InfoMode.EXPAND)
 
-        self.info_panel.log_text("Waiting for fingerprint data...")
+        self.info_panel.log_text("Waiting for fingerprint data...\n")
 
     def on_finger_changed(self, button, checked) -> None:
         if checked:
@@ -141,17 +144,20 @@ class FingerPrintAuthenticateViewModel(AuthenticationBaseViewModel):
         self.warning_label.setVisible(True)
         self.fingerprint_btn.setEnabled(False)
 
-        self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+        data = self.authentication_service.get_session_stored()
+
+        self.info_panel.update_client_status("Authentication", data["timestamp_authenticate"])
         self.info_panel.update_server_status("ACCEPTED", "202", "User Authenticated")
 
         if mode: # bypass mode
-            self.info_panel.update_client_data("Fingerprint", ("Fingerprint", byte_str(self.authentication_service.get_session_stored()["fingerprint"])), "expand")
+            self.info_panel.update_client_data("Fingerprint", ("Fingerprint", byte_str(data["fingerprint"])))
 
         self.info_panel.log_text("Client: Fingerprint scanned.")
         self.info_panel.log_text("Client: Sending data through a secure communication channel.")
         self.info_panel.log_text("Server: Converting data to fingerprint template.")
         self.info_panel.log_text("Server: Comparing fingerprint features.")
-        self.info_panel.log_text("Authentication successful.")
+        self.info_panel.log_text("Features matched.")
+        self.info_panel.log_text("Authentication successful.\n")
 
         self.message_service.send(self, "Authenticated", None)
     
@@ -159,19 +165,28 @@ class FingerPrintAuthenticateViewModel(AuthenticationBaseViewModel):
     def send(self) -> None:
         fingerprint = image_byte("data/fingerprints/"+self.current_finger+".png")
 
-        if self.authentication_service.authenticate(fingerprint):
+        flag = self.authentication_service.authenticate(fingerprint)
+        if flag == 0:
             self.authenticated()
         else:  
+            if flag == 1:
+                self.warning_label.setText("Your credentials does not match our records.")
+
+                self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+                self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
+                self.info_panel.update_data_note(1)
+
+                self.info_panel.log_text("Client: Fingerprint scanned.")
+                self.info_panel.log_text("Client: Sending data through a secure communication channel.")
+                self.info_panel.log_text("Server: Converting data to fingerprint template.")
+                self.info_panel.log_text("Server: Comparing fingerprint features.")
+                self.info_panel.log_text("Features unmatched.")
+                self.info_panel.log_text("Authentication unsuccessful.\n")
+            elif flag == 2:
+                self.warning_label.setText("Locked for 10 seconds.")
+
+                self.info_panel.log_text("Locking authentication for 10 seconds due to multiple fail attempts.\n")
+
             self.warning_label.setVisible(True)
-
-            self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
-            self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
-            self.info_panel.update_data_note(1)
-
-            self.info_panel.log_text("Client: Fingerprint scanned.")
-            self.info_panel.log_text("Client: Sending data through a secure communication channel.")
-            self.info_panel.log_text("Server: Converting data to fingerprint template.")
-            self.info_panel.log_text("Server: Comparing fingerprint features.")
-            self.info_panel.log_text("Authentication unsuccessful.")
         
-        self.info_panel.update_client_data("Fingerprint", ("Fingerprint", byte_str(fingerprint)), "expand")
+        self.info_panel.update_client_data("Fingerprint", ("Fingerprint", byte_str(fingerprint)))

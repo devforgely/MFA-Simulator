@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtGui import QPixmap
 from viewmodels.authentication.authentication_base import *
+from widgets.info_panel import InfoMode
 import os
 import random
 from models.utils import images_to_bytes, byte_str
@@ -39,12 +39,12 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
         self.frame.adjust_shadow(30, 50, 2, 2)
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Images", ("Images in Bytes", "NULL"), "expand")
+        self.info_panel.add_client_data("Images", ("Images in Bytes", "NULL"), InfoMode.EXPAND)
         
-        self.info_panel.add_server_data("User Images", ("User Images Stored as Shared Secret", "NULL"),  "expand")
+        self.info_panel.add_server_data("User Images", ("User Images Stored as Shared Secret", "NULL"),  InfoMode.EXPAND)
 
         self.info_panel.log_text("Sending the pictures to the client from the server's database.")
-        self.info_panel.log_text("Waiting for the user to select pictures...")
+        self.info_panel.log_text("Waiting for the user to select pictures...\n")
     
     def toggle_border_visibility(self) -> None:
         layout = self.image_view.layout()
@@ -114,27 +114,29 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
         if len(self.selected_images) == 0:
             self.warning_label.setVisible(True)
         else:
-            self.warning_label.setStyleSheet("color: #049c84")
-            self.warning_label.setText("Account has been registered.")
-            self.warning_label.setVisible(True)
-            self.submit_btn.setEnabled(False)
-
             images_byte = images_to_bytes(self.selected_images)
 
             if self.authentication_service.register(images_byte):
-                self.info_panel.update_client_status("Registration", self.authentication_service.get_session_stored()["timestamp_register"])
+                self.warning_label.setStyleSheet("color: #049c84")
+                self.warning_label.setText("Account has been registered.")
+                self.warning_label.setVisible(True)
+                self.submit_btn.setEnabled(False)
+
+                data = self.authentication_service.get_session_stored()
+
+                self.info_panel.update_client_status("Registration", data["timestamp_register"])
                 self.info_panel.update_server_status("ACCEPTED", "202", "User Registered")
 
-                self.info_panel.update_client_data("Images", ("Images in Bytes", str(images_byte.hex())), "expand")
+                self.info_panel.update_client_data("Images", ("Images in Bytes", str(images_byte.hex())))
 
-                self.info_panel.update_server_data("User Images", ("User Images Stored as Shared Secret", byte_str(self.authentication_service.get_session_stored()["hashed_secret"])),  "expand")
+                self.info_panel.update_server_data("User Images", ("User Images Stored as Shared Secret", byte_str(data["hashed_secret"])))
 
                 self.info_panel.update_data_note(1)
 
                 self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected.")
                 self.info_panel.log_text("Client: Sending data through a secure communication channel.")
                 self.info_panel.log_text("Server: Hashing the images in byte using sha-256.")
-                self.info_panel.log_text("Registration successful.")
+                self.info_panel.log_text("Registration successful.\n")
 
                 self.message_service.send(self, "Registered", None)
 
@@ -167,16 +169,18 @@ class PicturePasswordAuthenticateViewModel(PicturePasswordRegisterViewModel):
                         widget.hide_border()
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Images", ("Images in Bytes", "NULL"), "expand")
-        self.info_panel.add_client_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), "expand")
-        self.info_panel.add_client_data("Signed Challenge", ("Signed Challenge", "NULL"), "expand")
+        data = self.authentication_service.get_session_stored()
+
+        self.info_panel.add_client_data("Images", ("Images in Bytes", "NULL"), InfoMode.EXPAND)
+        self.info_panel.add_client_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), InfoMode.EXPAND)
+        self.info_panel.add_client_data("Signed Challenge", ("Signed Challenge", "NULL"), InfoMode.EXPAND)
         
-        self.info_panel.add_server_data("User Images", ("User Images Stored as Shared Secret", byte_str(self.authentication_service.get_session_stored()["hashed_secret"])),  "expand")
-        self.info_panel.add_server_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), "expand")
-        self.info_panel.add_server_data("Expected Response", ("Expected Response", "NULL"), "expand")
+        self.info_panel.add_server_data("User Images", ("User Images Stored as Shared Secret", byte_str(data["hashed_secret"])),  InfoMode.EXPAND)
+        self.info_panel.add_server_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), InfoMode.EXPAND)
+        self.info_panel.add_server_data("Expected Response", ("Expected Response", "NULL"), InfoMode.EXPAND)
 
         self.info_panel.log_text("Server: Combining user selected images with decoy images and sent to client.")
-        self.info_panel.log_text("Waiting for images...")
+        self.info_panel.log_text("Waiting for images...\n")
 
 
     def authenticated(self, mode: int = 0) -> None:
@@ -184,16 +188,18 @@ class PicturePasswordAuthenticateViewModel(PicturePasswordRegisterViewModel):
         self.warning_label.setText("The user has been authenticated.")
         self.submit_btn.setEnabled(False)
 
-        self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+        data = self.authentication_service.get_session_stored()
+
+        self.info_panel.update_client_status("Authentication", data["timestamp_authenticate"])
         self.info_panel.update_server_status("ACCEPTED", "202", "User Authenticated")
 
         if mode:
-            self.info_panel.update_client_data("Images", ("Images in Bytes", str(self.authentication_service.get_session_stored()["images"].hex())), "expand")
-            self.info_panel.update_client_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(self.authentication_service.get_session_stored()["nonce"])), "expand")
-            self.info_panel.update_client_data("Signed Challenge", ("Signed Challenge", byte_str(self.authentication_service.get_session_stored()["signed_challenge"])), "expand")
+            self.info_panel.update_client_data("Images", ("Images in Bytes", str(data["images"].hex())))
+            self.info_panel.update_client_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(data["nonce"])))
+            self.info_panel.update_client_data("Signed Challenge", ("Signed Challenge", byte_str(data["signed_challenge"])))
 
-            self.info_panel.update_server_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(self.authentication_service.get_session_stored()["nonce"])), "expand")
-            self.info_panel.update_server_data("Expected Response", ("Expected Response", byte_str(self.authentication_service.get_session_stored()["expected_response"])), "expand")
+            self.info_panel.update_server_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(data["nonce"])))
+            self.info_panel.update_server_data("Expected Response", ("Expected Response", byte_str(data["expected_response"])))
 
         self.info_panel.log_text(f"Client: Some images selected.")
         self.info_panel.log_text(f"Client: Request to verify identity.")
@@ -201,32 +207,42 @@ class PicturePasswordAuthenticateViewModel(PicturePasswordRegisterViewModel):
         self.info_panel.log_text("Client: Signed challenge by hashing the image data and using sha-256, along with a nonce, to create an HMAC.")
         self.info_panel.log_text("Client: Sending signed challenge to the server across the established communication channel.")
         self.info_panel.log_text("Server: Calculate the expected response and verify against the signed challenge.")
-        self.info_panel.log_text("Authentication successful.")
+        self.info_panel.log_text("Authentication successful.\n")
 
         self.message_service.send(self, "Authenticated", None)
 
     def send(self) -> None:
         images_byte = images_to_bytes(self.selected_images)
 
-        if self.authentication_service.authenticate(images_byte):
+        flag = self.authentication_service.authenticate(images_byte)
+        if flag == 0:
             self.authenticated()
         else:
+            if flag == 1:
+                self.warning_label.setText("These credentials does not match our records.")
+
+                self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+                self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
+                self.info_panel.update_data_note(1)
+
+                self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected.")
+                self.info_panel.log_text(f"Client: Request to verify identity.")
+                self.info_panel.log_text("Server: Generate nonce and send the challenge to the client.")
+                self.info_panel.log_text("Client: Signed challenge by hashing the image data and using sha-256, along with a nonce, to create an HMAC.")
+                self.info_panel.log_text("Client: Sending signed challenge to the server across the established communication channel.")
+                self.info_panel.log_text("Server: Calculate the expected response and verify against the signed challenge.")
+                self.info_panel.log_text("Authentication unsuccessful.\n")
+            elif flag == 2:
+                self.warning_label.setText("Locked for 10 seconds.")
+
+                self.info_panel.log_text("Locking authentication for 10 seconds due to multiple fail attempts.\n")
+            
             self.warning_label.setVisible(True)
-            self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
-            self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
-            self.info_panel.update_data_note(1)
+        
+        data = self.authentication_service.get_session_stored()
+        self.info_panel.update_client_data("Images", ("Images in Bytes", str(images_byte.hex())))
+        self.info_panel.update_client_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(data["nonce"])))
+        self.info_panel.update_client_data("Signed Challenge", ("Signed Challenge", byte_str(data["signed_challenge"])))
 
-            self.info_panel.log_text(f"Client: {len(self.selected_images)} images selected.")
-            self.info_panel.log_text(f"Client: Request to verify identity.")
-            self.info_panel.log_text("Server: Generate nonce and send the challenge to the client.")
-            self.info_panel.log_text("Client: Signed challenge by hashing the image data and using sha-256, along with a nonce, to create an HMAC.")
-            self.info_panel.log_text("Client: Sending signed challenge to the server across the established communication channel.")
-            self.info_panel.log_text("Server: Calculate the expected response and verify against the signed challenge.")
-            self.info_panel.log_text("Authentication unsuccessful.")
-
-        self.info_panel.update_client_data("Images", ("Images in Bytes", str(images_byte.hex())), "expand")
-        self.info_panel.update_client_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(self.authentication_service.get_session_stored()["nonce"])), "expand")
-        self.info_panel.update_client_data("Signed Challenge", ("Signed Challenge", byte_str(self.authentication_service.get_session_stored()["signed_challenge"])), "expand")
-
-        self.info_panel.update_server_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(self.authentication_service.get_session_stored()["nonce"])), "expand")
-        self.info_panel.update_server_data("Expected Response", ("Expected Response", byte_str(self.authentication_service.get_session_stored()["expected_response"])), "expand")
+        self.info_panel.update_server_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(data["nonce"])))
+        self.info_panel.update_server_data("Expected Response", ("Expected Response", byte_str(data["expected_response"])))

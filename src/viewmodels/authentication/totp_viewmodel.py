@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 import time
 import qrcode
 from io import BytesIO
+from widgets.info_panel import InfoMode
 
 # pyright: reportAttributeAccessIssue=false
 
@@ -24,11 +25,11 @@ class TOTPRegisterViewModel(AuthenticationBaseViewModel):
         self.initalise_infopanel()
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Shared Key", ("Shared Key", "NULL"), "expand")
+        self.info_panel.add_client_data("Shared Key", ("Shared Key", "NULL"), InfoMode.EXPAND)
         
-        self.info_panel.add_server_data("Shared Key", ("Shared Key", "NULL"), "expand")
+        self.info_panel.add_server_data("Shared Key", ("Shared Key", "NULL"), InfoMode.EXPAND)
 
-        self.info_panel.log_text("Waiting for scanning of QR code to receive shared key...")
+        self.info_panel.log_text("Waiting for scanning of QR code to receive shared key...\n")
         self.info_panel.set_measure_level(65)
 
     def start_setup(self) -> None:
@@ -76,13 +77,15 @@ class TOTPRegisterViewModel(AuthenticationBaseViewModel):
             self.success_label.setVisible(True)
             self.link_btn.setEnabled(False)
             self.cancel_btn.setEnabled(False)
+
+            data = self.authentication_service.get_session_stored()
             
-            self.info_panel.update_client_status("Registration", self.authentication_service.get_session_stored()["timestamp_register"])
+            self.info_panel.update_client_status("Registration", data["timestamp_register"])
             self.info_panel.update_server_status("ACCEPTED", "202", "User Registered")
 
-            self.info_panel.update_client_data("Shared Key", ("Shared Key", self.authentication_service.get_session_stored()["shared_key"]), "expand")
+            self.info_panel.update_client_data("Shared Key", ("Shared Key", data["shared_key"]))
 
-            self.info_panel.update_server_data("Shared Key", ("Shared Key", self.authentication_service.get_session_stored()["shared_key"]), "expand")
+            self.info_panel.update_server_data("Shared Key", ("Shared Key", data["shared_key"]))
 
             self.info_panel.update_data_note(1)
 
@@ -91,7 +94,7 @@ class TOTPRegisterViewModel(AuthenticationBaseViewModel):
             self.info_panel.log_text("Server: Present a QR code for the distribution of the shared key.")
             self.info_panel.log_text("Client: Scans the QR code.")
             self.info_panel.log_text("Authentication app extracts the shared secret key and other registration data encoded within the QR code.")
-            self.info_panel.log_text("Registration successful.")
+            self.info_panel.log_text("Registration successful.\n")
 
             self.message_service.send(self, "Registered", None)
 
@@ -133,14 +136,16 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         self.initalise_infopanel()
 
     def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Shared Key", ("Shared Key", self.authentication_service.get_session_stored()["shared_key"]), "expand")
+        data = self.authentication_service.get_session_stored()
+
+        self.info_panel.add_client_data("Shared Key", ("Shared Key", data["shared_key"]), InfoMode.EXPAND)
         self.info_panel.add_client_data("TOTP", "NULL")
         
-        self.info_panel.add_server_data("Shared Key", ("Shared Key", self.authentication_service.get_session_stored()["shared_key"]), "expand")
-        self.info_panel.add_server_data("Sha1 Hash", ("Sha1 Hash", "NULL"), "expand")
+        self.info_panel.add_server_data("Shared Key", ("Shared Key", data["shared_key"]), InfoMode.EXPAND)
+        self.info_panel.add_server_data("Sha1 Hash", ("Sha1 Hash", "NULL"), InfoMode.EXPAND)
         self.info_panel.add_server_data("TOTP", "NULL")
 
-        self.info_panel.log_text("Waiting for TOTP...")
+        self.info_panel.log_text("Waiting for TOTP...\n")
 
     def focus_next_input(self, index: int) -> None:
         flag = False
@@ -204,18 +209,20 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         self.warning_label.setText("The user has been authenticated.")
         self.warning_label.setVisible(True)
 
-        self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+        data = self.authentication_service.get_session_stored()
+
+        self.info_panel.update_client_status("Authentication", data["timestamp_authenticate"])
         self.info_panel.update_server_status("ACCEPTED", "202", "User Authenticated")
 
         if mode: #bypass
-            self.info_panel.update_client_data("TOTP", self.authentication_service.get_session_stored()["totp"])
-            self.info_panel.update_server_data("Sha1 Hash", ("Sha1 Hash", self.authentication_service.get_session_stored()["sha1_hash"]), "expand")
-            self.info_panel.update_server_data("TOTP", self.authentication_service.get_session_stored()["totp"])
+            self.info_panel.update_client_data("TOTP", data["totp"])
+            self.info_panel.update_server_data("Sha1 Hash", ("Sha1 Hash", data["sha1_hash"]))
+            self.info_panel.update_server_data("TOTP", data["totp"])
 
         self.info_panel.log_text("Authentication app generates TOTP based on the current time and the shared key.")
         self.info_panel.log_text("Client: Enter TOTP and send it to the server.")
         self.info_panel.log_text("Server: Calculate TOTP based on the current time and the shared key then verify user sent TOTP.")
-        self.info_panel.log_text("Authentication successful.")
+        self.info_panel.log_text("Authentication successful.\n")
 
         self.message_service.send(self, "Authenticated", None)
 
@@ -224,20 +231,29 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         for input in self.input_boxes:
             code += input.text()
 
-        if self.authentication_service.authenticate(code):
+        flag = self.authentication_service.authenticate(code)
+        if flag == 0:
             self.authenticated()
         else:
+            if flag == 1:
+                self.warning_label.setText("The TOTP does not match.")
+
+                self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
+                self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
+                self.info_panel.update_data_note(1)
+
+                self.info_panel.log_text("Authentication app generates TOTP based on the current time and the shared key.")
+                self.info_panel.log_text("Client: Enter TOTP and send it to the server.")
+                self.info_panel.log_text("Server: Calculate TOTP based on the current time and the shared key then verify user sent TOTP.")
+                self.info_panel.log_text("Authentication unsuccessful.\n")
+            elif flag == 2:
+                self.warning_label.setText("Locked for 10 seconds.")
+
+                self.info_panel.log_text("Locking authentication for 10 seconds due to multiple fail attempts.\n")
+
             self.warning_label.setVisible(True)
 
-            self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
-            self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
-            self.info_panel.update_data_note(1)
-
-            self.info_panel.log_text("Authentication app generates TOTP based on the current time and the shared key.")
-            self.info_panel.log_text("Client: Enter TOTP and send it to the server.")
-            self.info_panel.log_text("Server: Calculate TOTP based on the current time and the shared key then verify user sent TOTP.")
-            self.info_panel.log_text("Authentication unsuccessful.")
-
+        data = self.authentication_service.get_session_stored()
         self.info_panel.update_client_data("TOTP", code) 
-        self.info_panel.update_server_data("Sha1 Hash", ("Sha1 Hash", self.authentication_service.get_session_stored()["sha1_hash"]), "expand")
-        self.info_panel.update_server_data("TOTP", self.authentication_service.get_session_stored()["totp"])
+        self.info_panel.update_server_data("Sha1 Hash", ("Sha1 Hash", data["sha1_hash"]))
+        self.info_panel.update_server_data("TOTP", data["totp"])

@@ -175,7 +175,7 @@ class RegisterViewModel(QWidget):
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
                 hbox = QWidget()
                 hlayout = QHBoxLayout(hbox)
-                info_panel = InfoPanel(self.authentication_service.get_display_details(), 0, hbox)
+                info_panel = InfoPanel(self.authentication_service.get_display_details(), InfoMode.REGISTER, hbox)
                 
                 hlayout.addWidget(viewmodel_factory(info_panel))
                 hlayout.addWidget(info_panel) 
@@ -268,7 +268,7 @@ class AuthenticateViewModel(QWidget):
                 self.message_service.subscribe(self, viewmodel_factory, self.on_message)
                 hbox = QWidget()
                 hlayout = QHBoxLayout(hbox)
-                info_panel = InfoPanel(self.authentication_service.get_display_details(), 1, hbox)
+                info_panel = InfoPanel(self.authentication_service.get_display_details(), InfoMode.AUTHENTICATE, hbox)
                 
                 hlayout.addWidget(viewmodel_factory(info_panel))
                 hlayout.addWidget(info_panel)
@@ -289,6 +289,7 @@ class AuthenticateViewModel(QWidget):
     def on_message(self, message_title: str, *args: Any)  -> None:
         if message_title == "Authenticated":
             self.next_btn.setEnabled(True)
+            self.bypass_btn.setEnabled(False)
         elif message_title == "Authenticate Show Details":
             self.detail_dialog = DetailViewDialog(args[0], args[1], self)
             self.detail_dialog.move(0, 0)

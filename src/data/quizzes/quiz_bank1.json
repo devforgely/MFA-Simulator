@@ -30,10 +30,10 @@
       "category": "MFA concepts and principles",
       "difficulty": "1",
       "question": "Which of the following is an example of 'Something you have' in MFA?",
-      "answer": "Security Token",
+      "answer": "Security Key",
       "choices": [
           "Password",
-          "Security Token",
+          "Security Key",
           "Fingerprint",
           "Security Question"
       ]
@@ -47,7 +47,7 @@
           "Password",
           "Security Token",
           "Fingerprint",
-          "Security Question"
+          "One-Time Password (OTP)"
       ]
     },
     {
@@ -108,10 +108,10 @@
       "category": "MFA technologies and methods",
       "difficulty": "1",
       "question": "Which of the following is an example of a hardware MFA device?",
-      "answer": "Security Token",
+      "answer": "Security Key",
       "choices": [
         "Password",
-        "Security Token",
+        "Security Key",
         "Fingerprint",
         "Security Question"
       ]

@@ -139,6 +139,13 @@ class QuizService():
         # Format elapsed time as MM:SS
         return f"{minutes:02d}:{seconds:02d}"
     
+    def check_time_per_question(self) -> str:
+        time = self.time / len(self.quizzes)
+        minutes = int(time // 60)
+        seconds = int(time % 60)
+
+        return f"{minutes:02d}:{seconds:02d}"
+    
     def get_all_categories(self) -> set:
         return self.data_service.get_quiz_bank()["categories"]
     

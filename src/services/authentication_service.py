@@ -2,6 +2,7 @@ from typing import Any, List
 from models.authentication.authentication import CompoundAuthentication, Method
 from models.authentication.authentication_methods import *
 from data.data_service import Badge
+import time
 
 class AuthenticationService():
     def __init__(self, data_service) -> None:
@@ -11,6 +12,10 @@ class AuthenticationService():
         self.at = 0
         self.register_count = 0
         self.auth_count = 0
+        self.auth_false_count = 0
+        self.lock_time = 0.0
+        self.LIMIT_COUNT = 5
+        self.LOCK_DURATION = 10
 
         self.type_to_strategy = {
             Method.PASSWORD: PasswordStrategy,
@@ -128,13 +133,25 @@ class AuthenticationService():
             return True
         return False
     
-    def authenticate(self, *data: Any) -> bool:
-        state = self.strategy.authenticate(self.at, *data)
-        if state:
-            if self.at == self.auth_count:
-                self.auth_count += 1
-            return True
-        return False
+    def authenticate(self, *data: Any) -> int:
+        # 2 for lock
+        # 1 for fail
+        # 0 for success
+        if self.auth_false_count < self.LIMIT_COUNT:
+            if time.time() - self.lock_time >= self.LOCK_DURATION:
+                state = self.strategy.authenticate(self.at, *data)
+                if state:
+                    if self.at == self.auth_count:
+                        self.auth_count += 1
+                    return 0
+                
+                self.auth_false_count += 1
+                return 1
+            return 2
+
+        self.lock_time = time.time()
+        self.auth_false_count = 0
+        return 2
     
     def bypass(self) -> bool:
         if not self.all_authenticated() and self.at == self.auth_count and self.data_service.update_user_coin(-100):

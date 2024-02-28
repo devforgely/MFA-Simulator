@@ -41,7 +41,7 @@
 	margin: 10px 0px 10px 0px
 }
 
-#grade_title, #grade_description {
+#grade_title, #grade_description, #tpq, #time_q_label, #ranking_label, #ranking_description {
 	margin-left: 2px;
 	color: #7c7c7c;
 	font-weight: bold;
@@ -259,6 +259,13 @@
         <property name="bottomMargin">
          <number>15</number>
         </property>
+        <item row="2" column="4">
+         <widget class="QLabel" name="ranking_label">
+          <property name="text">
+           <string>Difficulty Ranking:</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="2">
          <widget class="QLabel" name="time_label">
           <property name="sizePolicy">
@@ -272,48 +279,10 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="time_icon">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>36</width>
-            <height>36</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>36</width>
-            <height>36</height>
-           </size>
-          </property>
+        <item row="3" column="4">
+         <widget class="QLabel" name="ranking_description">
           <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap>../resources/icons/Square-Clock--Streamline-Core.svg</pixmap>
-          </property>
-          <property name="scaledContents">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
-         <widget class="QLabel" name="time_val">
-          <property name="text">
-           <string>12:00</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="4" alignment="Qt::AlignHCenter|Qt::AlignTop">
-         <widget class="QLabel" name="difficulty_float">
-          <property name="text">
-           <string>1</string>
+           <string>Basic (1) - Medium (2) - Hard (3)</string>
           </property>
          </widget>
         </item>
@@ -349,6 +318,65 @@
          <widget class="QLabel" name="difficulty_label">
           <property name="text">
            <string>Average Difficulty</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="time_icon">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>36</width>
+            <height>36</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>36</width>
+            <height>36</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap>../resources/icons/Square-Clock--Streamline-Core.svg</pixmap>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4" alignment="Qt::AlignHCenter|Qt::AlignTop">
+         <widget class="QLabel" name="difficulty_float">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2" alignment="Qt::AlignHCenter|Qt::AlignTop">
+         <widget class="QLabel" name="time_val">
+          <property name="text">
+           <string>12:00</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="tpq">
+          <property name="text">
+           <string>Time per Question</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2" alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="time_q_label">
+          <property name="text">
+           <string>1:00</string>
           </property>
          </widget>
         </item>
@@ -473,18 +501,18 @@
   <customwidget>
    <class>ShadowFrame</class>
    <extends>QFrame</extends>
-   <header>widgets/shadow.h</header>
+   <header location="global">widgets/shadow.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ShadowButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">widgets/shadow.h</header>
   </customwidget>
   <customwidget>
    <class>QRoundProgressBar</class>
    <extends>QProgressBar</extends>
    <header>widgets/progress_bar.h</header>
-  </customwidget>
-  <customwidget>
-   <class>ShadowButton</class>
-   <extends>QPushButton</extends>
-   <header>widgets/shadow.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
