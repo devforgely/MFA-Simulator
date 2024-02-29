@@ -16,7 +16,3 @@ As specified in RFC 4226, we first look at the last character of the hash to det
 For example So we grab the next 31 bits, starting with offset 1 on SHA-1 Hash (9acf2f7d742997c8e39912959a1cf4fc12f28261)
 Truncated value from the original hash is cf2f7d74. To get the TOTP we just have to convert it to decimal and show the last d digits by calculating the modulo 10<sup>d</sup> of the string.
 
-For more readings:
----
-- TOTP: Time-Based One-Time Password Algorithm (RFC6238): <a href="https://datatracker.ietf.org/doc/html/rfc6238">https://datatracker.ietf.org/doc/html/rfc6238</a>
-

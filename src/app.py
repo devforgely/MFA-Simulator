@@ -29,10 +29,11 @@ class App(QApplication):
             self.message_service.unsubscribe_all()
 
             widgets = self.allWidgets()[:]
-            self.main = MainViewModel()
 
             for widget in widgets:
                 widget.deleteLater()
+            
+            self.main = MainViewModel()
 
             self.message_service.subscribe(self, DataService, self.on_message)
             self.message_service.subscribe(self, MainViewModel, self.on_message)

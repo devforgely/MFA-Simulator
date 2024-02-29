@@ -1,6 +1,23 @@
-### Picture Password
+# Picture Password
+
+---
 
 The Picture Password authentication mechanism has two distinct parts: the initial password enrollment and subsequent password verification.  During enrollment, a user selects a theme identifying the thumbnail photos to be applied and then registers a sequence of thumbnail images that are used to derive the associated password.  When the device is powered on or booted up, the user must enter the currently enrolled image sequence for verification to gain access to the device.  After a successful authentication, the user may change the password, selecting a new sequence and/or theme.
 
 Picture Password offers benefits over PINs and textual passwords, especially for the visually inclined user.  As with textual passwords, a similar password length and alphabet size is used. However, instead of having to memorize and enter a string of random-like alphanumeric 
 characters, a sequence of thumbnail images must be selected and retained.  Experimental results suggest that human visual memory is well suited to such visual and cognitive tasks. The underlying mechanism, which handles random 3 character code assignment to images, password composition, enrollment, and verification, is completely hidden from the user. 
+
+## Types
+
+### Recognition-Based Schemes:
+In these schemes, the user is presented with a set of images and the password is the sequence of images selected by the user during the registration phase. At the time of authentication, the user has to recognize and select the images from a larger set of images.
+
+
+### Recall-Based Schemes:
+In these schemes, the user draws a secret shape or pattern on a grid or a blank canvas. The user is authenticated if the drawn shape or pattern matches the one created during the registration phase.
+
+
+### Cued Recall-Based Schemes:
+These schemes are a combination of recognition and recall-based schemes. The user is presented with a cue (an image or a part of it) to help them remember and draw the secret shape or pattern.
+
+The security of these schemes is based on the premise that an image or a pattern can be remembered more easily than a textual password and it’s harder for attackers to guess or brute-force an image-based password. However, like any other security measure, they are not impervious to attacks and their security largely depends on the complexity of the images or patterns used and how they are implemented.

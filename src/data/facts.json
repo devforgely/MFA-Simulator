@@ -13,7 +13,16 @@
         "Never share your MFA codes with anyone, even if they claim to be from a trusted source.",
         "Ensure your MFA apps and devices are always up-to-date for optimal security.",
         "Encourage your friends and family to use MFA to protect their online accounts.",
-        "To ensure further privacy and security protection, any data you enter here should be fictional. "
+        "To ensure further privacy and security protection, any data you enter here should be fictional. ",
+        "Some companies are exploring even more factors like voice recognition or facial scans.",
+        "Don't be a one-trick pony. Use different passwords for different account.",
+        "While authenticator apps on smartphones are common, security keys and fingerprint scanners are gaining popularity.",
+        "Enable MFA for all your important accounts to add an extra layer of protection.",
+        "Pharaohs used scarabs as physical tokens to access tombs.",
+        "Brainwave patterns as a potential future factor in MFA. Imagine logging in with your thoughts!",
+        "Be extra cautious with online access on public Wi-Fi networks and consider using a portable security key.",
+        "A beehive requires a specific scent and a complex dance routine for entry security.",
+        "Remember, MFA can still be bypassed if you fall for phishing scams."
     ]
 
 }

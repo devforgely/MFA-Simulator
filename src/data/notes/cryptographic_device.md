@@ -1,4 +1,4 @@
-### Multi-Factor Cryptographic Device Authenticators
+# Multi-Factor Cryptographic Device Authenticators
 
 A multi-factor cryptographic device is a hardware device that performs cryptographic operations using one or more protected cryptographic keys and requires activation through a second authentication factor. Authentication is accomplished by proving possession of the device and control of the key. The authenticator output is provided by direct connection to the user endpoint and is highly dependent on the specific cryptographic device and protocol, but it is typically some type of signed message. The multi-factor cryptographic device is something you have, and it SHALL be activated by either something you know or something you are.
 
@@ -12,7 +12,7 @@ Each authentication operation using the authenticator SHOULD require the input o
 
 The unencrypted key and activation secret or biometric sample - and any biometric data derived from the biometric sample such as a probe produced through signal processing - SHALL be zeroized immediately after an authentication transaction has taken place.
 
-### Concept of Process
+## Concept of Process
 
 Cryptographic device verifiers generate a challenge nonce, send it to the corresponding authenticator, and use the authenticator output to verify possession of the device. The authenticator output is highly dependent on the specific cryptographic device and protocol, but it is generally some type of signed message.
 

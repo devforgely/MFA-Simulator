@@ -219,7 +219,7 @@ class DataService():
             if filename.endswith('.md'):
                 title = os.path.splitext(filename)[0].replace("_", " ")
                 if not title.isupper():
-                    title = title.capitalize()
+                    title = title.title()
                 notes.append(Note(title, None))
 
         if len(notes) > len(self.get_user_readings()):

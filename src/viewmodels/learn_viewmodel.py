@@ -20,6 +20,17 @@ class LearnViewModel(QWidget):
         self.up_page_btn.clicked.connect(self.select_previous_item)
         self.down_page_btn.clicked.connect(self.select_next_item)
 
+        self.light_theme.clicked.connect(lambda: self.change_theme(0))
+        self.light_peach_theme.clicked.connect(lambda: self.change_theme(1))
+        self.peach_theme.clicked.connect(lambda: self.change_theme(2))
+        self.yellow_theme.clicked.connect(lambda: self.change_theme(3))
+        self.orange_theme.clicked.connect(lambda: self.change_theme(4))
+        self.dark_theme.clicked.connect(lambda: self.change_theme(5))
+        self.change_theme(0)
+
+        self.font_slider.valueChanged.connect(self.font_size_changed)
+        self.font_slider.setValue(0)
+
         self.listWidget.setCurrentRow(0)
 
     def populate_list(self) -> None:
@@ -48,7 +59,7 @@ class LearnViewModel(QWidget):
             self.listWidget.setItemWidget(item, widget)
 
     def display_note_content(self, index) -> None:
-        self.note.view(self.data_service.read_note(index).content)
+        self.note.view(self.data_service.read_note(index).get_content())
 
     def change_icon_and_text(self) -> None:
         for i in range(self.listWidget.count()):
@@ -86,14 +97,13 @@ class LearnViewModel(QWidget):
         if self.menu.is_expanded:
             self.expand_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "expand-arrow.svg"))
             self.expand_btn.setIconSize(QSize(18, 18))
-            self.horizontalWidget.setStyleSheet("border-left: 1px solid silver;")
-            self.note_container.setStyleSheet("border-left: 1px solid silver;")
+            self.horizontalWidget.setStyleSheet("#horizontalWidget {border-left: 1px solid silver;}")
+            self.note_container.setStyleSheet("#note_container {border-left: 1px solid silver;}")
         else:
             self.expand_btn.setIcon(QIcon(Settings.ICON_FILE_PATH + "chevrons-right.svg"))
             self.expand_btn.setIconSize(QSize(28, 28))
-            self.horizontalWidget.setStyleSheet("border-left: none;")
-            self.note_container.setStyleSheet("border-left: none;")
-
+            self.horizontalWidget.setStyleSheet("#horizontalWidget { border-left: none;}")
+            self.note_container.setStyleSheet("#note_container {border-left: none;}")
 
     def select_next_item(self):
         current_index = self.listWidget.currentRow()
@@ -104,3 +114,10 @@ class LearnViewModel(QWidget):
         current_index = self.listWidget.currentRow()
         if current_index > 0:  # Check if it's not the first item
             self.listWidget.setCurrentRow(current_index - 1)  
+
+    def font_size_changed(self, value: int) -> None:
+        self.note.adjust_font_size(value)
+
+    
+    def change_theme(self, theme: int) -> None:
+        self.note.adjust_theme(theme)

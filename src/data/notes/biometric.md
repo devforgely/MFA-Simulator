@@ -1,10 +1,10 @@
-### Use of Biometrics
+# Use of Biometrics
 
 <span>The use of biometrics (something you are) in authentication includes both measurement of physical characteristics (e.g., fingerprint, iris, facial characteristics) and behavioral characteristics (e.g., typing cadence).</span>
 
 ---
 
-#### Disadvantage of biometric as form of authentication
+## Disadvantage of biometric as form of authentication
 
 - The biometric False Match Rate (FMR) does not provide confidence in the authentication of the subscriber by itself. In addition, FMR does not account for spoofing attacks.
 
@@ -16,7 +16,7 @@
 
 ---
 
-#### Biometric system guidelines
+## Biometric system guidelines
 
 Biometrics SHALL be used only as part of multi-factor authentication with a physical authenticator (something you have).
 

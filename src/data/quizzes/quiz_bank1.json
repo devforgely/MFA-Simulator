@@ -1,9 +1,9 @@
 {
-  "categories": ["MAC concepts and principles", "Public Key Infrastructure", "Asymmetric Cryptography and its Applications",
-                "MFA technologies and methods", "HMAC concepts and principles", "MFA concepts and principles", "RSA concepts and principles"],
+  "categories": ["MAC concepts", "Public Key Infrastructure", "Asymmetric Cryptography",
+                "MFA technologies", "HMAC concepts", "MFA concepts", "RSA concepts", "MFA challenges"],
   "questions": [
     {
-      "category": "MFA concepts and principles",
+      "category": "MFA concepts",
       "difficulty": "1",
       "question": "What does MFA stand for in cybersecurity?",
       "answer": "Multi-Factor Authentication",
@@ -15,7 +15,7 @@
       ]
     },
     {
-      "category": "MFA concepts and principles",
+      "category": "MFA concepts",
       "difficulty": "1",
       "question": "Which of the following is an example of 'Something you are' in MFA?",
       "answer": "Fingerprint",
@@ -27,7 +27,7 @@
       ]
     },
     {
-      "category": "MFA concepts and principles",
+      "category": "MFA concepts",
       "difficulty": "1",
       "question": "Which of the following is an example of 'Something you have' in MFA?",
       "answer": "Security Key",
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "category": "MFA concepts and principles",
+      "category": "MFA concepts",
       "difficulty": "1",
       "question": "Which of the following is an example of 'Something you know' in MFA?",
       "answer": "Password",
@@ -51,7 +51,7 @@
       ]
     },
     {
-      "category": "MFA concepts and principles",
+      "category": "MFA concepts",
       "difficulty": "1",
       "question": "True or False: Using MFA can help protect your accounts even if your password is compromised.",
       "answer": "True",
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "category": "MFA concepts and principles",
+      "category": "MFA concepts",
       "difficulty": "2",
       "question": "What is another term often used to describe Multi-Factor Authentication?",
       "answer": "Two-Step Verification",
@@ -73,7 +73,7 @@
       ]
     },
     {
-      "category": "MFA concepts and principles",
+      "category": "MFA concepts",
       "difficulty": "2",
       "question": "True or False: You should use MFA for all your accounts, regardless of how often you use them.",
       "answer": "True",
@@ -83,7 +83,7 @@
       ]
     },
     {
-      "category": "MFA concepts and principles",
+      "category": "MFA concepts",
       "difficulty": "3",
       "question": "Which of the following is NOT a benefit of using MFA?",
       "answer": "Makes it easier to remember passwords",
@@ -95,7 +95,7 @@
       ]
     },
     {
-      "category": "MFA concepts and principles",
+      "category": "MFA concepts",
       "difficulty": "1",
       "question": "True or False: MFA makes it more difficult for unauthorized users to access your information.",
       "answer": "True",
@@ -105,7 +105,199 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA concepts",
+      "difficulty": "2",
+      "question": "What role does the Unpredictable Number (UN) play in preventing fraudulent activities?",
+      "answer": "It verifies the integrity of digital signatures.",
+      "choices": [
+        "It encrypts sensitive data during transmission.",
+        "It verifies the integrity of digital signatures.",
+        "It authenticates the issuer's response cryptogram.",
+        "It mitigates card skimming vulnerabilities."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "3",
+      "question": "What is the purpose of the Authorization Request Cryptogram (ARQC) in Chip and PIN transactions?",
+      "answer": "To authenticate the terminal's authorization request.",
+      "choices": [
+        "To verify the authenticity of the cardholder's identity.",
+        "To encrypt the PIN during transmission.",
+        "To authenticate the terminal's authorization request.",
+        "To generate a unique transaction counter."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "2",
+      "question": "What is the function of the Authorization Response Cryptogram (ARPC) in the Chip and PIN transaction process?",
+      "answer": "To generate a unique transaction counter.",
+      "choices": [
+        "To encrypt the cardholder's personal information.",
+        "To validate the terminal's authorization request.",
+        "To generate a unique transaction counter.",
+        "To verify the authenticity of the cardholder's PIN."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "3",
+      "question": "What is the purpose of liveness detection in fingerprint recognition systems?",
+      "answer": "To detect if a fingerprint is real or fake.",
+      "choices": [
+        "To encrypt fingerprint data during transmission.",
+        "To validate the terminal's authorization request.",
+        "To generate a unique transaction counter.",
+        "To detect if a fingerprint is real or fake."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "3",
+      "question": "What are minutiae in a fingerprint template and how are they used?",
+      "answer": "Specific friction ridge characteristics used for comparison and identification.",
+      "choices": [
+        "Technical features to counter biometric spoofing attacks.",
+        "Specific friction ridge characteristics used for comparison and identification.",
+        "Mathematical representation of fingerprint images.",
+        "Unique features of the fingerprint stored in the database."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "2",
+      "question": "What is the purpose of salting in password hashing?",
+      "answer": "To defend against dictionary attacks or attacks using rainbow tables.",
+      "choices": [
+        "To encrypt password data during transmission.",
+        "To validate the terminal's authorization request.",
+        "To generate a unique transaction counter.",
+        "To defend against dictionary attacks or attacks using rainbow tables."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "3",
+      "question": "What is the concept of entropy space in password security?",
+      "answer": "The total number of possible combinations that can be made with a given set of characters.",
+      "choices": [
+        "The total number of possible combinations that can be made with a given set of characters.",
+        "The length of a password.",
+        "The complexity of a password.",
+        "The hash function used for password hashing."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "2",
+      "question": "What is the purpose of the Challenge-Response Authentication Protocol?",
+      "answer": "To confirm the client's identity without revealing the secret itself.",
+      "choices": [
+        "To encrypt communication channels between client and server.",
+        "To validate the terminal's authorization request.",
+        "To generate a unique transaction counter.",
+        "To confirm the client's identity without revealing the secret itself."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "1",
+      "question": "What makes TOTP codes harder for attackers to predict or reuse?",
+      "answer": "Dynamic Codes.",
+      "choices": [
+        "Dynamic Codes.",
+        "No Connectivity Required.",
+        "Scalability.",
+        "Device Dependency."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "2",
+      "question": "What is a significant disadvantage of TOTP in terms of device usage?",
+      "answer": "Device Dependency.",
+      "choices": [
+        "Device Dependency.",
+        "Single Point of Failure.",
+        "Dependency on Third-party Apps.",
+        "Dynamic Codes."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": 3,
+      "question": "How is the shared key transferred to the user's device when setting up TOTP?",
+      "answer": "Leveraging the existing HTTPS session.",
+      "choices": [
+        "Using unencrypted communication.",
+        "Sending via email.",
+        "Leveraging the existing HTTPS session.",
+        "Directly sharing via QR code."
+      ]
+    },
+    {
+      "category": "MFA concepts",
+      "difficulty": "3",
+      "question": "What is the purpose of attestation in the context of security keys?",
+      "answer": "To provide proof of the security key's authenticity to the relying party.",
+      "choices": [
+        "To authenticate the user's fingerprint.",
+        "To encrypt messages.",
+        "To provide proof of the security key's authenticity to the relying party.",
+        "To generate cryptographic keys."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "1",
+      "question": "What type of authentication is picture password authentication considered?",
+      "answer": "Knowledge-based authentication.",
+      "choices": [
+        "Biometric-based authentication.",
+        "Token-based authentication.",
+        "Knowledge-based authentication.",
+        "Location-based authentication."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "1",
+      "question": "What is the initial step in authenticating with a security key using fingerprint and challenge-response?",
+      "answer": "Fingerprint Authentication.",
+      "choices": [
+        "Fingerprint Authentication.",
+        "Issuing a Challenge.",
+        "Transmitting the Response.",
+        "Verifying the Response."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "1",
+      "question": "What factors does a security key with a fingerprint sensor combine for authentication?",
+      "answer": "Possession and Inherence.",
+      "choices": [
+        "Knowledge and Inherence.",
+        "Possession and Inherence.",
+        "Biometric and Knowledge.",
+        "Possession and Biometric."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "1",
+      "question": "What advantage does picture password authentication offer in terms of resistance to attacks?",
+      "answer": "Resistance to Dictionary Attacks.",
+      "choices": [
+        "Memorability.",
+        "Resistance to Dictionary Attacks.",
+        "Reduced Shoulder Surfing Risk.",
+        "Limited data set attack."
+      ]
+    },
+    {
+      "category": "MFA technologies",
       "difficulty": "1",
       "question": "Which of the following is an example of a hardware MFA device?",
       "answer": "Security Key",
@@ -117,7 +309,43 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA technologies",
+      "difficulty": "1",
+      "question": "What advantage does fingerprint authentication offer in terms of user convenience?",
+      "answer": "Ease of Use.",
+      "choices": [
+        "Non-Transferable.",
+        "Non-Repudiation.",
+        "Ease of Use.",
+        "Template Creation."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "1",
+      "question": "What advantage does fingerprint authentication provide in terms of identity evidence?",
+      "answer": "Non-Repudiation.",
+      "choices": [
+        "Ease of Use.",
+        "Non-Transferable.",
+        "Non-Repudiation.",
+        "Template Creation."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "2",
+      "question": "What is a major concern associated with storing and managing fingerprint data?",
+      "answer": "Privacy and Data Security Concerns.",
+      "choices": [
+        "False Rejection and False Acceptance Rates.",
+        "Privacy and Data Security Concerns.",
+        "Hardware and Infrastructure Costs.",
+        "Template Creation."
+      ]
+    },
+    {
+      "category": "MFA technologies",
       "difficulty": "1",
       "question": "What is a common method of biometric authentication used in MFA?",
       "answer": "Fingerprint scanning",
@@ -129,7 +357,7 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA technologies",
       "difficulty": "1",
       "question": "What does OTP stand for in the context of MFA?",
       "answer": "One-Time Password",
@@ -141,7 +369,7 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA technologies",
       "difficulty": "2",
       "question": "True or False: SMS is considered a secure method for delivering OTPs in MFA.",
       "answer": "False",
@@ -151,7 +379,7 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA technologies",
       "difficulty": "3",
       "question": "Which of the following is a disadvantage of using biometrics for MFA?",
       "answer": "Biometric data can't be changed if compromised",
@@ -163,7 +391,7 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA technologies",
       "difficulty": "1",
       "question": "What is a common example of a 'Something you have' factor in MFA?",
       "answer": "Mobile device",
@@ -175,7 +403,7 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA technologies",
       "difficulty": "2",
       "question": "True or False: All MFA methods require at least three factors to be authenticated.",
       "answer": "False",
@@ -185,7 +413,7 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA technologies",
       "difficulty": "2",
       "question": "Which MFA method involves generating a code that can only be used once?",
       "answer": "One-Time Password (OTP)",
@@ -197,7 +425,7 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA technologies",
       "difficulty": "2",
       "question": "True or False: An authenticator app is a type of software token.",
       "answer": "True",
@@ -207,7 +435,7 @@
       ]
     },
     {
-      "category": "MFA technologies and methods",
+      "category": "MFA technologies",
       "difficulty": "1",
       "question": "Which of the following is NOT a type of biometric authentication?",
       "answer": "Password",
@@ -219,7 +447,67 @@
       ]
     },
     {
-      "category": "RSA concepts and principles",
+      "category": "MFA technologies",
+      "difficulty": "1",
+      "question": "How does Chip and PIN technology contribute to increased security?",
+      "answer": "By providing real-time transaction monitoring.",
+      "choices": [
+        "By implementing complex encryption algorithms.",
+        "By enabling offline authentication processes.",
+        "By providing real-time transaction monitoring.",
+        "By integrating biometric authentication methods."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "2",
+      "question": "What is a significant disadvantage of security questions and answers?",
+      "answer": "Limited Security.",
+      "choices": [
+        "Limited Security.",
+        "Forgetfulness.",
+        "Privacy Concerns.",
+        "User-Friendly."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "1",
+      "question": "What factor of authentication does Time-based One-Time Password (TOTP) rely on?",
+      "answer": "Possession.",
+      "choices": [
+        "Knowledge.",
+        "Possession.",
+        "Biometric.",
+        "Location."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "3",
+      "question": "What is the importance of confidentiality in security question answers?",
+      "answer": "No one else should be able to guess, research, or otherwise obtain the answer.",
+      "choices": [
+        "No one else should be able to guess, research, or otherwise obtain the answer.",
+        "Users need to remember the answer.",
+        "There should be multiple possible answers to the question.",
+        "The more possible answers, the better the security."
+      ]
+    },
+    {
+      "category": "MFA technologies",
+      "difficulty": "2",
+      "question": "What is the primary advantage of a security key with a fingerprint sensor over traditional passwords?",
+      "answer": "Resistance to Phishing Attacks.",
+      "choices": [
+        "Convenience.",
+        "Biometric Authentication.",
+        "Resistance to Phishing Attacks.",
+        "Cost-effectiveness."
+      ]
+    },
+    {
+      "category": "RSA concepts",
       "difficulty": "1",
       "question": "What does RSA stand for in cybersecurity?",
       "answer": "Rivest-Shamir-Adleman",
@@ -231,7 +519,7 @@
       ]
     },
     {
-      "category": "RSA concepts and principles",
+      "category": "RSA concepts",
       "difficulty": "2",
       "question": "What is the primary use of RSA in cybersecurity?",
       "answer": "Encryption and Digital Signatures",
@@ -243,7 +531,7 @@
       ]
     },
     {
-      "category": "RSA concepts and principles",
+      "category": "RSA concepts",
       "difficulty": "3",
       "question": "Why is RSA considered secure?",
       "answer": "Because factoring large prime numbers is computationally difficult",
@@ -255,7 +543,7 @@
       ]
     },
     {
-      "category": "MAC concepts and principles",
+      "category": "MAC concepts",
       "difficulty": "1",
       "question": "What does MAC stand for in cybersecurity?",
       "answer": "Message Authentication Code",
@@ -267,7 +555,7 @@
       ]
     },
     {
-      "category": "MAC concepts and principles",
+      "category": "MAC concepts",
       "difficulty": "2",
       "question": "What is the primary use of MAC in cybersecurity?",
       "answer": "To authenticate a message and ensure its integrity",
@@ -279,7 +567,7 @@
       ]
     },
     {
-      "category": "MAC concepts and principles",
+      "category": "MAC concepts",
       "difficulty": "3",
       "question": "What is a key feature of a MAC?",
       "answer": "It uses the same key for generating and verifying the MAC",
@@ -291,7 +579,7 @@
       ]
     },
     {
-      "category": "HMAC concepts and principles",
+      "category": "HMAC concepts",
       "difficulty": "2",
       "question": "What does HMAC stand for in cybersecurity?",
       "answer": "Hash-based Message Authentication Code",
@@ -303,7 +591,7 @@
       ]
     },
     {
-      "category": "HMAC concepts and principles",
+      "category": "HMAC concepts",
       "difficulty": "3",
       "question": "What is the primary use of HMAC in cybersecurity?",
       "answer": "To authenticate a message and ensure its integrity using a cryptographic hash function",
@@ -351,7 +639,7 @@
       ]
     },
     {
-      "category": "Asymmetric Cryptography and its Applications",
+      "category": "Asymmetric Cryptography",
       "difficulty": "2",
       "question": "What is a key characteristic of asymmetric cryptography?",
       "answer": "It uses a pair of keys: a public key for encryption and a private key for decryption",
@@ -363,7 +651,7 @@
       ]
     },
     {
-      "category": "Asymmetric Cryptography and its Applications",
+      "category": "Asymmetric Cryptography",
       "difficulty": "3",
       "question": "What is a common application of asymmetric cryptography?",
       "answer": "Secure communication over the internet",
@@ -372,6 +660,66 @@
         "Secure communication over the internet",
         "Data compression",
         "Error detection and correction"
+      ]
+    },
+    {
+      "category": "MFA challenges",
+      "difficulty": "2",
+      "question": "What is a potential risk associated with Chip and PIN technology regarding card information theft?",
+      "answer": "Session hijacking vulnerabilities.",
+      "choices": [
+        "Pre-play Attack vulnerabilities.",
+        "Man-in-the-middle attack vulnerabilities.",
+        "Credential stuffing vulnerabilities.",
+        "Session hijacking vulnerabilities."
+      ]
+    },
+    {
+      "category": "MFA challenges",
+      "difficulty": "2",
+      "question": "What is a significant barrier for businesses when adopting Chip and PIN technology?",
+      "answer": "The requirement for specialised hardware.",
+      "choices": [
+        "The complexity of integrating with legacy systems.",
+        "The need for continuous firmware updates.",
+        "The requirement for specialised hardware.",
+        "The risk of zero-day vulnerabilities."
+      ]
+    },
+    {
+      "category": "MFA challenges",
+      "difficulty": "2",
+      "question": "What is a challenge related to balancing error rates in fingerprint recognition systems?",
+      "answer": "Balancing False Rejection and False Acceptance Rates.",
+      "choices": [
+        "Privacy and Data Security Concerns.",
+        "Balancing False Rejection and False Acceptance Rates.",
+        "Hardware and Infrastructure Costs.",
+        "Template Creation."
+      ]
+    },
+    {
+      "category": "MFA challenges",
+      "difficulty": "2",
+      "question": "What potential issue may arise due to the technical complexity of integrating fingerprint authentication with a security key?",
+      "answer": "Compatibility Issues.",
+      "choices": [
+        "Cost.",
+        "Technical Complexity.",
+        "Dependency on External Services.",
+        "Compatibility Issues."
+      ]
+    },
+    {
+      "category": "MFA challenges",
+      "difficulty": "1",
+      "question": "What potential drawback is associated with the cost of implementing a security key with fingerprint authentication?",
+      "answer": "Higher Costs.",
+      "choices": [
+        "Higher Costs.",
+        "Technical Complexity.",
+        "Dependency on External Services.",
+        "Compatibility Issues."
       ]
     }
   ]
