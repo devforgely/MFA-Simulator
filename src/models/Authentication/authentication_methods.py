@@ -40,7 +40,7 @@ class ChipPinStrategy(BaseStrategy):
     def register(self, pin: str) -> bool:
         self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["pin"] = pin #For bypass
+        self.data["user_pin"] = pin #For bypass
         self.data["hashed_pin"] = hashlib.sha256(bytes(pin, "utf-8")).digest()
         self.data["chip_details"] = uuid.uuid4()
         self.data["chip_digital_signature"] = secrets.token_bytes(32)
@@ -49,6 +49,7 @@ class ChipPinStrategy(BaseStrategy):
 
     def authenticate(self, pin: str) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        self.data["pin"] = pin
 
         # Simulate card verifying PIN against hashed PIN
         if hashlib.sha256(bytes(pin, "utf-8")).digest() == self.data["hashed_pin"]:
@@ -58,7 +59,7 @@ class ChipPinStrategy(BaseStrategy):
         return False
     
     def bypass(self) -> None:
-        self.authenticate(self.data["pin"])
+        self.authenticate(self.data["user_pin"])
 
 class FingerPrintStrategy(BaseStrategy):
     def __init__(self) -> None:
@@ -70,7 +71,7 @@ class FingerPrintStrategy(BaseStrategy):
     def register(self, fingerprint: bytes) -> bool:
         self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["fingerprint"] = fingerprint #For bypass
+        self.data["user_fingerprint"] = fingerprint #For bypass
 
         # Assuming doing fingerprint to fingerprint template
         self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
@@ -79,7 +80,7 @@ class FingerPrintStrategy(BaseStrategy):
     
     def authenticate(self, fingerprint: bytes) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-
+        self.data["fingerprint"] = fingerprint
         # Assuming doing fingerprint to fingerprint template
         template = bytes([byte ^ 0xFA for byte in fingerprint])
 
@@ -87,6 +88,9 @@ class FingerPrintStrategy(BaseStrategy):
         if template == self.data["fingerprint_template"] and random.random() > 0.2:
             return True
         return False
+    
+    def bypass(self) -> None:
+        self.authenticate(self.data["user_fingerprint"])
 
 class PicturePasswordStrategy(BaseStrategy):
     def __init__(self) -> None:
@@ -101,7 +105,7 @@ class PicturePasswordStrategy(BaseStrategy):
     def register(self, images: bytes) -> bool:
         self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["images"] = images #For bypass
+        self.data["user_images"] = images #For bypass
         self.data["hashed_secret"] = hashlib.sha256(images).digest()
         
         return True
@@ -122,12 +126,13 @@ class PicturePasswordStrategy(BaseStrategy):
     
     def authenticate(self, images: bytes) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        self.data["images"] = images
         self.challenge_response(images)
 
         return self.data["expected_response"] == self.data["signed_challenge"]
     
     def bypass(self) -> None:
-        self.authenticate(self.data["images"])
+        self.authenticate(self.data["user_images"])
 
 class PasswordStrategy(SaltStrategy):
     def __init__(self) -> None:
@@ -149,8 +154,14 @@ class PasswordStrategy(SaltStrategy):
     
     def authenticate(self, username: str, password: str) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        self.data["username"] = username
+        self.data["password"] = password
         return username == self.data["user_registered"] \
                 and self.hash_secret(f"{username}${password}", self.data["salt"]) == self.data["hashed_secret"]
+    
+    def bypass(self) -> None:
+        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        self.authenticate(self.data["user_registered"], self.data["user_password"])
     
 class TOTPStrategy(SaltStrategy):
     def __init__(self) -> None:
@@ -171,6 +182,7 @@ class TOTPStrategy(SaltStrategy):
         if key != "GENERATE":
             self.data["timestamp_authenticate"] = str(datetime.datetime.now())
             self.data["totp"] = self.generate_TOTP()
+            self.data["totp_entered"] = key
             return key == self.data["totp"]
         else:
             self.data["totp"] = self.generate_TOTP() # Simulate TOTP generation on the device
@@ -217,8 +229,11 @@ class SecurityQuestionStrategy(SaltStrategy):
     
     def authenticate(self, answers: str) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-
+        self.data["answers"] = answers
         return self.hash_secret(answers, self.data["salt"]) == self.data["hashed_secret"]
+    
+    def bypass(self) -> None:
+        self.authenticate(self.data["user_answers"])
     
 class TwoFAKeyStrategy(BaseStrategy):
     def __init__(self) -> None:
@@ -249,7 +264,8 @@ class TwoFAKeyStrategy(BaseStrategy):
     def register(self, fingerprint: bytes) -> bool:
         self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["fingerprint"] = fingerprint #For bypass
+        self.data["user_fingerprint"] = fingerprint #For bypass
+        self.data["fingerprint"] = b""
 
         # Assuming doing fingerprint to fingerprint template
         self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
@@ -263,7 +279,7 @@ class TwoFAKeyStrategy(BaseStrategy):
     
     def authenticate(self, fingerprint: bytes) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-
+        self.data["fingerprint"] = fingerprint
         # Assuming doing fingerprint to fingerprint template
         template = bytes([byte ^ 0xFA for byte in fingerprint])
 
@@ -274,4 +290,5 @@ class TwoFAKeyStrategy(BaseStrategy):
     
     def bypass(self) -> None:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
+        self.data["fingerprint"] = self.data["user_fingerprint"]
         self.challenge_response()

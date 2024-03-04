@@ -1,42 +1,20 @@
-from PyQt5.QtWidgets import QButtonGroup
-from PyQt5.QtGui import QPixmap, QIcon
+
 from viewmodels.authentication.authentication_base import *
-from configuration.app_configuration import Settings
 import random
 from models.utils import image_byte, byte_str
-from widgets.info_panel import InfoMode
+from configuration.app_configuration import Settings
 
-class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
-    def __init__(self, info_panel: QWidget) -> None:
-        super().__init__("views/register_views/fingerprint_view.ui", info_panel)
-        
+class FingerprintRegisterViewModel(AuthenticationBaseViewModel):
+    fingerprint_progress = pyqtSignal(str)
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.display_details = self.authentication_service.get_display_details()
         self.progress = 0
         self.prev_finger = "fp1"
         self.current_finger = ""
-
-        self.finger_group = QButtonGroup(self)
-        self.finger_group.addButton(self.fp1_btn)
-        self.finger_group.addButton(self.fp2_btn)
-        self.finger_group.addButton(self.fp3_btn)
-        self.finger_group.addButton(self.fp4_btn)
-        self.finger_group.addButton(self.fp5_btn)
-
-        self.finger_group.buttonToggled.connect(self.on_finger_changed)
-        self.fp1_btn.setChecked(True)
-
-        self.fingerprint_btn.clicked.connect(self.set_fingerprint)
-        self.initalise_infopanel()
-
-        self.phone_frame.adjust_shadow(40, 60, 5, 5)
-
-    def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), InfoMode.EXPAND)
-        
-        self.info_panel.add_server_data("User Fingerprint Template", ("User Fingerprint Template", "NULL"), InfoMode.EXPAND)
-
-        self.info_panel.log_text("Waiting for fingerprint data...\n")
-        self.info_panel.set_measure_level(75)
-
+    
     def on_finger_changed(self, button, checked) -> None:
         if checked:
             match (button.objectName()):
@@ -60,69 +38,32 @@ class FingerPrintRegisterViewModel(AuthenticationBaseViewModel):
             self.progress += step
             if self.progress >= 6:
                 self.progress = 6
+                self.send(Settings.FINGERPRINT_FILE_PATH+self.current_finger+".png")
+        self.fingerprint_progress.emit(str(self.progress))
 
-                self.fingerprint_btn.setEnabled(False)
-                self.short_instruction.setText("Fingerprint added")
-                self.long_instruction.setText("When you see the fingerprint icon, use your fingerprint to authenticate your identity.")
-                self.instruction_label.setText("")
-                self.instruction_label.setFixedSize(30, 30)
-                self.instruction_label.setPixmap(QPixmap(Settings.ICON_FILE_PATH+"tick-circle-green.svg"))
-                self.send()
-        self.fingerprint_btn.setIcon(QIcon(QPixmap(f"{Settings.IMAGE_FILE_PATH}fp{self.progress}.png")))
+    def state_data(self) -> dict:
+        data = self.authentication_service.get_session_stored().copy()
+        data["user_fingerprint"] = byte_str(data["user_fingerprint"])
+        data["fingerprint_template"] = byte_str(data["fingerprint_template"])
+        return data
 
-    def send(self) -> None:
-        fingerprint = image_byte("data/fingerprints/"+self.current_finger+".png")
+    def send(self, fingerprint: str) -> None:
+        fingerprint_data = image_byte(fingerprint)
 
-        if self.authentication_service.register(fingerprint):
-            data = self.authentication_service.get_session_stored()
-            self.info_panel.update_client_status("Registration", data["timestamp_register"])
-            self.info_panel.update_server_status("ACCEPTED", "202", "User Registered")
-
-            self.info_panel.update_client_data("Fingerprint", ("Fingerprint in bytes", byte_str(fingerprint)))
-
-            self.info_panel.update_server_data("User Fingerprint Template", ("User Fingerprint Template",  byte_str(data["fingerprint_template"])))
-
-            self.info_panel.update_data_note(1)
-
-            self.info_panel.log_text("Client: Fingerprint scanned.")
-            self.info_panel.log_text("Client: Sending data through a secure communication channel.")
-            self.info_panel.log_text("Server: Converting fingerprint into fingerprint template.")
-            self.info_panel.log_text("Server: Securely store the fingerprint template.")
-            self.info_panel.log_text("Registration successful.\n")
-
-            self.message_service.send(self, "Registered", None)
+        if self.authentication_service.register(fingerprint_data):
+            self.state_change.emit("Fingerprint added", 0)
+            self.state_data_change.emit(self.state_data(), 0)
+            self.message_service.send(self, "Registered")
+        else:
+            self.state_change.emit("Registration Fail", 1)
             
 
-class FingerPrintAuthenticateViewModel(AuthenticationBaseViewModel):
-    def __init__(self, info_panel: QWidget) -> None:
-        super().__init__("views/authenticate_views/fingerprint_view.ui", info_panel)
-
-        self.current_finger = ""
-
-        self.finger_group = QButtonGroup(self)
-        self.finger_group.addButton(self.fp1_btn)
-        self.finger_group.addButton(self.fp2_btn)
-        self.finger_group.addButton(self.fp3_btn)
-        self.finger_group.addButton(self.fp4_btn)
-        self.finger_group.addButton(self.fp5_btn)
-
-        self.finger_group.buttonToggled.connect(self.on_finger_changed)
-        self.fp1_btn.setChecked(True)
-
-        self.warning_label.setVisible(False)
-
-        self.fingerprint_btn.clicked.connect(self.send)
-        self.initalise_infopanel()
-
-        self.phone_frame.adjust_shadow(40, 60, 5, 5)
-
-    def initalise_infopanel(self) -> None:
-        data = self.authentication_service.get_session_stored()
-        self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), InfoMode.EXPAND)
+class FingerprintAuthenticateViewModel(AuthenticationBaseViewModel):
+    def __init__(self) -> None:
+        super().__init__()
         
-        self.info_panel.add_server_data("User Fingerprint Template", ("User Fingerprint Template", byte_str(data["fingerprint_template"])), InfoMode.EXPAND)
-
-        self.info_panel.log_text("Waiting for fingerprint data...\n")
+        self.display_details = self.authentication_service.get_display_details()
+        self.current_finger = ""
 
     def on_finger_changed(self, button, checked) -> None:
         if checked:
@@ -138,55 +79,28 @@ class FingerPrintAuthenticateViewModel(AuthenticationBaseViewModel):
                 case "fp5_btn":
                     self.current_finger = "fp5"
 
-    def authenticated(self, mode: int = 0) -> None:
-        self.warning_label.setStyleSheet("color: #049c84")
-        self.warning_label.setText("The user has been authenticated.")
-        self.warning_label.setVisible(True)
-        self.fingerprint_btn.setEnabled(False)
+    def state_data(self, is_checked: bool) -> dict:
+        data = self.authentication_service.get_session_stored().copy()
+        data["fingerprint_template"] = byte_str(data["fingerprint_template"])
 
-        data = self.authentication_service.get_session_stored()
-
-        self.info_panel.update_client_status("Authentication", data["timestamp_authenticate"])
-        self.info_panel.update_server_status("ACCEPTED", "202", "User Authenticated")
-
-        if mode: # bypass mode
-            self.info_panel.update_client_data("Fingerprint", ("Fingerprint", byte_str(data["fingerprint"])))
-
-        self.info_panel.log_text("Client: Fingerprint scanned.")
-        self.info_panel.log_text("Client: Sending data through a secure communication channel.")
-        self.info_panel.log_text("Server: Converting data to fingerprint template.")
-        self.info_panel.log_text("Server: Comparing fingerprint features.")
-        self.info_panel.log_text("Features matched.")
-        self.info_panel.log_text("Authentication successful.\n")
-
-        self.message_service.send(self, "Authenticated", None)
-    
+        if is_checked:
+            data["fingerprint"] = byte_str(data["fingerprint"]) 
+            
+        return data
 
     def send(self) -> None:
-        fingerprint = image_byte("data/fingerprints/"+self.current_finger+".png")
+        fingerprint_data = image_byte(Settings.FINGERPRINT_FILE_PATH+self.current_finger+".png")
 
-        flag = self.authentication_service.authenticate(fingerprint)
+        flag = self.authentication_service.authenticate(fingerprint_data)
         if flag == 0:
-            self.authenticated()
-        else:  
-            if flag == 1:
-                self.warning_label.setText("Your credentials does not match our records.")
+            self.state_change.emit("The user has been authenticated.", False)
+            self.message_service.send(self, "Authenticated") 
+        elif flag == 1:
+            self.state_change.emit("Your credentials does not match our records.", flag)
+        elif flag == 2:
+            self.state_change.emit("Locked for 10 seconds.", flag)
+            
+        self.state_data_change.emit(self.state_data(True), flag)
 
-                self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
-                self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
-                self.info_panel.update_data_note(1)
-
-                self.info_panel.log_text("Client: Fingerprint scanned.")
-                self.info_panel.log_text("Client: Sending data through a secure communication channel.")
-                self.info_panel.log_text("Server: Converting data to fingerprint template.")
-                self.info_panel.log_text("Server: Comparing fingerprint features.")
-                self.info_panel.log_text("Features unmatched.")
-                self.info_panel.log_text("Authentication unsuccessful.\n")
-            elif flag == 2:
-                self.warning_label.setText("Locked for 10 seconds.")
-
-                self.info_panel.log_text("Locking authentication for 10 seconds due to multiple fail attempts.\n")
-
-            self.warning_label.setVisible(True)
-        
-        self.info_panel.update_client_data("Fingerprint", ("Fingerprint", byte_str(fingerprint)))
+    def bypass(self) -> None:
+        self.state_data_change.emit(self.state_data(True), 0)

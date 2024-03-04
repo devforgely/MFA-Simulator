@@ -1,16 +1,30 @@
+
+
 class Settings():
     # System FIle Path
-    SYSTEM_FILE_PATH = "data/config.json"
+    USER_FILE_PATH = "data/user.json"
 
     ICON_FILE_PATH = "resources/icons/"
 
     IMAGE_FILE_PATH = "resources/images/"
 
-    NOTE_FILE_PATH =  "data/notes"
+    FACT_FILE_PATH = "data/facts.json"
+
+    SIMULATION_NOTE_PATH = "data/simulation_details/"
+
+    SECURITY_QUESTION_FILE_PATH = "data/security_questions.json"
+
+    PICTURE_FILE_PATH = "data/images/"
+
+    FINGERPRINT_FILE_PATH = "data/fingerprints/"
+
+    NOTE_FILE_PATH = "data/notes/"
+
+    QUIZ_FILE_PATH = "data/quizzes/"
 
     # APP SETTINGS
     ENABLE_CUSTOM_TITLE_BAR = True
     ENABLE_CUSTOM_THEME = False
 
     # CUSTOM THEME FILE
-    THEME_FILE = "resources/themes/light.css" # Not Implemented due to limited PyQt functionalities
+    THEME_FILE = "resources/themes/light.css"

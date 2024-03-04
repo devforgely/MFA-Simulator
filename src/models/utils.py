@@ -1,6 +1,6 @@
-import string
 import base64
-
+import hashlib
+import hmac
 
 def normalise_text(text: str) -> str:
     # only include lower case alphabet and number (no punctuation, no space)
@@ -16,40 +16,29 @@ def byte_str(bytes_val: bytes) -> str:
 def decode_key(key) -> str:
     return key.save_pkcs1().decode()
 
-def calculate_security_level(text: str) -> int:
-    score = 0
-
-    # Check for length
-    if len(text) > 15:
-        score += 40
-    elif len(text) >= 8:
-        score += 20
-    elif len(text) >= 6:
-        score += 10
-    
-    if any(c in string.ascii_lowercase for c in text):
-        score += 10
-    
-    if any(c in string.ascii_uppercase for c in text):
-        score += 15
-    
-    if any(c.isdigit() for c in text):
-        score += 12
-
-    if any(c in string.punctuation for c in text):
-        score += 15
-
-    return score
-
-def image_byte(image_dir):
+def image_byte(image_dir: str):
     with open(image_dir, 'rb') as img_file:
         # Read the image file as bytes
         img_bytes = img_file.read()
     return img_bytes
 
-def images_to_bytes(image_dirs):
-    # Initialize an empty list to store image bytes
-    image_bytes = []
+
+def encrypt_block(key, block, iv):
+    # XOR the block with the IV
+    block_xor_iv = bytes(a ^ b for a, b in zip(block, iv))
+
+    # Hash the result using HMAC-SHA256
+    hash_obj = hmac.new(key, block_xor_iv, hashlib.sha256)
+
+    # Update the IV with the hash
+    iv = hash_obj.digest()
+
+    # Return the hash (the new IV) as the encrypted block
+    return iv
+
+def encrypt_images(image_dirs, key, iv):
+    # Initialize an empty list to store encrypted image bytes
+    encrypted_image_bytes = []
 
     # Iterate through each image directory
     for img_dir in image_dirs:
@@ -58,10 +47,20 @@ def images_to_bytes(image_dirs):
             # Read the image file as bytes
             img_bytes = img_file.read()
         
-        # Append the image bytes to the list
-        image_bytes.append(img_bytes)
+        # Pad the image bytes to be a multiple of block size (32 bytes)
+        img_bytes += b'\0' * (32 - len(img_bytes) % 32)
+
+        # Encrypt the image bytes using CBC mode
+        encrypted_img_bytes = b''
+
+        # Split the image bytes into 32-byte blocks
+        for i in range(0, len(img_bytes), 32):
+            block = img_bytes[i:i+32]
+            encrypted_block = encrypt_block(key, block, iv)
+            encrypted_img_bytes += encrypted_block
+
+        # Append the encrypted image bytes to the list
+        encrypted_image_bytes.append(encrypted_img_bytes)
 
     # Combine the image bytes into a single byte string
-    combined_bytes = b''.join(image_bytes)
-
-    return combined_bytes
+    return b''.join(encrypted_image_bytes)

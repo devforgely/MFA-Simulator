@@ -38,12 +38,6 @@ class ClickableFrame(QFrame):
     def mousePressEvent(self, event):
         self.clicked.emit()
 
-# Seems stupid but it is for handle style :(
-class ClickableButton(QPushButton):
-    def __init__(self, parent=None):
-        QPushButton.__init__(self, parent)
-        self.setStyleSheet("background-color: none;border: none;")
-
 
 class CustomLineEdit(QLineEdit):
     def __init__(self, placeholder: str, visibility: bool, maxlength: int, icon: str):

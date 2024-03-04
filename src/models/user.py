@@ -33,41 +33,17 @@ class User:
             Method.TOTP.value: False,
             Method.TWOFA_KEY.value: False
         }
-
-    def get_coins(self) -> int:
-        return self.coins
-
-    def get_quiz_completed(self) -> int:
-        return self.quiz_completed
-    
-    def get_simulation_played(self) -> int:
-        return self.simulation_played
-    
-    def get_badges(self) -> list:
-        return self.badges
     
     def get_badges_count(self) -> tuple:
         return (len(self.badges), 8)
-    
-    def get_recent_activities(self) -> list:
-        return self.recent_activities
-    
-    def get_improvements(self) -> list:
-        return self.improvements
-    
-    def get_readings(self) -> list:
-        return self.readings
-    
-    def get_unlocked_simulations(self) -> dict:
-        return self.unlocked_simulations
 
     def update_coins(self, amount) -> None:
         self.coins += amount
 
-    def complete_quiz(self) -> None:
+    def increase_quiz_count(self) -> None:
         self.quiz_completed += 1
 
-    def play_simulation(self) -> None:
+    def increase_simulation_count(self) -> None:
         self.simulation_played += 1
 
     def add_activity(self, activity_title, description) -> None:
@@ -97,13 +73,10 @@ class User:
             if not found and difference < 0:
                 self.improvements.append((category, difference))
 
-    def update_readings(self, readings: list[tuple]) -> None:
-        self.readings = readings
-
-    def update_reading(self, state, title, i) -> None:
+    def update_reading(self, title: str, state: bool, i: int) -> None:
         self.readings[i] = (title, state)
 
-    def unlock_simulations(self, method_val: int) -> None:
+    def unlock_simulation(self, method_val: int) -> None:
         self.unlocked_simulations[method_val] = True
     
     def to_json(self) -> str:
@@ -111,7 +84,7 @@ class User:
     
     @classmethod
     def from_json(cls, json_string):
-        def convert_keys_to_int(x):
+        def convert_keys_to_int(x) -> dict:
             if isinstance(x, dict):
                 return {int(k): v for k, v in x.items()}
             return x

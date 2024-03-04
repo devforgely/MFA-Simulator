@@ -47,6 +47,10 @@ class AuthenticationService():
         self.at = 0
         self.register_count = 0
         self.auth_count = 0
+        self.auth_false_count = 0
+
+    def get_type(self) -> Method:
+        return self.strategy.get_type(self.at)
     
     def get_all_types(self) -> List[Method]:
         return self.strategy.get_all_types()
@@ -92,8 +96,9 @@ class AuthenticationService():
         elif self.measure == 3:
             self.data_service.update_user_badge(Badge.MFA)
         #BADGE END
-
+        
         self.data_service.update_user_simulation()
+        self.reset()
     
     def add(self, type: Method) -> bool:
         if type not in self.get_all_types():
@@ -111,13 +116,17 @@ class AuthenticationService():
         except ValueError:
             return False
         
-    def forward(self) -> None:
-        if self.at < len(self.strategy):
+    def forward(self) -> bool:
+        if self.at < self.register_count or self.at < self.auth_count:
             self.at += 1
+            return True
+        return False
 
-    def backward(self) -> None:
+    def backward(self) -> bool:
         if self.at > 0:
             self.at -= 1
+            return True
+        return False
 
     def get_display_details(self) -> dict:
         if not self.all_registered():

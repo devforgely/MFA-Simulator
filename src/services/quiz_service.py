@@ -75,21 +75,20 @@ class QuizService():
             self.time = time.time()
         
         self.at += direction
-        if self.at == len(self.quizzes):
+        if self.at >= len(self.quizzes):
             self.terminate_quiz()
             return ()
+        if self.at < 0:
+            self.at = 0
         
         quiz = self.quizzes[self.at]
-        if direction == 1:    
+        if direction > 0:    
             if self.to_view == self.at:
                 self.average_difficulty += float(quiz['difficulty'])
                 self.category_quiz[quiz['category']] = self.category_quiz.get(quiz['category'], 0) + 1
                 self.to_view += 1
                 return (self.at+1, quiz, None)
-            else:
-                return (self.at+1, quiz, self.current_answers[self.at][0])
-        else:
-            return (self.at+1, quiz, self.current_answers[self.at][0])
+        return (self.at+1, quiz, self.current_answers[self.at][0])
     
     def sumbit_answer(self, answer: str) -> None:
         if answer:
@@ -163,9 +162,3 @@ class QuizService():
         # Sort the list of tuples by the percentage
         percentages.sort(key=lambda x: x[1])
         return percentages
-    
-    def get_quizzies(self) -> list:
-        return self.quizzes
-    
-    def get_current_answers(self) -> list:
-        return self.current_answers

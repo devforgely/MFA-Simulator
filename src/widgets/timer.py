@@ -8,9 +8,6 @@ class TimeThread(QThread):
         self.is_running = True
         self.step_duration = 0.5
         self.max_val = int(max_val / self.step_duration)
-
-    def MaxValue(self) -> float:
-        return self.max_val
     
     def set_max(self, val: int) -> None:
         self.max_val = int(val / self.step_duration)

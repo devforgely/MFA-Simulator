@@ -6,7 +6,8 @@ from services.container import ApplicationContainer
 from data.data_service import DataService
 from PyQt5.QtGui import QIcon
 from viewmodels.main_viewmodel import MainViewModel
-from viewmodels.help_viewmodel import HelpViewModel
+from views.main_view import MainView
+from views.help_view import HelpView
 
 
 class App(QApplication):
@@ -19,21 +20,19 @@ class App(QApplication):
         self.message_service.subscribe(self, DataService, self.on_message)
         self.message_service.subscribe(self, MainViewModel, self.on_message)
 
-        self.main = MainViewModel()
+        self.main = MainView(MainViewModel())
         self.help = None
     
     def on_message(self, message_title: str, *args: Any) -> None:
         if message_title == "Help":
-            self.help = HelpViewModel()
+            self.help = HelpView()
         elif message_title == "Reboot":
             self.message_service.unsubscribe_all()
 
-            widgets = self.allWidgets()[:]
-
-            for widget in widgets:
+            for widget in self.allWidgets():
                 widget.deleteLater()
             
-            self.main = MainViewModel()
+            self.main = MainView(MainViewModel())
 
             self.message_service.subscribe(self, DataService, self.on_message)
             self.message_service.subscribe(self, MainViewModel, self.on_message)

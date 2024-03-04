@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QPushButton, QGraphicsOpacityEffect, QLabel, QVBoxLayout, QWidget, QTextEdit
 from PyQt5.QtCore import QTimer, Qt, QPropertyAnimation
 from PyQt5.QtGui import QMovie
-from typing import Callable
 from configuration.app_configuration import Settings
 from PyQt5 import uic
 
@@ -44,16 +43,16 @@ class Notification(QDialog):
         self.close()
 
 class GifDialog(QDialog):
-    def __init__(self, func: Callable[[], None], parent=None):
+    def __init__(self, parent=None):
         super(GifDialog, self).__init__(parent)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
+        if parent:
+            self.resize(parent.size())
+            parent.resized.connect(self.parent_resized)
 
-        self.trigger = func
         self.setObjectName("form")
         self.setStyleSheet("#form {background-color: rgba(0, 0, 0, 0.6)}")
-        if parent is not None:
-            self.resize(parent.size())
 
         self.container = QWidget(self)
         self.container.setObjectName("container")
@@ -86,35 +85,22 @@ class GifDialog(QDialog):
         self.movie.start()
 
     def close_dialog(self) -> None:
-        self.trigger()
         self.close()
+
+    def parent_resized(self):
+        self.resize(self.parent().size())
 
     def resizeEvent(self, event):
         self.container.move(self.width() // 2 - self.container.width() // 2, self.height() // 2 - self.container.height() // 2)
         super(GifDialog, self).resizeEvent(event)
-
-class AboutDialog(QDialog):
-    def __init__(self, parent=None):
-        super(AboutDialog, self).__init__(parent)
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-
-        uic.loadUi("views/about_view.ui", self)
-
-        if parent is not None:
-            self.resize(parent.size())
-
-        self.exit_about.clicked.connect(self.close_dialog)
-
-    def close_dialog(self) -> None:
-        self.close()
-
 
 class DetailViewDialog(QDialog):
     def __init__(self, title: str, details: str, parent=None):
         super(DetailViewDialog, self).__init__(parent)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
+        if parent:
+            parent.resized.connect(self.parent_resized)
 
         self.setObjectName("form")
         self.setStyleSheet("#form {background-color: rgba(0, 0, 0, 0.6)}")
@@ -134,9 +120,10 @@ class DetailViewDialog(QDialog):
         layout.addWidget(self.title)
 
         # Create a QLabel to hold the details
-        self.detail_label = QTextEdit(details)
+        self.detail_label = QTextEdit()
         self.detail_label.setReadOnly(True)
         self.detail_label.setStyleSheet("QTextEdit { border: 1px solid gray; padding: 10px; } QTextEdit::-webkit-scrollbar { width: 0px; }")
+        self.detail_label.setPlainText(details)
 
         self.close_button = QPushButton("Close")
         self.close_button.setMinimumWidth(200)
@@ -152,7 +139,27 @@ class DetailViewDialog(QDialog):
     def close_dialog(self) -> None:
         self.close()
 
+    def parent_resized(self):
+        self.resize(self.parent().size())
+
     def resizeEvent(self, event):
         self.container.move(self.width() // 2 - self.container.width() // 2, self.height() // 2 - self.container.height() // 2)
         super(DetailViewDialog, self).resizeEvent(event)
+
+
+class AboutDialog(QDialog):
+    def __init__(self, parent=None):
+        super(AboutDialog, self).__init__(parent)
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
+        uic.loadUi("views_ui/about_view.ui", self)
+
+        if parent is not None:
+            self.resize(parent.size())
+
+        self.exit_about.clicked.connect(self.close_dialog)
+
+    def close_dialog(self) -> None:
+        self.close()
         

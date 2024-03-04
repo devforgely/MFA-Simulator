@@ -1,268 +1,132 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QPushButton, QLabel, QButtonGroup
-from PyQt5.QtGui import QPixmap
 from viewmodels.authentication.authentication_base import *
-from configuration.app_configuration import Settings
-from widgets.waiting_spinner import QtWaitingSpinner
-from widgets.info_panel import InfoMode
 import random
 from models.utils import image_byte, byte_str, decode_key
+from configuration.app_configuration import Settings
 
-
-# pyright: reportAttributeAccessIssue=false
 
 class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
-    def __init__(self, info_panel: QWidget) -> None:
-        super().__init__("views/register_views/twofa_key_view.ui", info_panel)
+    key_state_changed = pyqtSignal()
+    allow_fingerprint = pyqtSignal(bool)
+    fingerprint_progress = pyqtSignal(str)
 
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.display_details = self.authentication_service.get_display_details()
         self.key_on = False
+        self.key_name = ""
         self.progress = 0
-        self.prev_finger = "fp1"
+        self.prev_finger = "fp3"
         self.current_finger = ""
-        self.finger_group = QButtonGroup(self)
-        self.finger_group.addButton(self.fp1_btn)
-        self.finger_group.addButton(self.fp4_btn)
-
-        self.finger_group.buttonToggled.connect(self.on_finger_changed)
-        self.fp1_btn.setChecked(True)
-
-        self.w = QtWaitingSpinner(self.page1)
-
-        self.waiting_label = QLabel("Waiting for security key connection...")
-
-        self.next_btn = QPushButton('Next')
-        self.next_btn.setMinimumWidth(100)
-        self.next_btn.setMinimumHeight(35)
-        self.next_btn.setCursor(Qt.PointingHandCursor)
-        
-        self.page1.layout().addWidget(self.w)
-        self.page1.layout().addWidget(self.waiting_label, alignment=Qt.AlignHCenter)
-        self.page1.layout().addWidget(self.next_btn, alignment=Qt.AlignRight)
-
-        self.key_select_frame.hide()
-        self.guide_label.hide()
-        self.key_name_field.hide()
-        self.next_btn.hide()
-        self.warning_label.setVisible(False)
-
-        self.w.start()
-
-        self.connect_btn.clicked.connect(self.connect_device)
-        self.next_btn.clicked.connect(self.prepare_fingerprint)
-        self.security_key.clicked.connect(self.set_fingerprint)
-        self.initalise_infopanel()
-
-    def initalise_infopanel(self) -> None:
-        self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), InfoMode.EXPAND)
-        self.info_panel.add_client_data("Fingerprint Template", ("Fingerprint Template", "NULL"), InfoMode.EXPAND)
-        self.info_panel.add_client_data("Private Key", ("Private Key", "NULL"), InfoMode.EXPAND)
-        
-        self.info_panel.add_server_data("User Key Name", "NULL")
-        self.info_panel.add_server_data("User Key Handle", ("Key Handle", "NULL"), InfoMode.EXPAND)
-        self.info_panel.add_server_data("User Public Key", ("User Public Key", "NULL"), InfoMode.EXPAND)
-
-        self.info_panel.log_text("Waiting to activate two-FA key and scan fingerprint...\n")
-        self.info_panel.set_measure_level(95)
-
-    def connect_device(self) -> None:
-        self.connect_btn.hide()
-        self.key_on = True
-        self.w.stop()
-        self.waiting_label.hide()
-
-        self.key_select_frame.show()
-        self.guide_label.show()
-        self.key_name_field.show()
-        self.next_btn.show()
-
-        self.security_key.setCursor(Qt.PointingHandCursor)
-
-    def prepare_fingerprint(self) -> None:
-        if len(self.key_name_field.text()) < 3:
-            self.warning_label.setVisible(True)
-        else:
-            self.left_stacked.setCurrentIndex(self.left_stacked.currentIndex() + 1)
-
+    
     def on_finger_changed(self, button, checked) -> None:
         if checked:
             match (button.objectName()):
-                case "fp1_btn":
-                    self.current_finger = "fp1"
+                case "fp3_btn":
+                    self.current_finger = "fp3"
                 case "fp4_btn":
                     self.current_finger = "fp4"
 
+    def inject_key(self) -> None:
+        self.key_state_changed.emit()
+
+    def prepare_fingerprint(self, key_name) -> None:
+        if len(key_name) < 3:
+            self.allow_fingerprint.emit(False)
+        else:
+            self.key_name = key_name
+            self.key_on = True
+            self.allow_fingerprint.emit(True)
+
     def set_fingerprint(self) -> None:
-        if self.prev_finger != self.current_finger:
-            self.progress = 0
-            self.prev_finger = self.current_finger
-        elif self.key_on and self.progress < 5:
-            step = random.choice([1, 2])
-            self.progress += step
-            if self.progress >= 5:
-                self.progress = 5
-                self.instruction_label.setStyleSheet("color: #049c84")
-                self.instruction_label.setText("Registration Completed")
-                self.send()
-        self.fingerprint.setPixmap(QPixmap(f"{Settings.IMAGE_FILE_PATH}fp_{self.progress}.png"))
+        if self.key_on:
+            if self.prev_finger != self.current_finger:
+                self.progress = 0
+                self.prev_finger = self.current_finger
+            elif self.progress < 5:
+                step = random.choice([1, 2])
+                self.progress += step
+                if self.progress >= 5:
+                    self.progress = 5
+                    self.send(self.key_name, Settings.FINGERPRINT_FILE_PATH+self.current_finger+".png")
+            self.fingerprint_progress.emit(str(self.progress))
+    
+    def state_data(self) -> dict:
+        data = self.authentication_service.get_session_stored().copy()
+        data["user_fingerprint"] = byte_str(data["user_fingerprint"])
+        data["fingerprint_template"] = byte_str(data["fingerprint_template"])
+        data["private_key"] = decode_key(data["private_key"])
+        data["public_key"] = decode_key(data["public_key"])
+        return data
 
+    def send(self, key_name: str, fingerprint: str) -> None:
+        fingerprint_data = image_byte(fingerprint)
 
-    def send(self) -> None:
-        key_name = self.key_name_field.text()
-        fingerprint = image_byte("data/fingerprints/"+self.current_finger+".png")
-
-        if self.authentication_service.register(fingerprint):
-            data = self.authentication_service.get_session_stored()
-
-            self.info_panel.update_client_status("Registration", data["timestamp_register"])
-            self.info_panel.update_server_status("ACCEPTED", "202", "User Registered")
-
+        if self.authentication_service.register(fingerprint_data):
+            self.key_on = False
             self.authentication_service.session_store({"key_name":key_name})
-        
-            self.info_panel.update_client_data("Fingerprint", ("Fingerprint in bytes", byte_str(fingerprint)))
-            self.info_panel.update_client_data("Fingerprint Template", ("User Fingerprint Template",  byte_str(data["fingerprint_template"])))
-            self.info_panel.update_client_data("Private Key", ("Private Key", decode_key(data["private_key"])))
-
-            self.info_panel.update_server_data("User Key Name", key_name)
-            self.info_panel.update_server_data("User Key Handle", ("Key Handle", data["key_handle"]))
-            self.info_panel.update_server_data("User Public Key", ("User Public Key", decode_key(data["public_key"])))
-
-            self.info_panel.update_data_note(1)
-
-            self.info_panel.log_text("Client: 2FA Key powered and activated.")
-            self.info_panel.log_text("Client: Fingerprint scanned.")
-            self.info_panel.log_text("Client: Converting fingerprint to fingerprint template and store inside 2FA key.")
-            self.info_panel.log_text("Security key generating public-private key pair and a key handle that references the private key.")
-            self.info_panel.log_text("Client: Sending public key, key handle and key name to the server through a secure communication channel.")
-            self.info_panel.log_text("Server: Storing public key, key handle and key name that links to the user.")
-            self.info_panel.log_text("Registration successful.\n")
-
-            self.message_service.send(self, "Registered", None)
+            self.state_change.emit("Registration Completed", 0)
+            self.state_data_change.emit(self.state_data(), 0)
+            self.message_service.send(self, "Registered")
+        else:
+            self.state_change.emit("Registration Fail", 1)
             
 
 class TwoFAKeyAuthenticateViewModel(AuthenticationBaseViewModel):
-    def __init__(self, info_panel: QWidget) -> None:
-        super().__init__("views/authenticate_views/twofa_key_view.ui", info_panel)
-        
+    key_state_changed = pyqtSignal()
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.display_details = self.authentication_service.get_display_details()
         self.key_on = False
-        self.progress = 0
         self.current_finger = ""
-        self.finger_group = QButtonGroup(self)
-        self.finger_group.addButton(self.fp1_btn)
-        self.finger_group.addButton(self.fp4_btn)
-        self.finger_group.buttonToggled.connect(self.on_finger_changed)
-        self.fp1_btn.setChecked(True)
 
-        self.w = QtWaitingSpinner(self.left_frame)
-        self.waiting_label = QLabel("Waiting for security key connection...")
-
-        self.left_frame.layout().addWidget(self.w)
-        self.left_frame.layout().addWidget(self.waiting_label, alignment=Qt.AlignHCenter)
-
-        self.key_select_frame.hide()
-        self.fingerprint.hide()
-        self.instruction_label.hide()
-        self.warning_label.setVisible(False)
-
-        self.w.start()
-
-        self.connect_btn.clicked.connect(self.connect_device)
-        self.security_key.clicked.connect(self.send)
-        self.initalise_infopanel()
-
-    def initalise_infopanel(self) -> None:
-        data = self.authentication_service.get_session_stored()
-
-        self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), InfoMode.EXPAND)
-        self.info_panel.add_client_data("Fingerprint Template", ("Fingerprint Template", byte_str(data["fingerprint_template"])), InfoMode.EXPAND)
-        self.info_panel.add_client_data("Private Key", ("Private Key", decode_key(data["private_key"])), InfoMode.EXPAND)
-        self.info_panel.add_client_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), InfoMode.EXPAND)
-        self.info_panel.add_client_data("Signed Challenge", ("Signed Challenge", "NULL"), InfoMode.EXPAND)
-        
-        self.info_panel.add_server_data("User Key Name", data["key_name"])
-        self.info_panel.add_server_data("User Key Handle", ("Key Handle", data["key_handle"]), InfoMode.EXPAND)
-        self.info_panel.add_server_data("User Public Key", ("User Public Key", decode_key(data["public_key"])), InfoMode.EXPAND)
-        self.info_panel.add_server_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), InfoMode.EXPAND)
-
-        self.info_panel.log_text("Waiting to activate two-FA key and validate fingerprint...\n")
-
-    def connect_device(self) -> None:
-        self.connect_btn.hide()
-        self.key_on = True
-        self.w.stop()
-        self.waiting_label.hide()
-
-        self.key_select_frame.show()
-        self.key_name.setText(self.authentication_service.get_session_stored()["key_name"])
-        self.fingerprint.show()
-        self.instruction_label.show()
-
-        self.security_key.setCursor(Qt.PointingHandCursor)
-        self.info_panel.log_text("Client: 2FA Key powered and activated.\n")
+    def get_key_name(self) -> str:
+        return self.authentication_service.get_session_stored()["key_name"]
 
     def on_finger_changed(self, button, checked) -> None:
         if checked:
             match (button.objectName()):
-                case "fp1_btn":
-                    self.current_finger = "fp1"
+                case "fp3_btn":
+                    self.current_finger = "fp3"
                 case "fp4_btn":
                     self.current_finger = "fp4"
 
-    def authenticated(self, mode: int = 0) -> None:
-        self.warning_label.setStyleSheet("color: #049c84;")
-        self.warning_label.setText("The user has been authenticated.")
+    def inject_key(self) -> None:
+        self.key_on = True
+        self.key_state_changed.emit()
 
-        data = self.authentication_service.get_session_stored()
+    def state_data(self, is_checked: bool) -> dict:
+        data = self.authentication_service.get_session_stored().copy()
+        data["fingerprint_template"] = byte_str(data["fingerprint_template"])
+        data["private_key"] = decode_key(data["private_key"])
+        data["public_key"] = decode_key(data["public_key"])
+        data["fingerprint"] = byte_str(data["fingerprint"])
 
-        self.info_panel.update_client_status("Authentication", data["timestamp_authenticate"])
-        self.info_panel.update_server_status("ACCEPTED", "202", "User Authenticated")
-
-        if mode: # bypass mode
-            self.info_panel.update_client_data("Fingerprint", ("Fingerprint", byte_str(data["fingerprint"])))
-
-        self.info_panel.update_client_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(data["nonce"])))
-        self.info_panel.update_client_data("Signed Challenge", ("Signed Challenge", byte_str(data["signed_challenge"])))
-
-        self.info_panel.update_server_data("Nonce", ("Nonce for Challenge-Response Protocol", byte_str(data["nonce"])))
-
-        self.info_panel.log_text("Server: Generating challenge and sending challenge along with a key handle to client.")
-        self.info_panel.log_text("Client: Scanning Fingerprint.")
-        self.info_panel.log_text("Security key converting fingerprint to fingerprint template.")
-        self.info_panel.log_text("Security key compares fingerprint template with stored features.")
-        self.info_panel.log_text("Features matched.")
-        self.info_panel.log_text("The security key retrieves the correct private key based on the key handle.")
-        self.info_panel.log_text("Security key signs the challenge.")
-        self.info_panel.log_text("Client: Sending the signed challenge to the server.")
-        self.info_panel.log_text("Server: Verifing the signed challenge using the stored public key.")
-        self.info_panel.log_text("Authentication successful.\n")
-
-        self.message_service.send(self, "Authenticated", None)
+        if is_checked:
+            data["nonce"] = byte_str(data["nonce"])
+            data["signed_challenge"] = byte_str(data["signed_challenge"])
+            
+        return data
         
     def send(self) -> None:
         if self.key_on:
-            fingerprint = image_byte("data/fingerprints/"+self.current_finger+".png")
+            fingerprint_data = image_byte(Settings.FINGERPRINT_FILE_PATH+self.current_finger+".png")
+            flag = self.authentication_service.authenticate(fingerprint_data)
 
-            flag = self.authentication_service.authenticate(fingerprint)
-            if flag == 0:
-                self.authenticated()
-            else:
-                if flag == 1:
-                    self.warning_label.setText("Your credentials do not match our record.")
+            if not flag:
+                self.key_on = False
+                self.state_change.emit("The user has been authenticated.", flag)
+                self.state_data_change.emit(self.state_data(True), flag)
+                self.message_service.send(self, "Authenticated")
+            elif flag == 1:
+                self.state_change.emit("Your credentials do not match our record.", flag)
+                self.state_data_change.emit(self.state_data(False), flag)
+            elif flag == 2:
+                self.state_change.emit("Locked for 10 seconds.", flag)
+                self.state_data_change.emit(self.state_data(False), flag)
 
-                    self.info_panel.update_client_status("Authentication", self.authentication_service.get_session_stored()["timestamp_authenticate"])
-                    self.info_panel.update_server_status("REJECTED", "406", "User Not Authenticated")
-                    self.info_panel.update_data_note(1)
-
-                    self.info_panel.log_text("Server: Generating challenge and sent challenge along with key handle to client.")
-                    self.info_panel.log_text("Client: Scanning Fingerprint.")
-                    self.info_panel.log_text("Security key converting fingerprint to fingerprint template.")
-                    self.info_panel.log_text("Security key compares fingerprint template with stored features.")
-                    self.info_panel.log_text("Features unmatched.")
-                    self.info_panel.log_text("Authentication unsuccessful.\n")
-                elif flag == 2:
-                    self.warning_label.setText("Locked for 10 seconds.")
-
-                    self.info_panel.log_text("Locking authentication for 10 seconds due to multiple fail attempts.\n")
-
-                self.warning_label.setVisible(True)
-
-            self.info_panel.update_client_data("Fingerprint", ("Fingerprint", byte_str(fingerprint)))
+    
+    def bypass(self) -> None:
+        self.state_data_change.emit(self.state_data(True), 0)

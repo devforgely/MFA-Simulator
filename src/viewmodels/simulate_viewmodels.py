@@ -1,7 +1,6 @@
 from typing import Any
-from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget, QStackedWidget, QHBoxLayout
-from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtGui import QIcon
 from services.container import ApplicationContainer
 from models.authentication.authentication import Method
 from viewmodels.authentication.password_viewmodel import *
@@ -11,52 +10,45 @@ from viewmodels.authentication.picture_password_viewmodel import *
 from viewmodels.authentication.fingerprint_viewmodel import *
 from viewmodels.authentication.totp_viewmodel import *
 from viewmodels.authentication.twofa_key_viewmodel import *
-from widgets.number_button import LockableNumberButton
-from widgets.info_panel import *
-from widgets.dialog import GifDialog, DetailViewDialog
-from widgets.info_panel import *
+from configuration.app_configuration import Settings
 
-# pyright: reportAttributeAccessIssue=false
 
-class SimulateViewModel(QStackedWidget):
+class SimulateViewModel(QObject):
+    view_creator = pyqtSignal()
+    view_registration = pyqtSignal()
+    view_authentication = pyqtSignal()
+
     def __init__(self) -> None:
-        QStackedWidget.__init__(self)
-        self.message_service = ApplicationContainer.message_service()
+        super().__init__()
 
-        # SECTIONS
-        self.creator_page = CreatorViewModel()
-        self.creator_page.setup()
-        self.register_page = RegisterViewModel()
-        self.authenticate_page = AuthenticateViewModel()
-        self.addWidget(self.creator_page)
-        self.addWidget(self.register_page)
-        self.addWidget(self.authenticate_page)
+        self.message_service = ApplicationContainer.message_service()
 
         self.message_service.subscribe(self, CreatorViewModel, self.on_message)
         self.message_service.subscribe(self, RegisterViewModel, self.on_message)
         self.message_service.subscribe(self, AuthenticateViewModel, self.on_message)
+
+        self.message_service.send(self, "Update Creator")
     
     def on_message(self, message_title: str, *args: Any) -> None:
         if message_title == "Register View":
-            self.register_page.setup()
-            self.setCurrentWidget(self.register_page)
+            self.view_registration.emit()
         elif message_title == "Authenticate View":
-            self.authenticate_page.setup()
-            self.setCurrentWidget(self.authenticate_page)
+            self.view_authentication.emit()
         elif message_title == "Creator View":
-            self.creator_page.setup()
-            self.setCurrentWidget(self.creator_page)
+            self.message_service.send(self, "Update Creator")
+            self.view_creator.emit()
+            
 
-class CreatorViewModel(QWidget):
+class CreatorViewModel(QObject):
+    simulation_changed = pyqtSignal(list, int)
+
     def __init__(self) -> None:
-        QWidget.__init__(self)
-        uic.loadUi("views/creator_view.ui", self)
+        super().__init__()
+
         self.data_service = ApplicationContainer.data_service()
         self.authentication_service = ApplicationContainer.authentication_service()
         self.message_service = ApplicationContainer.message_service()
 
-        self.button_group = {}
-        self.max_col = 3
         # Map type val to string
         self.type_to_string = {
             Method.PASSWORD.value: "Password",
@@ -67,281 +59,176 @@ class CreatorViewModel(QWidget):
             Method.TOTP.value: "TOTP",
             Method.TWOFA_KEY.value: "2FA Key"
         }
+        self.string_to_type = {v: k for k, v in self.type_to_string.items()}
 
-        # Add buttons to grid
-        row = 0
-        col = 0
-        for method_val, unlocked in self.data_service.get_user_unlocked_simulations().items():
-            btn = LockableNumberButton(self, self.type_to_string[method_val], QColor(255, 255, 255), QColor(0, 97, 169), not unlocked)
-            btn.clicked.connect(lambda bool, value=method_val, button=btn: self.set_method(value, button))
-            self.button_group[method_val] = btn
-            self.methods_selection.layout().addWidget(btn, row, col)
-            col += 1
-            if col == self.max_col:
-                col = 0
-                row += 1
+        self.unlocked_simulations = [(self.type_to_string[k], v) for k, v in self.data_service.get_user_unlocked_simulations().items()]
 
-        self.simulate_btn.clicked.connect(self.simulate)
+        self.message_service.subscribe(self, SimulateViewModel, self.on_message)
 
-    def setup(self) -> None:
-        self.authentication_service.reset()
-        for btn in self.button_group.values():
-            btn.update_icon(0)
+    def on_message(self, message_title: str, *args: Any) -> None:
+        if message_title == "Update Creator":
+            self.authentication_service.reset()
+            self.simulation_changed.emit([], 0)
+
+    
+    def unlock_simulation(self, method_name: str) -> bool:
+        if self.data_service.get_user_coins() >= 200: #coins to unlock the method
+            self.data_service.update_user_coin(-200)
+            self.data_service.unlock_user_simulation(self.string_to_type[method_name])
+
+            self.message_service.send(self, "Info Notification", QIcon(Settings.ICON_FILE_PATH+"unlock.svg"), "New simulation unlocked")
+            return True
         
-        self.measure_title.setText("Select challenges from above to see Authenticator Assurance Level")
-        self.measure_description.setText("")
+        self.message_service.send(self, "Warning Notification", QIcon(Settings.ICON_FILE_PATH+"lock.svg"), "Please acquire at least 200 coins")
+        return False
+    
+    def update_simulation(self, method_name: str) -> None:
+        method = Method(self.string_to_type[method_name])
 
-    def set_method(self, method_val: int, button: LockableNumberButton) -> None:
-        if button.isLocked():
-            if self.data_service.get_user_coins() >= 200: #coins to unlock the method
-                self.data_service.update_user_coin(-200)
-                self.data_service.unlock_user_simulation(method_val)
-                button.lock(False)
-                self.message_service.send(self, "Show Notification", QIcon(Settings.ICON_FILE_PATH+"unlock.svg"), "New simulation unlocked")
-            else:
-                self.message_service.send(self, "Show Notification", QIcon(Settings.ICON_FILE_PATH+"lock.svg"), "Please acquire at least 200 coins")
-        else:
-            if not self.authentication_service.add(Method(method_val)):
-                self.authentication_service.remove(Method(method_val))
-            
-            # clear button icon
-            for btn in self.button_group.values():
-                btn.update_icon(0)
-
-            # update button icon index
-            added_types = self.authentication_service.get_all_types()
-            for i in range(len(added_types)):
-                self.button_group[added_types[i].value].update_icon(i+1)
+        if not self.authentication_service.add(method):
+            self.authentication_service.remove(method)
         
-            match (self.authentication_service.calculate_assurance_level()):
-                case 1:
-                    measure = """Authenticator Assurance Level 1|AAL1 provides some assurance that the claimant controls an authenticator bound to the subscriber's account. AAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies. Successful authentication requires that the claimant prove possession and control of the authenticator through a secure authentication protocol."""
-                case 2:
-                    measure = """Authenticator Assurance Level 2|AAL2 provides high confidence that the claimant controls an authenticator(s) bound to the subscriber's account. Proof of possession and control of two different authentication factors is required through secure authentication protocol(s). Approved cryptographic techniques are required at AAL2 and above."""
-                case 3:
-                    measure = """Authenticator Assurance Level 3|AAL3 provides very high confidence that the claimant controls authenticator(s) bound to the subscriber's account. Authentication at AAL3 is based on proof of possession of a key through a cryptographic protocol. AAL3 authentication requires a hardware-based authenticator and an authenticator that provides verifier impersonation resistance; the same device may fulfill both these requirements. In order to authenticate at AAL3, claimants are required to prove possession and control of two distinct authentication factors through secure authentication protocol(s). Approved cryptographic techniques are required."""
-                case _:
-                    measure = ""
-
-            if measure:
-                title, description = measure.split("|")
-                self.measure_title.setText(title)
-                self.measure_description.setText(description)
-            else:
-                self.measure_title.setText("Select challenges from above to see Authenticator Assurance Level")
-                self.measure_description.setText("")
+        added_types = [self.type_to_string[k.value] for k in self.authentication_service.get_all_types()]
+        self.simulation_changed.emit(added_types, self.authentication_service.calculate_assurance_level())
         
     def simulate(self) -> None:
         if self.authentication_service.can_simulate():
-            self.message_service.send(self, "Register View", None)
+            self.message_service.send(self, "Register View")
         else:
-            self.message_service.send(self, "Show Notification", QIcon(Settings.ICON_FILE_PATH+"alert-triangle.svg"), "Unable to simulate")
+            self.message_service.send(self, "Error Notification", QIcon(Settings.ICON_FILE_PATH+"alert-triangle.svg"), "Unable to simulate")
 
 
-class RegisterViewModel(QWidget):
+class RegisterViewModel(QObject):
+    reset_signal = pyqtSignal()
+    simulation_changed = pyqtSignal(object)
+    simulation_index_changed = pyqtSignal(int, bool, bool)
+
     def __init__(self) -> None:
-        QWidget.__init__(self)
-        uic.loadUi("views/register_view.ui", self)
+        super().__init__()
+        
         self.authentication_service = ApplicationContainer.authentication_service()
         self.message_service = ApplicationContainer.message_service()
-
-        self.detail_dialog = None
 
         self.type_to_register = {
             Method.PASSWORD: PasswordRegisterViewModel,
             Method.SECRET_QUESTION: SecurityQuestionRegisterViewModel,
             Method.PICTURE_PASSWORD: PicturePasswordRegisterViewModel,
-            Method.FINGERPRINT: FingerPrintRegisterViewModel,
+            Method.FINGERPRINT: FingerprintRegisterViewModel,
             Method.CHIP_PIN: ChipPinRegisterViewModel,
             Method.TOTP: TOTPRegisterViewModel,
             Method.TWOFA_KEY: TwoFAKeyRegisterViewModel
         }
-            
-        self.next_btn.clicked.connect(self.go_forward)
-        self.back_btn.clicked.connect(self.go_backward)
-        self.end_btn.clicked.connect(lambda: self.message_service.send(self, "Creator View", None))
-
-        self.message_service.subscribe(self, InfoPanel, self.on_message)
-
-    def setup(self) -> None:
-        self.clear_stack()
-        self.next_btn.setEnabled(False)
-        self.back_btn.setEnabled(False)
-        self.authentication_service.at = 0
-        for method in self.authentication_service.get_all_types():
-            viewmodel_factory = self.type_to_register.get(method)
-            
-            if viewmodel_factory:
-                self.message_service.subscribe(self, viewmodel_factory, self.on_message)
-                hbox = QWidget()
-                hlayout = QHBoxLayout(hbox)
-                info_panel = InfoPanel(self.authentication_service.get_display_details(), InfoMode.REGISTER, hbox)
-                
-                hlayout.addWidget(viewmodel_factory(info_panel))
-                hlayout.addWidget(info_panel) 
-                self.stackedWidget.addWidget(hbox)
-                self.authentication_service.forward()
-            else:
-                raise ValueError("Unknown authentication method")
-        self.authentication_service.at = 0
         
+        self.message_service.subscribe(self, CreatorViewModel, self.on_message)
 
     def on_message(self, message_title: str, *args: Any)  -> None:
-        if message_title == "Registered":
-            self.next_btn.setEnabled(True)
-        elif message_title == "Register Show Details":
-            self.detail_dialog = DetailViewDialog(args[0], args[1], self)
-            self.detail_dialog.move(0, 0)
-            self.detail_dialog.show()
-            self.detail_dialog.destroyed.connect(self.on_detail_dialog_destroyed)
+        if message_title == "Register View":
+            self.reset_signal.emit()
+            self.load_simulation()
+        elif message_title == "Registered":
+            can_back = self.authentication_service.at > 0
+            can_forward = self.authentication_service.at < self.authentication_service.register_count
+            self.simulation_index_changed.emit(self.authentication_service.at, can_back, can_forward)
 
-    def clear_stack(self) -> None:
-        while self.stackedWidget.count() > 0:
-            widget = self.stackedWidget.widget(self.stackedWidget.count() - 1)
-            if widget:
-                self.stackedWidget.removeWidget(widget)
-                widget.deleteLater()
-
+    def load_simulation(self) -> None:
+        viewmodel_factory = self.type_to_register.get(self.authentication_service.get_type())
+        if viewmodel_factory:
+            self.message_service.subscribe(self, viewmodel_factory, self.on_message)
+            viewmodel = viewmodel_factory()
+            self.simulation_changed.emit(viewmodel)
+        else:
+            raise ValueError("Unknown authentication method")
+        
     def go_forward(self) -> None:
         if not self.authentication_service.go_authenticate():
-            self.authentication_service.forward()
-            self.stackedWidget.setCurrentIndex(self.authentication_service.at)     
-            if self.authentication_service.at == self.authentication_service.register_count:
-                self.next_btn.setEnabled(False)
-            self.back_btn.setEnabled(True)
+            if self.authentication_service.forward():
+                can_forward = self.authentication_service.at < self.authentication_service.register_count
+
+                if self.authentication_service.at == self.authentication_service.register_count:
+                    self.load_simulation()
+
+                self.simulation_index_changed.emit(self.authentication_service.at, True, can_forward)  
         else:
-            self.message_service.send(self, "Authenticate View", None)
+            self.message_service.send(self, "Authenticate View")
 
     def go_backward(self) -> None:
-        self.authentication_service.backward()
-        self.stackedWidget.setCurrentIndex(self.authentication_service.at)     
-        if self.authentication_service.at == 0:
-            self.back_btn.setEnabled(False)
-        self.next_btn.setEnabled(True)
+        if self.authentication_service.backward():
+            can_back = self.authentication_service.at > 0
+            self.simulation_index_changed.emit(self.authentication_service.at, can_back, True)
 
-    def on_detail_dialog_destroyed(self):
-        self.detail_dialog = None
-
-    def resizeEvent(self, event):
-        if self.detail_dialog is not None:
-            self.detail_dialog.resize(self.size())
-        super(RegisterViewModel, self).resizeEvent(event)
+    def end_simulation(self) -> None:
+        self.message_service.send(self, "Creator View")    
         
 
-class AuthenticateViewModel(QWidget):
+class AuthenticateViewModel(QObject):
+    reset_signal = pyqtSignal()
+    simulation_changed = pyqtSignal(object)
+    simulation_index_changed = pyqtSignal(int, bool, bool)
+    bypass_signal = pyqtSignal(int)
+    congrats_dialog_signal = pyqtSignal()
+
     def __init__(self) -> None:
-        QWidget.__init__(self)
-        uic.loadUi("views/authenticate_view.ui", self)
+        super().__init__()
+        
         self.authentication_service = ApplicationContainer.authentication_service()
         self.message_service = ApplicationContainer.message_service()
-
-        self.congrats_dialog = None
-        self.detail_dialog = None
 
         self.type_to_authenticate = {
             Method.PASSWORD: PasswordAuthenticateViewModel,
             Method.SECRET_QUESTION: SecurityQuestionAuthenticateViewModel,
             Method.PICTURE_PASSWORD: PicturePasswordAuthenticateViewModel,
-            Method.FINGERPRINT: FingerPrintAuthenticateViewModel,
+            Method.FINGERPRINT: FingerprintAuthenticateViewModel,
             Method.CHIP_PIN: ChipPinAuthenticateViewModel,
             Method.TOTP: TOTPAuthenticateViewModel,
             Method.TWOFA_KEY: TwoFAKeyAuthenticateViewModel
         }
 
-        self.next_btn.clicked.connect(self.go_forward)
-        self.back_btn.clicked.connect(self.go_backward)
-        self.end_btn.clicked.connect(lambda: self.message_service.send(self, "Creator View", None))
-        self.bypass_btn.clicked.connect(self.bypass)
-
-        self.message_service.subscribe(self, InfoPanel, self.on_message)
-    
-    def setup(self) -> None:
-        self.clear_stack()
-        self.next_btn.setEnabled(False)
-        self.back_btn.setEnabled(False)
-        self.bypass_btn.setEnabled(True)
-        self.authentication_service.at = 0
-        for method in self.authentication_service.get_all_types():
-            viewmodel_factory = self.type_to_authenticate.get(method)
-            
-            if viewmodel_factory:
-                self.message_service.subscribe(self, viewmodel_factory, self.on_message)
-                hbox = QWidget()
-                hlayout = QHBoxLayout(hbox)
-                info_panel = InfoPanel(self.authentication_service.get_display_details(), InfoMode.AUTHENTICATE, hbox)
-                
-                hlayout.addWidget(viewmodel_factory(info_panel))
-                hlayout.addWidget(info_panel)
-                self.stackedWidget.addWidget(hbox)
-                
-                self.authentication_service.forward()
-            else:
-                raise ValueError("Unknown authentication method")
-        self.authentication_service.at = 0
-
-    def clear_stack(self) -> None:
-        while self.stackedWidget.count() > 0:
-            widget = self.stackedWidget.widget(self.stackedWidget.count() - 1)
-            if widget:
-                self.stackedWidget.removeWidget(widget)
-                widget.deleteLater()
+        self.message_service.subscribe(self, RegisterViewModel, self.on_message)
 
     def on_message(self, message_title: str, *args: Any)  -> None:
+        if message_title == "Authenticate View":
+            self.authentication_service.at = 0
+            self.reset_signal.emit()
+            self.load_simulation()
         if message_title == "Authenticated":
-            self.next_btn.setEnabled(True)
-            self.bypass_btn.setEnabled(False)
-        elif message_title == "Authenticate Show Details":
-            self.detail_dialog = DetailViewDialog(args[0], args[1], self)
-            self.detail_dialog.move(0, 0)
-            self.detail_dialog.show()
-            self.detail_dialog.destroyed.connect(self.on_detail_dialog_destroyed)
+            can_back = self.authentication_service.at > 0
+            can_forward = self.authentication_service.at < self.authentication_service.auth_count
+            self.simulation_index_changed.emit(self.authentication_service.at, can_back, can_forward)
+
+    def load_simulation(self) -> None:      
+        viewmodel_factory = self.type_to_authenticate.get(self.authentication_service.get_type())
+        if viewmodel_factory:
+            self.message_service.subscribe(self, viewmodel_factory, self.on_message)
+            viewmodel = viewmodel_factory()
+            self.simulation_changed.emit(viewmodel)
+        else:
+            raise ValueError("Unknown authentication method")
 
     def go_forward(self) -> None:
         if not self.authentication_service.go_finish():
-            self.authentication_service.forward()
-            self.stackedWidget.setCurrentIndex(self.authentication_service.at)     
-            if self.authentication_service.at == self.authentication_service.auth_count:
-                self.next_btn.setEnabled(False)
-                self.bypass_btn.setEnabled(True)
-            self.back_btn.setEnabled(True)
-            
+            if self.authentication_service.forward():
+                can_forward = self.authentication_service.at < self.authentication_service.auth_count
+                if self.authentication_service.at == self.authentication_service.auth_count:
+                    self.load_simulation()
+                self.simulation_index_changed.emit(self.authentication_service.at, True, can_forward)
         else:
-            # congratulation dialog
-            self.congrats_dialog = GifDialog(self.authentication_service.complete_simulation, self)
-            self.congrats_dialog.move(0, 0)
-            self.congrats_dialog.show()
-            self.congrats_dialog.destroyed.connect(self.on_congrats_dialog_destroyed)
+            self.congrats_dialog_signal.emit()
 
     def go_backward(self) -> None:
-        self.authentication_service.backward()
-        self.stackedWidget.setCurrentIndex(self.authentication_service.at)     
-        if self.authentication_service.at == 0:
-            self.back_btn.setEnabled(False)
-        self.next_btn.setEnabled(True)
-        self.bypass_btn.setEnabled(False)
+        if self.authentication_service.backward():
+            can_back = self.authentication_service.at > 0
+            self.simulation_index_changed.emit(self.authentication_service.at, can_back, True)
 
     def bypass(self) -> None:
         if self.authentication_service.bypass():
-            self.bypass_btn.setEnabled(False)
-            container = self.stackedWidget.widget(self.authentication_service.at)
-            if container:
-                method_item = container.layout().itemAt(0)
-                if method_item:
-                    method_item.widget().authenticated(1)
+            self.bypass_signal.emit(self.authentication_service.at)
 
+    def end_simulation(self) -> None:
+        self.message_service.send(self, "Creator View")
 
-    def on_congrats_dialog_destroyed(self):
-        self.congrats_dialog = None
-        self.message_service.send(self, "Creator View", None)
-
-    def on_detail_dialog_destroyed(self):
-        self.detail_dialog = None
-
-    def resizeEvent(self, event):
-        if self.congrats_dialog is not None:
-            self.congrats_dialog.resize(self.size())
-        if self.detail_dialog is not None:
-            self.detail_dialog.resize(self.size())
-        super(AuthenticateViewModel, self).resizeEvent(event)
+    def complete_simulation(self) -> None:
+        self.authentication_service.complete_simulation()
+        self.message_service.send(self, "Creator View")
+    
         
         
