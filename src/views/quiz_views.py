@@ -28,7 +28,7 @@ class QuizButton(QPushButton):
             }
             QuizButton:checked {
                 border: 1px solid #049c84;
-                background-color: #94d56c;       
+                background-color: #68c4b5;       
             }
         """)
 
@@ -123,7 +123,7 @@ class QuizSettingsView(QWidget):
         self.retain_size(self.category_label)
         self.retain_size(self.category_combobox)
         self.retain_size(self.add_category_label)
-        self.retain_size(self.category_list)
+        self.retain_size(self.category_scroll)
 
         self.change_all_categories()
         self.change_timed()
@@ -157,7 +157,7 @@ class QuizSettingsView(QWidget):
                                        <p>Like the Classic Quiz, there is no time limit, so you can focus on understanding the questions and improving your knowledge.</p>""")
             case "amend_btn":
                 if self._viewmodel.validate_quiz_setting(self.difficulty_field.text(), self.num_field.text(), self.all_categories_box.isChecked(),
-                                                         self.get_list_categories(), self.timed_box.isChecked(), self.time_field.text()):
+                                                         self.timed_box.isChecked(), self.time_field.text()):
                     self.setting_warning.setVisible(False)
                     self.quiz_note.setText("""<b>Custom Quiz</b>: This quiz format offers the highest level of personalisation.<br>
                                         <p>You have the freedom to set the number of questions, choose the categories, specify the difficulty range, and decide whether it's timed or not.</p>
@@ -179,12 +179,12 @@ class QuizSettingsView(QWidget):
             self.category_label.setVisible(False)
             self.category_combobox.setVisible(False)
             self.add_category_label.setVisible(False)
-            self.category_list.setVisible(False)
+            self.category_scroll.setVisible(False)
         else:
             self.category_label.setVisible(True)
             self.category_combobox.setVisible(True)
             self.add_category_label.setVisible(True)
-            self.category_list.setVisible(True)
+            self.category_scroll.setVisible(True)
 
     def change_timed(self) -> None:
         if self.timed_box.isChecked():
@@ -193,49 +193,29 @@ class QuizSettingsView(QWidget):
         else:
             self.time_label.setVisible(False)
             self.time_field.setVisible(False)
-    
-    def is_text_in_list(self, text: str) -> bool:
-        for i in range(self.category_list.count()):
-            item = self.category_list.item(i)
-            widget = self.category_list.itemWidget(item)
-            label = widget.findChild(QLabel)
-            if label.text() == text:
-                return True
-        return False
-    
-    def get_list_categories(self) -> list:
-        list = []
-        for i in range(self.category_list.count()):
-            item = self.category_list.item(i)
-            widget = self.category_list.itemWidget(item)
-            label = widget.findChild(QLabel)
-            list.append(label.text())
-        return list
 
     def check_and_add_category(self) -> None:
         current_text = self.category_combobox.currentText()
-        if not self.is_text_in_list(current_text):
-            item = QListWidgetItem(self.category_list)
-
+        if not self._viewmodel.is_text_in_list(current_text):
             widget = QWidget()
+            widget.setMaximumHeight(50)
+            widget.setStyleSheet("background-color: #cccccc; font-size: 9pt; font-weight: bold; border-radius: 7px; margin: 5px 0px;")
             layout = QHBoxLayout(widget)
             label = QLabel(current_text)
-            label.setStyleSheet("font-size: 9pt; font-weight: normal;")
             button = QPushButton()
             button.setIcon(QIcon(Settings.ICON_FILE_PATH + "cross.svg"))
-            button.clicked.connect(lambda: self.delete_item(item))
+            button.clicked.connect(lambda: self.delete_item(widget, current_text))
 
-            layout.addWidget(label)
+            layout.addWidget(label, 1)
             layout.addWidget(button)
 
-            item.setSizeHint(widget.sizeHint())
-
-            self.category_list.addItem(item)
-            self.category_list.setItemWidget(item, widget)
+            self.category_list.layout().addWidget(widget)
+            self._viewmodel.append_category(current_text)
     
-    def delete_item(self, item):
-        row = self.category_list.row(item)
-        self.category_list.takeItem(row)
+    def delete_item(self, item: QWidget, category: str):
+        self.category_list.layout().removeWidget(item)
+        item.deleteLater()
+        self._viewmodel.remove_category(category)
 
     def update_category_combobox(self, category_list: list) -> None:
         self.category_combobox.addItems(category_list)

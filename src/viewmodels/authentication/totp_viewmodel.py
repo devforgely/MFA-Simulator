@@ -1,6 +1,6 @@
 from viewmodels.authentication.authentication_base import *
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from widgets.timer import TimeThread
 import time
 import qrcode
@@ -81,7 +81,6 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         self.threading._signal.connect(self.signal_update)
     
     def get_code(self) -> None:
-        time.sleep(0.5) # add delay to account for synchronisation
         # generate new totp
         self.authentication_service.authenticate("GENERATE")
         self.code_changed.emit(self.authentication_service.get_session_stored()["totp"], datetime.now(timezone.utc).strftime("%H:%M %Z"))
@@ -103,7 +102,12 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
             self.threading = TimeThread(self.max_time) # Now we are in sync
             self.threading._signal.connect(self.signal_update)
             self.threading.start()
-            self.get_code()
+
+            self.timer = QTimer()
+            self.timer.setSingleShot(True)
+            self.timer.timeout.connect(self.get_code)
+            self.timer.start(300) # add delay to account for synchronisation
+            
 
     def state_data(self) -> dict:
         data = self.authentication_service.get_session_stored().copy()

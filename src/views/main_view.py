@@ -1,8 +1,9 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, QPoint, QRect, QTimer
+from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QSizeGrip, QButtonGroup
 from widgets.side_grip import SideGrip
+from widgets.info_bar import InfoBarIcon, InfoBar
 from views.simulate_views import SimulateView
 from views.learn_view import LearnView
 from views.quiz_views import QuizView
@@ -27,6 +28,7 @@ class MainView(QMainWindow):
         self._viewmodel.fact_changed.connect(self.fact_label.setText)
         self._viewmodel.coin_count_changed.connect(self.coin_count.setText)
         self._viewmodel.badge_count_changed.connect(self.badge_count.setText)
+        self._viewmodel.info_bar_added.connect(self.show_notification)
 
         self.setWindowTitle("MFA Simulator")
 
@@ -214,8 +216,9 @@ class MainView(QMainWindow):
                     case _:
                         Exception("Undefined Button Behaviour")
 
-    def show_notification(self, icon: QIcon, message: str):
-        print("show some notification")
+    def show_notification(self, icon: InfoBarIcon, content: str):
+        infobar = InfoBar(icon, content, parent=self)
+        infobar.show()
 
     """
     =====================================================================================

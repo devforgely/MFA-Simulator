@@ -79,15 +79,19 @@ class CreatorView(QWidget):
             case 1:
                 title = "Authenticator Assurance Level 1"
                 description = "AAL1 provides some assurance that the claimant controls an authenticator bound to the subscriber's account. AAL1 requires either single-factor or multi-factor authentication using a wide range of available authentication technologies. Successful authentication requires that the claimant prove possession and control of the authenticator through a secure authentication protocol."
+                self.measure_frame.setStyleSheet("background-color: #c03d33;")
             case 2:
                 title = "Authenticator Assurance Level 2"
                 description = "AAL2 provides high confidence that the claimant controls an authenticator(s) bound to the subscriber's account. Proof of possession and control of two different authentication factors is required through secure authentication protocol(s). Approved cryptographic techniques are required at AAL2 and above."
+                self.measure_frame.setStyleSheet("background-color: #ff7404;")
             case 3:
                 title = "Authenticator Assurance Level 3"
                 description = "AAL3 provides very high confidence that the claimant controls authenticator(s) bound to the subscriber's account. Authentication at AAL3 is based on proof of possession of a key through a cryptographic protocol. AAL3 authentication requires a hardware-based authenticator and an authenticator that provides verifier impersonation resistance; the same device may fulfill both these requirements. In order to authenticate at AAL3, claimants are required to prove possession and control of two distinct authentication factors through secure authentication protocol(s). Approved cryptographic techniques are required."
+                self.measure_frame.setStyleSheet("background-color: #049c84;")
             case _:
                 title = "Select challenges from above to see Authenticator Assurance Level"
                 description = ""
+                self.measure_frame.setStyleSheet("background-color: #0067c0;")
 
         self.measure_title.setText(title)
         self.measure_description.setText(description)
@@ -110,7 +114,7 @@ class RegisterView(QWidget):
 
         self._viewmodel = viewmodel
         self._viewmodel.reset_signal.connect(self.clear_stack)
-        self._viewmodel.simulation_changed.connect(self.add_method_view)
+        self._viewmodel.simulation_load.connect(self.add_method_view)
         self._viewmodel.simulation_index_changed.connect(self.update_view)
 
         self.viewmodel_to_view = {
@@ -188,7 +192,7 @@ class AuthenticateView(QWidget):
 
         self._viewmodel = viewmodel
         self._viewmodel.reset_signal.connect(self.clear_stack)
-        self._viewmodel.simulation_changed.connect(self.add_method_view)
+        self._viewmodel.simulation_load.connect(self.add_method_view)
         self._viewmodel.simulation_index_changed.connect(self.update_view)
         self._viewmodel.bypass_signal.connect(self.bypass)
         self._viewmodel.congrats_dialog_signal.connect(self.show_congrats_dialog)

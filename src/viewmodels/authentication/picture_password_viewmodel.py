@@ -91,6 +91,19 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
 class PicturePasswordAuthenticateViewModel(PicturePasswordRegisterViewModel):
     def __init__(self) -> None:
         super().__init__()
+
+    def remove_selection(self, image: str) -> None:
+        self.selected_images.remove(image)
+        self.select_count_change.emit(f"Selected Image Count: {len(self.selected_images)}")
+
+    def add_selection(self, image: str) -> None:
+        self.selected_images.append(image)
+        self.select_count_change.emit(f"Selected Image Count: {len(self.selected_images)}")
+
+    def reset_selection(self) -> None:
+        self.selected_images.clear()
+        self.select_count_change.emit("Selected Image Count: 0")
+        self.reset_selection_signal.emit()
     
     def state_data(self, is_checked: bool) -> dict:
         data = self.authentication_service.get_session_stored().copy()

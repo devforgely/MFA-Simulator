@@ -50,6 +50,19 @@ QComboBox::drop-down {
     border: 0px;
 }
 
+QComboBox QListView {
+	font-size: 12px;
+	border: 1px solid rbga(0,0,0,0.1);
+	padding: 5px;
+	background-color: #fff;
+	outline: 0px;
+}
+
+QComboBox QListView:item {
+	padding-left: 10px;
+	background-color: #fff;
+}
+
 QLineEdit {
 	height: 34px;
 	border: none;
@@ -77,10 +90,18 @@ QPushButton {
 	border: 1px solid #9c041c;
 }
 
+#add_question_btn:hover, #remove_btn:hover {
+	background-color: #e6e6e6;
+}
+
 #submit_btn {
 	color: white;
 	border: none;
 	background-color: #0067c0;
+}
+
+#submit_btn:hover {
+	background-color: #005dad;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">

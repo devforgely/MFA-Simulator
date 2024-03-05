@@ -28,6 +28,10 @@
 	border-radius: 10%;
 }
 
+#back_btn:hover {
+	background-color: #e6e6e6;
+}
+
 #result_frame, #td_frame {
 	background-color: #fff;
 	border: none;

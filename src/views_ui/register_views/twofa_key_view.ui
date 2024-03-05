@@ -34,6 +34,10 @@
 	background-color: #0067c0; 
 }
 
+#left_stacked .QPushButton:hover {
+	background-color: #005dad; 
+}
+
 #title {
 	font-size: 12pt;
 	font-weight: bold;
@@ -56,6 +60,10 @@
 	border: 1px solid gray;
 	height: 30px;
 	width: 100px;
+}
+
+#connect_btn:hover {
+	background-color: #e6e6e6;
 }
 
 .ShadowButton {
@@ -365,7 +373,7 @@
         </property>
        </widget>
       </item>
-      <item alignment="Qt::AlignHCenter">
+      <item alignment="Qt::AlignLeft">
        <widget class="QPushButton" name="connect_btn">
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
@@ -386,14 +394,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ShadowButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">widgets/shadow.h</header>
-  </customwidget>
-  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header location="global">widgets/clickables.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ShadowButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">widgets/shadow.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

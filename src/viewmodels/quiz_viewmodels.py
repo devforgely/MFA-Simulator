@@ -39,6 +39,8 @@ class QuizSettingsViewModel(QObject):
         self.quiz_service = ApplicationContainer.quiz_service()
         self.message_service = ApplicationContainer.message_service()
 
+        self.list_categories = []
+
         self.message_service.subscribe(self, DataService, self.on_message)
 
     def on_message(self, message_title: str, *args: Any) -> None:
@@ -60,12 +62,23 @@ class QuizSettingsViewModel(QObject):
     def set_improvement(self) -> None:
         self.quiz_service.configure_improvement()
 
+    def is_text_in_list(self, text: str) -> bool:
+        return text in self.list_categories
+    
+    def append_category(self, category: str) -> None:
+        self.list_categories.append(category)
+
+    def remove_category(self, category: str) -> None:
+        self.list_categories.remove(category)
+
     def validate_quiz_setting(self, difficulty: str, quiz_count: str, all_categories: bool,
-                              category_list: list, is_timed: bool, time_length: str) -> bool:
+                              is_timed: bool, time_length: str) -> bool:
         range = difficulty.split("-")
         if len(range) == 2:
             low = int(range[0])
             high = int(range[1])
+            if not quiz_count:
+                return False
             nums_q = int(quiz_count)
             
             if low > 0 and high > 0 and high >= low and nums_q > 0:
@@ -75,7 +88,7 @@ class QuizSettingsViewModel(QObject):
                     dict['all_categories'] = True
                 else:
                     dict['all_categories'] = False
-                    dict['categories'] = category_list
+                    dict['categories'] = self.list_categories
                 
                 if is_timed:
                     dict['is_timed'] = True

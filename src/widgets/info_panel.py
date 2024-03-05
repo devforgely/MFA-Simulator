@@ -117,7 +117,10 @@ class InfoPanel(QWidget):
             property_value = ClickableLabel("Click to View")
             property_value.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
             property_value.setCursor(Qt.PointingHandCursor)
-            property_value.setStyleSheet("font-weight: bold; background-color: #ed9d35; border-radius: 13%; padding: 3px 7px;")
+            property_value.setStyleSheet("""
+                                         ClickableLabel { font-weight: bold; background-color: #ed9d35; border-radius: 13%; padding: 3px 7px; }
+                                         ClickableLabel:hover { background-color: #d48c2e; }
+                                        """)
             property_value.clicked.connect(lambda: self.show_detail_view(value[0], value[1]))
             
             layout.addWidget(property_value, alignment=Qt.AlignLeft)
@@ -146,7 +149,10 @@ class InfoPanel(QWidget):
             property_value = ClickableLabel("Click to View")
             property_value.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
             property_value.setCursor(Qt.PointingHandCursor)
-            property_value.setStyleSheet("font-weight: bold; background-color: #ed9d35; border-radius: 13%; padding: 3px 7px;")
+            property_value.setStyleSheet("""
+                                         ClickableLabel { font-weight: bold; background-color: #ed9d35; border-radius: 13%; padding: 3px 7px; }
+                                         ClickableLabel:hover { background-color: #d48c2e; }
+                                        """)
             property_value.clicked.connect(lambda: self.show_detail_view(value[0], value[1]))
             
             layout.addWidget(property_value, alignment=Qt.AlignLeft)

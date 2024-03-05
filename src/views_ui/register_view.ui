@@ -31,7 +31,6 @@
 	font-size: 11pt;
 	font-weight: 550;
 	color: white;
-	border: 5px solid #e1dfdf;
 }
 
 #back_btn {
@@ -39,9 +38,8 @@
 	background-color: #efa913;
 }
 
-#back_btn:disabled {
-	background-color: #e1dfdf;
-	color: gray;
+#back_btn:hover {
+	background-color: #d79811;
 }
 
 #next_btn {
@@ -49,14 +47,24 @@
 	background-color: #27a37e;
 }
 
-#next_btn:disabled {
-	background-color: #e1dfdf;
-	color: gray;
+#next_btn:hover {
+	background-color: #239371;
 }
 
 #end_btn {
 	border-radius: 10px;
 	background-color: #F24942;
+	border: 5px solid #e1dfdf;
+}
+
+#end_btn:hover {
+	background-color: #da423b;
+}
+
+#back_btn:disabled, #next_btn:disabled {
+	background-color: #e1dfdf;
+	color: gray;
+	border: 5px solid #e1dfdf;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">

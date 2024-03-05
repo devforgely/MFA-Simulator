@@ -76,10 +76,10 @@ class CreatorViewModel(QObject):
             self.data_service.update_user_coin(-200)
             self.data_service.unlock_user_simulation(self.string_to_type[method_name])
 
-            self.message_service.send(self, "Info Notification", QIcon(Settings.ICON_FILE_PATH+"unlock.svg"), "New simulation unlocked")
+            self.message_service.send(self, "Success Notification", "New simulation unlocked.")
             return True
         
-        self.message_service.send(self, "Warning Notification", QIcon(Settings.ICON_FILE_PATH+"lock.svg"), "Please acquire at least 200 coins")
+        self.message_service.send(self, "Warning Notification", "Please acquire at least 200 coins.")
         return False
     
     def update_simulation(self, method_name: str) -> None:
@@ -95,12 +95,12 @@ class CreatorViewModel(QObject):
         if self.authentication_service.can_simulate():
             self.message_service.send(self, "Register View")
         else:
-            self.message_service.send(self, "Error Notification", QIcon(Settings.ICON_FILE_PATH+"alert-triangle.svg"), "Unable to simulate")
+            self.message_service.send(self, "Error Notification", "Unable to simulate.")
 
 
 class RegisterViewModel(QObject):
     reset_signal = pyqtSignal()
-    simulation_changed = pyqtSignal(object)
+    simulation_load = pyqtSignal(object)
     simulation_index_changed = pyqtSignal(int, bool, bool)
 
     def __init__(self) -> None:
@@ -118,11 +118,13 @@ class RegisterViewModel(QObject):
             Method.TOTP: TOTPRegisterViewModel,
             Method.TWOFA_KEY: TwoFAKeyRegisterViewModel
         }
+        self.load_index = 0
         
         self.message_service.subscribe(self, CreatorViewModel, self.on_message)
 
     def on_message(self, message_title: str, *args: Any)  -> None:
         if message_title == "Register View":
+            self.load_index = 0
             self.reset_signal.emit()
             self.load_simulation()
         elif message_title == "Registered":
@@ -135,7 +137,8 @@ class RegisterViewModel(QObject):
         if viewmodel_factory:
             self.message_service.subscribe(self, viewmodel_factory, self.on_message)
             viewmodel = viewmodel_factory()
-            self.simulation_changed.emit(viewmodel)
+            self.simulation_load.emit(viewmodel)
+            self.load_index += 1
         else:
             raise ValueError("Unknown authentication method")
         
@@ -144,7 +147,8 @@ class RegisterViewModel(QObject):
             if self.authentication_service.forward():
                 can_forward = self.authentication_service.at < self.authentication_service.register_count
 
-                if self.authentication_service.at == self.authentication_service.register_count:
+                if self.authentication_service.at == self.load_index and \
+                   self.authentication_service.at == self.authentication_service.register_count:
                     self.load_simulation()
 
                 self.simulation_index_changed.emit(self.authentication_service.at, True, can_forward)  
@@ -162,7 +166,7 @@ class RegisterViewModel(QObject):
 
 class AuthenticateViewModel(QObject):
     reset_signal = pyqtSignal()
-    simulation_changed = pyqtSignal(object)
+    simulation_load = pyqtSignal(object)
     simulation_index_changed = pyqtSignal(int, bool, bool)
     bypass_signal = pyqtSignal(int)
     congrats_dialog_signal = pyqtSignal()
@@ -183,11 +187,14 @@ class AuthenticateViewModel(QObject):
             Method.TWOFA_KEY: TwoFAKeyAuthenticateViewModel
         }
 
+        self.load_index = 0
+
         self.message_service.subscribe(self, RegisterViewModel, self.on_message)
 
     def on_message(self, message_title: str, *args: Any)  -> None:
         if message_title == "Authenticate View":
             self.authentication_service.at = 0
+            self.load_index = 0
             self.reset_signal.emit()
             self.load_simulation()
         if message_title == "Authenticated":
@@ -200,7 +207,8 @@ class AuthenticateViewModel(QObject):
         if viewmodel_factory:
             self.message_service.subscribe(self, viewmodel_factory, self.on_message)
             viewmodel = viewmodel_factory()
-            self.simulation_changed.emit(viewmodel)
+            self.simulation_load.emit(viewmodel)
+            self.load_index += 1
         else:
             raise ValueError("Unknown authentication method")
 
@@ -208,8 +216,11 @@ class AuthenticateViewModel(QObject):
         if not self.authentication_service.go_finish():
             if self.authentication_service.forward():
                 can_forward = self.authentication_service.at < self.authentication_service.auth_count
-                if self.authentication_service.at == self.authentication_service.auth_count:
+
+                if self.authentication_service.at == self.load_index and \
+                   self.authentication_service.at == self.authentication_service.auth_count:
                     self.load_simulation()
+
                 self.simulation_index_changed.emit(self.authentication_service.at, True, can_forward)
         else:
             self.congrats_dialog_signal.emit()

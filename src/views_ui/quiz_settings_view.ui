@@ -116,14 +116,22 @@
 	padding: 0px 13px 0px 0px;
 }
 
-#config_box QListWidget {
-	border: 1px solid silver;
+QComboBox QListView {
+	font-size: 12px;
+	border: 1px solid rbga(0,0,0,0.1);
+	padding: 5px;
+	background-color: #fff;
+	outline: 0px;
 }
 
-#category_list QPushButton {
+QComboBox QListView:item {
+	padding-left: 10px;
+	background-color: #fff;
+}
+
+#category_list {
+	background-color: #fff;
 	border: none;
-	max-height: 15px;
-	max-width: 15px;
 }
 
 #amend_btn {
@@ -136,11 +144,27 @@
 	border-radius: 10%;
 }
 
+#amend_btn:hover {
+	background-color: #85c061;
+}
+
 #setting_warning {
 	background-color: #f44336;
 	color: white;
 	padding: 0px 10px 0px 10px;
 	font-weight: bold;
+}
+
+QCheckBox::indicator {
+	border: 2px solid #00B0FF;
+    width: 13px;
+    height: 13px;
+    border-radius: 4px;
+    background: white;
+}
+
+QCheckBox::indicator:checked {
+    background: #00B0FF;
 }
 </string>
   </property>
@@ -308,7 +332,7 @@
    <item>
     <widget class="QWidget" name="custom_content" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -364,10 +388,10 @@ font-size: 12pt;</string>
         </layout>
        </widget>
       </item>
-      <item alignment="Qt::AlignTop">
+      <item>
        <widget class="QWidget" name="config_box" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -394,48 +418,6 @@ font-size: 12pt;</string>
          <property name="spacing">
           <number>13</number>
          </property>
-         <item row="3" column="2">
-          <widget class="QLabel" name="time_label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Time (mins):</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QComboBox" name="category_combobox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>400</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="label_2">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Difficulty (?-??):</string>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label">
            <property name="sizePolicy">
@@ -449,30 +431,8 @@ font-size: 12pt;</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="3">
-          <widget class="QLineEdit" name="time_field">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>150</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="maxLength">
-            <number>3</number>
-           </property>
-           <property name="placeholderText">
-            <string>E.g. 5</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QLabel" name="label_4">
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_6">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -480,28 +440,12 @@ font-size: 12pt;</string>
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Timed?</string>
+            <string>All Categories?</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
-          <widget class="QListWidget" name="category_list">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>400</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="category_label">
+         <item row="4" column="0">
+          <widget class="QLabel" name="add_category_label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -509,7 +453,20 @@ font-size: 12pt;</string>
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Select Category:</string>
+            <string>Added Categories:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Difficulty (?-??):</string>
            </property>
           </widget>
          </item>
@@ -538,15 +495,8 @@ font-size: 12pt;</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="3">
-          <widget class="QCheckBox" name="timed_box">
-           <property name="text">
-            <string>Timed Quiz</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_6">
+         <item row="3" column="2">
+          <widget class="QLabel" name="time_label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -554,7 +504,33 @@ font-size: 12pt;</string>
             </sizepolicy>
            </property>
            <property name="text">
-            <string>All Categories?</string>
+            <string>Time (mins):</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="category_label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Select Category:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLabel" name="label_4">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Timed?</string>
            </property>
           </widget>
          </item>
@@ -568,16 +544,10 @@ font-size: 12pt;</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="add_category_label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+         <item row="2" column="3">
+          <widget class="QCheckBox" name="timed_box">
            <property name="text">
-            <string>Added Categories:</string>
+            <string>Timed Quiz</string>
            </property>
           </widget>
          </item>
@@ -604,6 +574,96 @@ font-size: 12pt;</string>
            <property name="placeholderText">
             <string>E.g. 10</string>
            </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="category_combobox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>400</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3">
+          <widget class="QLineEdit" name="time_field">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>150</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="maxLength">
+            <number>3</number>
+           </property>
+           <property name="placeholderText">
+            <string>E.g. 5</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QScrollArea" name="category_scroll">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>400</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="category_list">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>400</width>
+              <height>167</height>
+             </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>20</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+            </layout>
+           </widget>
           </widget>
          </item>
         </layout>

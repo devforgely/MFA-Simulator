@@ -26,21 +26,37 @@
 	background-color: white;
 }
 
-#manage_content QComboBox {
+QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+    border-radius: 11px;
+}
+
+QRadioButton::indicator:checked {
+    background-color: #fff;
+    border: 4px solid #00B0FF;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: #fff;
+    border: 4px solid #b5b5b5;
+}
+
+QComboBox {
 	border: 1px solid #ced4da;
 	border-radius: 4px;
 	padding-left: 10px;
 }
 
-#manage_content QComboBox::drop-down {
+QComboBox::drop-down {
 	border: 0px;
 }
 
-#manage_content QComboBox:on {
+QComboBox:on {
 	border: 4px solid #c2dbfe;
 }
 
-#manage_content QComboBox QListView {
+QComboBox QListView {
 	font-size: 12px;
 	border: 1px solid rbga(0,0,0,0.1);
 	padding: 5px;
@@ -48,7 +64,7 @@
 	outline: 0px;
 }
 
-#manage_content QComboBox QListView:item {
+QComboBox QListView:item {
 	padding-left: 10px;
 	background-color: #fff;
 }
@@ -139,7 +155,7 @@
            <x>0</x>
            <y>0</y>
            <width>788</width>
-           <height>545</height>
+           <height>565</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -182,6 +198,18 @@ font-weight: 500;</string>
               </property>
               <item>
                <widget class="QRadioButton" name="default_location_btn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>System Default (Simulate Section)</string>
                 </property>
@@ -192,6 +220,18 @@ font-weight: 500;</string>
               </item>
               <item>
                <widget class="QRadioButton" name="custom_location_btn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Custom Location</string>
                 </property>
@@ -219,6 +259,9 @@ font-weight: 500;</string>
                 <width>200</width>
                 <height>16777215</height>
                </size>
+              </property>
+              <property name="frame">
+               <bool>false</bool>
               </property>
               <item>
                <property name="text">
@@ -430,15 +473,15 @@ font-weight: 500;</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">widgets/clickables.h</header>
+  </customwidget>
+  <customwidget>
    <class>ShadowFrame</class>
    <extends>QFrame</extends>
    <header location="global">widgets/shadow.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ClickableLabel</class>
-   <extends>QLabel</extends>
-   <header location="global">widgets/clickables.h</header>
   </customwidget>
   <customwidget>
    <class>ToggleSwitch</class>

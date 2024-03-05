@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget, QListWidgetItem, QLabel, QHBoxLayout, QSizePolicy
-from PyQt5.QtCore import QObject, Qt, QSize
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from configuration.app_configuration import Settings
 

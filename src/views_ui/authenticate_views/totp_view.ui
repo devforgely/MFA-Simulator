@@ -20,10 +20,29 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton {
+   <string notr="true">#verify_btn {
+ 	width: 120px;
 	height: 35px;
 	border-radius: 6px;
 	border: none;
+	background-color:#94d56c;
+}
+
+#verify_btn:hover {
+	background-color: #85c061;
+}
+
+#code_btn {
+	border: none;
+	border-radius: 6px;
+	height: 35px;
+	color: #fff;
+	font-weight: bold;
+	background-color: #388ccc;
+}
+
+#code_btn:hover {
+	background-color: #327eb8;
 }
 
 #left_frame {
@@ -63,11 +82,6 @@
 	border: 2px solid #4070f4;
 }
 
-#verify_btn {
-	width: 120px;
-	background-color:#94d56c;
-}
-
 #phone_title {
 	font-size: 14pt;
 	font-weight: bold;
@@ -99,10 +113,6 @@
 #warning_label {
 	color: #d5786c;
 	margin-left: 15px;
-}
-
-#code_btn {
-	background-color:#94d56c;
 }
 
 #phone_frame {

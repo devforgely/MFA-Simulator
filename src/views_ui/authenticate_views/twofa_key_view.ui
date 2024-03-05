@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>799</width>
     <height>720</height>
    </rect>
   </property>
@@ -25,6 +25,11 @@
 	background-color: #fff;
 }
 
+#verify_title {
+	font-weight: bold;
+	font-size: 12pt;
+}
+
 #key_select_frame {
 	background-color: #f6f6f6;
 	border-left: 4px solid #0067c0;
@@ -34,6 +39,10 @@
 	border: 1px solid gray;
 	height: 30px;
 	width: 100px;
+}
+
+#connect_btn:hover {
+	background-color: #e6e6e6;
 }
 
 .ShadowButton {
@@ -69,19 +78,12 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="verify_title">
         <property name="maximumSize">
          <size>
           <width>16777215</width>
           <height>50</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
         </property>
         <property name="text">
          <string>Verify Security Key</string>
@@ -275,7 +277,7 @@
         </property>
        </widget>
       </item>
-      <item alignment="Qt::AlignHCenter">
+      <item alignment="Qt::AlignLeft">
        <widget class="QPushButton" name="connect_btn">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -302,14 +304,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ShadowButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">widgets/shadow.h</header>
-  </customwidget>
-  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header location="global">widgets/clickables.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ShadowButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">widgets/shadow.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

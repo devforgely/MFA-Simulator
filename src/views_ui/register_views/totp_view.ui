@@ -36,6 +36,10 @@ QPushButton {
 	background-color:#94d56c;
 }
 
+#left_stacked QPushButton:hover {
+	background-color:#85c061;
+}
+
 #qr_title {
 	font-weight: bold;
 	font-size: 11pt;
@@ -92,11 +96,23 @@ QPushButton {
 }
 
 #link_btn, #scan_btn {
-	background-color:#6cc8d5;
+	color: #fff;
+	font-weight: bold;
+	background-color: #388ccc;
+}
+
+#link_btn:hover, #scan_btn:hover {
+	background-color: #327eb8;
 }
 
 #cancel_btn {
-	background-color:#d5786c;
+	color: #fff;
+	font-weight: bold;
+	background-color: #c03d33;
+}
+
+#cancel_btn:hover {
+	background-color: #ad372e;
 }
 
 #warning_label {

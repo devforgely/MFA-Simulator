@@ -22,7 +22,7 @@
 	border-bottom: 2px solid #eeeff3;
 }
 
-.ShadowFrame {
+ShadowFrame {
 	background-color: white;
 	border-radius: 20%;
 }
@@ -76,6 +76,10 @@
 	font-weight: bold;
 }
 
+#horizontalWidget QPushButton:hover {
+	color: #363636;
+}
+
 #horizontalWidget QPushButton:checked {
 	border-bottom: 2px solid #4070f4;
 	color: black;
@@ -85,16 +89,16 @@
 	font-weight: bold;
 }
 
-#reading_page QCheckBox::indicator {
-	border: 2px solid #6cc8d5;
+QCheckBox::indicator {
+	border: 2px solid #00B0FF;
     width: 13px;
     height: 13px;
     border-radius: 4px;
     background: white;
 }
 
-#reading_page QCheckBox::indicator:checked {
-    background: #6cc8d5;
+QCheckBox::indicator:checked {
+    background: #00B0FF;
 }
 </string>
   </property>
@@ -468,6 +472,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
              </property>
              <widget class="QWidget" name="award_page">
               <layout class="QGridLayout" name="gridLayout">

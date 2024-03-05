@@ -1,46 +1,10 @@
-from PyQt5.QtWidgets import QDialog, QPushButton, QGraphicsOpacityEffect, QLabel, QVBoxLayout, QWidget, QTextEdit
-from PyQt5.QtCore import QTimer, Qt, QPropertyAnimation
+from PyQt5.QtWidgets import QDialog, QPushButton, QLabel, QVBoxLayout, QWidget, QTextEdit
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
 from configuration.app_configuration import Settings
 from PyQt5 import uic
 
 # pyright: reportAttributeAccessIssue=false
-
-class Notification(QDialog):
-    def __init__(self, icon, message, parent=None):
-        super().__init__(parent)
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-
-        self.duration = 4600
-
-        self.button = QPushButton(icon, "  "+message, self)
-        self.button.setFixedSize(280, 35)
-        self.button.clicked.connect(self.close_widget)
-        self.button.setStyleSheet("background-color: white; border: 1px solid silver; border-radius: 10px")
-
-        effect = QGraphicsOpacityEffect(self.button)
-        self.button.setGraphicsEffect(effect)
-
-        self.adjustSize()
-
-        # Create animations for position and opacity
-        self.opacity_animation = QPropertyAnimation(effect, b"opacity")
-
-        # Animate opacity
-        self.opacity_animation.setDuration(self.duration)
-        self.opacity_animation.setStartValue(1.0)
-        self.opacity_animation.setEndValue(0.0)
-        self.opacity_animation.start()
-
-        # Auto delete
-        self.timer = QTimer()
-        self.timer.setSingleShot(True)
-        self.timer.timeout.connect(self.close_widget)
-        self.timer.start(self.duration)
-    
-    def close_widget(self):
-        self.close()
 
 class GifDialog(QDialog):
     def __init__(self, parent=None):
@@ -73,7 +37,10 @@ class GifDialog(QDialog):
         self.collect_button = QPushButton("Collect")
         self.collect_button.setMinimumWidth(200)
         self.collect_button.setCursor(Qt.PointingHandCursor)
-        self.collect_button.setStyleSheet("background-color: #ffcd27; border-radius: 8%; padding: 7px 15px; font-weight: bold;")
+        self.collect_button.setStyleSheet("""
+                                          QPushButton { background-color: #ffcd27; border-radius: 8%; padding: 7px 15px; font-weight: bold; }
+                                          QPushButton:hover { background-color: #e6b923; }
+                                          """)
         self.collect_button.clicked.connect(self.close_dialog)
         
         layout = QVBoxLayout(self.container)
@@ -128,7 +95,10 @@ class DetailViewDialog(QDialog):
         self.close_button = QPushButton("Close")
         self.close_button.setMinimumWidth(200)
         self.close_button.setCursor(Qt.PointingHandCursor)
-        self.close_button.setStyleSheet("background-color: #545aea; color: #fff; border-radius: 15%; padding: 7px 15px; font-weight: bold;")
+        self.close_button.setStyleSheet("""
+                                        QPushButton { background-color: #545aea; color: #fff; border-radius: 15%; padding: 7px 15px; font-weight: bold; }
+                                        QPushButton:hover { background-color: #4c51d3; }
+                                        """)
         self.close_button.clicked.connect(self.close_dialog)
         
         layout = QVBoxLayout(self.container)

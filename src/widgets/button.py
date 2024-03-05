@@ -27,8 +27,7 @@ class LockableNumberButton(QPushButton):
         layout = QHBoxLayout(self)
         layout.addWidget(self.label)
         layout.addStretch()
-        layout.setContentsMargins(25, 0, 0, 0)
-        self.setLayout(layout)
+        layout.setContentsMargins(15, 0, 0, 0)
 
         shadow_effect = QGraphicsDropShadowEffect()
         shadow_effect.setColor(QColor(0, 0, 0, 40))
@@ -47,7 +46,7 @@ class LockableNumberButton(QPushButton):
                 f"""
                 LockableNumberButton {{
                     border-radius: 4px;
-                    padding: 12px 12px 12px 75px;
+                    padding: 12px 12px 12px 55px;
                     background-color: #cccccc;
                     font-size: 12pt;
                     font-weight: bold;
@@ -55,13 +54,13 @@ class LockableNumberButton(QPushButton):
                 }}
                 """
             )
-            self.label.setPixmap(QPixmap(f"{Settings.ICON_FILE_PATH}lock.svg"))
+            self.label.setPixmap(QPixmap(Settings.ICON_FILE_PATH+"lock.svg"))
         else:
             self.setStyleSheet(
                 f"""
                 LockableNumberButton {{
                     border-radius: 4px;
-                    padding: 12px 12px 12px 75px;
+                    padding: 12px 12px 12px 55px;
                     background-color: {self.default_color.name()};
                     font-size: 12pt;
                     font-weight: bold;

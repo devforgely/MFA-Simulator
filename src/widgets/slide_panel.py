@@ -7,7 +7,7 @@ class SlidePanel(QFrame):
         self.is_expanded = True
 
         self.animation = QPropertyAnimation(self, b'maximumWidth')
-        self.animation.setDuration(1000)  # Duration in milliseconds
+        self.animation.setDuration(300)  # Duration in milliseconds
         self.animation.setEasingCurve(QEasingCurve.InOutQuart)
 
     def toggle(self):

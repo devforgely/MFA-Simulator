@@ -122,6 +122,9 @@ class TOTPAuthenticateView(QWidget):
 
         self.left_frame.adjust_shadow(40, 40, 2, 0)
 
+        sp_retain = self.time_bar.sizePolicy()
+        sp_retain.setRetainSizeWhenHidden(True)
+        self.time_bar.setSizePolicy(sp_retain)
         self.time_bar.setVisible(False)
 
         sp_retain = self.warning_label.sizePolicy()
