@@ -1,5 +1,5 @@
 from dependency_injector import containers, providers
-from data.data_service import DataService
+from services.data_service import DataService
 from services.authentication_service import AuthenticationService
 from services.quiz_service import QuizService
 from services.message_service import MessageService

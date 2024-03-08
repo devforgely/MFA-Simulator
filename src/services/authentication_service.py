@@ -1,7 +1,7 @@
 from typing import Any, List
 from models.authentication.authentication import CompoundAuthentication, Method
 from models.authentication.authentication_methods import *
-from data.data_service import Badge
+from services.data_service import Badge
 import time
 
 class AuthenticationService():
@@ -50,7 +50,10 @@ class AuthenticationService():
         self.auth_false_count = 0
 
     def get_type(self) -> Method:
-        return self.strategy.get_type(self.at)
+        if len(self.strategy) > 0:
+            return self.strategy.get_type(self.at)
+        else:
+            return Method.NULL
     
     def get_all_types(self) -> List[Method]:
         return self.strategy.get_all_types()
@@ -117,7 +120,7 @@ class AuthenticationService():
             return False
         
     def forward(self) -> bool:
-        if self.at < self.register_count or self.at < self.auth_count:
+        if self.at < len(self.strategy):
             self.at += 1
             return True
         return False

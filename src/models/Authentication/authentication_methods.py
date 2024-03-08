@@ -22,6 +22,12 @@ class SaltStrategy(BaseStrategy): # Salted hashing
     def generate_salt(self, length=16):
         return secrets.token_bytes(length)
     
+    def register(self, index: int, *data: Any) -> str:
+        ...
+
+    def authenticate(self, index: int, *data: Any) -> bool:
+        ...
+    
 class ChipPinStrategy(BaseStrategy):
     def __init__(self) -> None:
         super().__init__()
@@ -38,14 +44,16 @@ class ChipPinStrategy(BaseStrategy):
         return hashlib.sha256(str(self.data["chip_details"]).encode() + self.data["chip_digital_signature"] + arqc).digest()
     
     def register(self, pin: str) -> bool:
-        self.data["timestamp_register"] = str(datetime.datetime.now())
+        if pin:
+            self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["user_pin"] = pin #For bypass
-        self.data["hashed_pin"] = hashlib.sha256(bytes(pin, "utf-8")).digest()
-        self.data["chip_details"] = uuid.uuid4()
-        self.data["chip_digital_signature"] = secrets.token_bytes(32)
+            self.data["user_pin"] = pin #For bypass
+            self.data["hashed_pin"] = hashlib.sha256(bytes(pin, "utf-8")).digest()
+            self.data["chip_details"] = uuid.uuid4()
+            self.data["chip_digital_signature"] = secrets.token_bytes(32)
 
-        return True
+            return True
+        return False
 
     def authenticate(self, pin: str) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
@@ -69,14 +77,16 @@ class FingerPrintStrategy(BaseStrategy):
         return Method.FINGERPRINT
     
     def register(self, fingerprint: bytes) -> bool:
-        self.data["timestamp_register"] = str(datetime.datetime.now())
+        if fingerprint:
+            self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["user_fingerprint"] = fingerprint #For bypass
+            self.data["user_fingerprint"] = fingerprint #For bypass
 
-        # Assuming doing fingerprint to fingerprint template
-        self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
+            # Assuming doing fingerprint to fingerprint template
+            self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
 
-        return True
+            return True
+        return False
     
     def authenticate(self, fingerprint: bytes) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
@@ -102,21 +112,23 @@ class PicturePasswordStrategy(BaseStrategy):
     def generate_challenge(self, length=16) -> bytes:
         return secrets.token_bytes(length)
     
-    def register(self, images: bytes) -> bool:
-        self.data["timestamp_register"] = str(datetime.datetime.now())
+    def register(self, images: list) -> bool:
+        if images and isinstance(images, list):
+            self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["user_images"] = images #For bypass
-        self.data["hashed_secret"] = hashlib.sha256(images).digest()
-        
-        return True
+            self.data["user_images"] = images #For bypass
+            self.data["hashed_secret"] = hashlib.sha256(b''.join(images)).digest()
+            
+            return True
+        return False
     
-    def challenge_response(self, images: bytes) -> None:
+    def challenge_response(self, images: list) -> None:
         # server send challenge
         nonce = self.generate_challenge()
         self.data["nonce"] = nonce
 
         # client send to server
-        image_hash = hashlib.sha256(images).digest()
+        image_hash = hashlib.sha256(b''.join(images)).digest()
         signed_challenge =hmac.new(image_hash, nonce, hashlib.sha256).digest()
         self.data["signed_challenge"] = signed_challenge
 
@@ -124,7 +136,7 @@ class PicturePasswordStrategy(BaseStrategy):
         expected_response = hmac.new(self.data["hashed_secret"], nonce, hashlib.sha256).digest()
         self.data["expected_response"] = expected_response
     
-    def authenticate(self, images: bytes) -> bool:
+    def authenticate(self, images: list) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
         self.data["images"] = images
         self.challenge_response(images)
@@ -142,15 +154,17 @@ class PasswordStrategy(SaltStrategy):
         return Method.PASSWORD
     
     def register(self, username: str, password: str) -> bool:
-        self.data["timestamp_register"] = str(datetime.datetime.now())
+        if username and password:
+            self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["user_registered"] = username
-        self.data["user_password"] = password # For bypass
-        salt = self.generate_salt()
-        self.data["salt"] = salt
-        self.data["hashed_secret"] = self.hash_secret(f"{username}${password}", salt)
-        
-        return True
+            self.data["user_registered"] = username
+            self.data["user_password"] = password # For bypass
+            salt = self.generate_salt()
+            self.data["salt"] = salt
+            self.data["hashed_secret"] = self.hash_secret(f"{username}${password}", salt)
+            
+            return True
+        return False
     
     def authenticate(self, username: str, password: str) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
@@ -173,6 +187,7 @@ class TOTPStrategy(SaltStrategy):
     def register(self, request: str) -> bool:
         if not request:
             self.data["shared_key"] = secrets.token_hex(20)
+            return False
         else:
             self.data["timestamp_register"] = str(datetime.datetime.now())
         
@@ -218,14 +233,16 @@ class SecurityQuestionStrategy(SaltStrategy):
         return Method.SECRET_QUESTION
     
     def register(self, questions: list[str], answers: str) -> bool:
-        self.data["timestamp_register"] = str(datetime.datetime.now())
+        if questions and answers:
+            self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["user_questions"] = questions
-        self.data["user_answers"] = answers # For bypass
-        salt = self.generate_salt()
-        self.data["salt"] = salt
-        self.data["hashed_secret"] = self.hash_secret(answers, salt)
-        return True
+            self.data["user_questions"] = questions
+            self.data["user_answers"] = answers # For bypass
+            salt = self.generate_salt()
+            self.data["salt"] = salt
+            self.data["hashed_secret"] = self.hash_secret(answers, salt)
+            return True
+        return False
     
     def authenticate(self, answers: str) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
@@ -262,20 +279,22 @@ class TwoFAKeyStrategy(BaseStrategy):
             return False
     
     def register(self, fingerprint: bytes) -> bool:
-        self.data["timestamp_register"] = str(datetime.datetime.now())
+        if fingerprint:
+            self.data["timestamp_register"] = str(datetime.datetime.now())
 
-        self.data["user_fingerprint"] = fingerprint #For bypass
-        self.data["fingerprint"] = b""
+            self.data["user_fingerprint"] = fingerprint #For bypass
+            self.data["fingerprint"] = b""
 
-        # Assuming doing fingerprint to fingerprint template
-        self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
-        
-        self.data["public_key"], self.data["private_key"] = rsa.newkeys(512) # small bits for simulation
+            # Assuming doing fingerprint to fingerprint template
+            self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
+            
+            self.data["public_key"], self.data["private_key"] = rsa.newkeys(512) # small bits for simulation
 
-        # Key handle to match to correct private key
-        self.data["key_handle"] = hashlib.sha256(b'link_to_private_key').hexdigest()
+            # Key handle to match to correct private key
+            self.data["key_handle"] = hashlib.sha256(b'link_to_private_key').hexdigest()
 
-        return True
+            return True
+        return False
     
     def authenticate(self, fingerprint: bytes) -> bool:
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())

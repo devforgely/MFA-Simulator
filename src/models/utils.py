@@ -1,6 +1,8 @@
 import base64
-import hashlib
-import hmac
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+
+
 
 def normalise_text(text: str) -> str:
     # only include lower case alphabet and number (no punctuation, no space)
@@ -22,23 +24,9 @@ def image_byte(image_dir: str):
         img_bytes = img_file.read()
     return img_bytes
 
-
-def encrypt_block(key, block, iv):
-    # XOR the block with the IV
-    block_xor_iv = bytes(a ^ b for a, b in zip(block, iv))
-
-    # Hash the result using HMAC-SHA256
-    hash_obj = hmac.new(key, block_xor_iv, hashlib.sha256)
-
-    # Update the IV with the hash
-    iv = hash_obj.digest()
-
-    # Return the hash (the new IV) as the encrypted block
-    return iv
-
 def encrypt_images(image_dirs, key, iv):
     # Initialize an empty list to store encrypted image bytes
-    encrypted_image_bytes = []
+    encrypted_images = []
 
     # Iterate through each image directory
     for img_dir in image_dirs:
@@ -46,21 +34,39 @@ def encrypt_images(image_dirs, key, iv):
         with open(img_dir, 'rb') as img_file:
             # Read the image file as bytes
             img_bytes = img_file.read()
-        
-        # Pad the image bytes to be a multiple of block size (32 bytes)
-        img_bytes += b'\0' * (32 - len(img_bytes) % 32)
+
+        # Pad the image bytes to be a multiple of block size (16 bytes for AES)
+        img_bytes = pad(img_bytes, 16)
+
+        # Create a new AES cipher object
+        cipher = AES.new(key, AES.MODE_CBC, iv)
 
         # Encrypt the image bytes using CBC mode
-        encrypted_img_bytes = b''
-
-        # Split the image bytes into 32-byte blocks
-        for i in range(0, len(img_bytes), 32):
-            block = img_bytes[i:i+32]
-            encrypted_block = encrypt_block(key, block, iv)
-            encrypted_img_bytes += encrypted_block
+        encrypted_img_bytes = cipher.encrypt(img_bytes)
 
         # Append the encrypted image bytes to the list
-        encrypted_image_bytes.append(encrypted_img_bytes)
+        encrypted_images.append(encrypted_img_bytes)
 
-    # Combine the image bytes into a single byte string
-    return b''.join(encrypted_image_bytes)
+    # Return the list of encrypted image bytes
+    return encrypted_images
+
+def decrypt_images(encrypted_images, key, iv):
+    # Initialize an empty list to store decrypted image bytes
+    decrypted_images = []
+
+    # Iterate through each encrypted image
+    for encrypted_img_bytes in encrypted_images:
+        # Create a new AES cipher object
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+
+        # Decrypt the image bytes using CBC mode
+        decrypted_img_bytes = cipher.decrypt(encrypted_img_bytes)
+
+        # Unpad the decrypted image bytes
+        decrypted_img_bytes = unpad(decrypted_img_bytes, 16)
+
+        # Append the decrypted image bytes to the list
+        decrypted_images.append(decrypted_img_bytes)
+
+    # Return the list of decrypted image bytes
+    return decrypted_images

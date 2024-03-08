@@ -4,3 +4,4 @@ dependency_injector==4.41.0
 rsa
 markdown
 qrcode==7.4.2
+pycryptodome

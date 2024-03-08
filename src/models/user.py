@@ -1,5 +1,5 @@
-from enum import Enum
 from models.authentication.authentication import Method
+from enum import Enum
 from datetime import datetime
 import json
 
@@ -70,7 +70,7 @@ class User:
                         del self.improvements[i]
                     found = True
                     break
-            if not found and difference < 0:
+            if not found and difference < 0: # adding only negative score, so what user need to improve on
                 self.improvements.append((category, difference))
 
     def update_reading(self, title: str, state: bool, i: int) -> None:

@@ -1,13 +1,13 @@
-import sys
-import ctypes
 from typing import Any
 from PyQt5.QtWidgets import QApplication
-from services.container import ApplicationContainer
-from data.data_service import DataService
 from PyQt5.QtGui import QIcon
+from services.container import ApplicationContainer
+from services.data_service import DataService
 from viewmodels.main_viewmodel import MainViewModel
 from views.main_view import MainView
 from views.help_view import HelpView
+import sys
+import ctypes
 
 
 class App(QApplication):

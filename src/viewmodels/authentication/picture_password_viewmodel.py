@@ -65,7 +65,7 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
 
     def state_data(self) -> dict:
         data = self.authentication_service.get_session_stored().copy()
-        data["user_images"] = byte_str(data["user_images"])
+        data["user_images"] = byte_str(b''.join(data["user_images"]))
         data["hashed_secret"] = byte_str(data["hashed_secret"])
         data["encryption_key"] = byte_str(data["encryption_key"])
         data["iv"] = byte_str(data["iv"])
@@ -76,7 +76,7 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
             self.state_change.emit("Please select some images to proceed Registration.", 1)
         else:
             key = os.urandom(32)
-            iv = os.urandom(32)
+            iv = os.urandom(16)
             images_byte = encrypt_images(self.selected_images, key, iv)
 
             if self.authentication_service.register(images_byte):
@@ -110,7 +110,7 @@ class PicturePasswordAuthenticateViewModel(PicturePasswordRegisterViewModel):
 
         data["hashed_secret"] = byte_str(data["hashed_secret"])
         if is_checked:
-            data["images"] = byte_str(data["images"])
+            data["images"] = byte_str(b''.join(data["images"]))
             data["nonce"] = byte_str(data["nonce"])
             data["signed_challenge"] = byte_str(data["signed_challenge"])
             data["expected_response"] = byte_str(data["expected_response"])

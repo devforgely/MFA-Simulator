@@ -4,10 +4,13 @@ import markdown
 class Note:
     def __init__(self, title, content):
         self.title = title
-        self._content = content
+        if content:
+            self._content = markdown.markdown(content)
+        else:
+            self._content = ""
 
     @property
-    def content(self):
+    def content(self) -> str:
         return self._content
 
     @content.setter

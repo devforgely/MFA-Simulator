@@ -26,6 +26,7 @@ class DataService():
         self.cached_quiz_bank = []
         self.cached_security_questions = []
         self.cached_facts = []
+        self.cached_details = {}
 
     def save_data(self) -> None:
         if self.signal_update:
@@ -185,9 +186,12 @@ class DataService():
     =====================================================================================
     """
     def get_simulation_details(self, name: str) -> dict:
+        if name in self.cached_details:
+            return self.cached_details[name]
         try:
             with open(f'{Settings.SIMULATION_NOTE_PATH}{name}.json', 'r') as file:
-                return json.load(file)
+                self.cached_details[name] = json.load(file)
+                return self.cached_details[name]
         except FileNotFoundError:
             print("File is not found")
             return {}
@@ -217,7 +221,7 @@ class DataService():
                 title = os.path.splitext(filename)[0].replace("_", " ")
                 if not title.isupper():
                     title = title.title()
-                notes.append(Note(title, None))
+                notes.append(Note(title, ""))
 
         if len(notes) > len(self.get_user_readings()):
             readings = []
@@ -228,7 +232,7 @@ class DataService():
         return notes
     
     def read_note_content(self, index: int) -> str:
-        if self.notes[index].content == None:
+        if self.notes[index].content == "":
             with open(os.path.join(Settings.NOTE_FILE_PATH, os.listdir(Settings.NOTE_FILE_PATH)[index]), 'r') as file:
                 self.notes[index].content = file.read()
         return self.notes[index].content

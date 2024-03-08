@@ -1,7 +1,7 @@
 import random
 import time
 from typing import List, Tuple
-from data.data_service import Badge
+from services.data_service import Badge
 
 
 class QuizService():
