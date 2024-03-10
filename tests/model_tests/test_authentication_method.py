@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 from models.authentication.authentication_methods import *
 
 
@@ -127,9 +128,11 @@ class TestFingerPrintStrategy(unittest.TestCase):
         self.strategy.register(fingerprint)
 
         # Act
-        result = self.strategy.authenticate(fingerprint)
+        with patch('random.random', return_value=1):
+            result = self.strategy.authenticate(fingerprint)
 
         # Assert
+        self.assertTrue(result)
         self.assertEqual(self.strategy.data["user_fingerprint"], fingerprint)
         self.assertTrue("timestamp_authenticate" in self.strategy.data)
         self.assertEqual(self.strategy.data["fingerprint"], fingerprint)
@@ -140,7 +143,8 @@ class TestFingerPrintStrategy(unittest.TestCase):
         self.strategy.register(fingerprint)
 
         # Act
-        result = self.strategy.authenticate(b'\x01\x02\x03\x04\x06')
+        with patch('random.random', return_value=1):
+            result = self.strategy.authenticate(b'\x01\x02\x03\x04\x06')
 
         # Assert
         self.assertFalse(result)
@@ -641,9 +645,11 @@ class TestTwoFAKeyStrategy(unittest.TestCase):
         self.strategy.register(fingerprint)
 
         # Act
-        result = self.strategy.authenticate(fingerprint)
+        with patch('random.random', return_value=1):
+            result = self.strategy.authenticate(fingerprint)
 
         # Assert
+        self.assertTrue(result)
         self.assertEqual(self.strategy.data["user_fingerprint"], fingerprint)
         self.assertTrue("timestamp_authenticate" in self.strategy.data)
         self.assertEqual(self.strategy.data["fingerprint"], fingerprint)
@@ -657,7 +663,8 @@ class TestTwoFAKeyStrategy(unittest.TestCase):
         self.strategy.register(fingerprint)
 
         # Act
-        result = self.strategy.authenticate(false_fingerprint)
+        with patch('random.random', return_value=1):
+            result = self.strategy.authenticate(false_fingerprint)
 
         # Assert
         self.assertFalse(result)

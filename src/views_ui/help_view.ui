@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1122</width>
+    <width>1041</width>
     <height>928</height>
    </rect>
   </property>
@@ -77,6 +77,10 @@ QToolButton {
 
 #stackedWidget QScrollArea {
 	background-color: transparent;
+}
+
+#stackedWidget QLabel {
+	margin-bottom: 10px;
 }
 
 #content1, #content2, #content3, #content4, #content5, #content6 {
@@ -184,7 +188,7 @@ QToolButton {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>257</width>
+            <width>250</width>
             <height>824</height>
            </rect>
           </property>
@@ -289,6 +293,9 @@ QToolButton {
              <property name="text">
               <string>Manage</string>
              </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
@@ -337,7 +344,7 @@ QToolButton {
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>5</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -369,8 +376,8 @@ QToolButton {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1409</width>
-                <height>1102</height>
+                <width>1408</width>
+                <height>2147</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -404,10 +411,32 @@ QToolButton {
                <item>
                 <widget class="QLabel" name="label_3">
                  <property name="text">
-                  <string>Use ⓵ to navigate through different sections of the app.
-Select ⓶ to choose your authentication simulation.
-Note that simulations are initially locked. Earn 200 coins to unlock new simulations (use ⓷).
-Once you've selected your preferred authenticator, press the &quot;Simulate&quot; button (⓸) to start the simulation.</string>
+                  <string>Use the left panel (⓵) to navigate between different sections of the app.
+Fun facts and tips (⓶) will be displayed randomly to help you remember little details about MFA.
+The coins and badge count (⓷) provide a quick summary of your progress and expertise.
+Basic window controls (⓸) manage the behaviour of the window, including an additional help button that creates this help window with a guide on how to use the app.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_8">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/creator.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_9">
+                 <property name="text">
+                  <string>In the simulation selection (⓵), there are 3 states: the selected state displays the order of the authenticator, the unselected state showcases a plus icon, indicating readiness for selection, and the locked state signifies the need to acquire 200 coins to unlock the new simulation.
+In the simulation description (⓶), you'll find information about the assurance level along with its specific details.
+Once you've selected your preferred authenticators, press the &quot;Simulate&quot; button (⓷) to start the simulation.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -463,8 +492,8 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>830</width>
-                <height>866</height>
+                <width>1412</width>
+                <height>6079</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -472,6 +501,147 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                 <widget class="Heading1" name="label">
                  <property name="text">
                   <string>Simulation</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Heading2" name="label_10">
+                 <property name="text">
+                  <string>Registration</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_11">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/simulate1.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_12">
+                 <property name="text">
+                  <string>Each authenticator has its own view (⓵), where users can input details for registration.
+The info panel (⓶) consists of four parts: about, log, status, and data. These sections provide users with insights into the details and processes behind the authenticator.
+For instance, within the about tab (⓷), clicking on the &quot;Pros and Cons&quot; label provides additional information for users to explore.
+The navigation panel (⓸) is used for navigation between different authenticators. Once you have registered with an authenticator, the &quot;Next&quot; button will be enabled, allowing you to proceed to the next step. The &quot;Back&quot; button is only enabled when you have multiple methods and wish to go back to check the previous step. The &quot;End Simulation&quot; button ends the simulation.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_13">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/simulate2.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_14">
+                 <property name="text">
+                  <string>Here in the log tab (⓵), you can view examples of the registration log as you proceed with registration.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_15">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/simulate3.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_16">
+                 <property name="text">
+                  <string>In the status tab (⓵), users can view the connection details between the client and the server, including the type of request being sent between them. Additionally, users can observe various attacks on communication and methods for their prevention.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_17">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/simulate4.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>In the client data (⓵), users can review the details of their entries and the data processed behind the scenes. 
+The &quot;Click to View&quot; button (⓶) allows users to expand and view detailed data presented in a long byte format.
+Furthermore, additional simulation details (⓷) such as the security level of your authenticator and information regarding the data processed behind the scenes help users gain a comprehensive understanding of the authenticator as a whole.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_19">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/simulate5.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_20">
+                 <property name="text">
+                  <string>In (⓵), we depict the hashed secret in byte format, while the &quot;Close&quot; button (⓶) enables users to close the viewing dialog.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Heading2" name="label_21">
+                 <property name="text">
+                  <string>Authentication</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_22">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/simulate6.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_23">
+                 <property name="text">
+                  <string>During the authentication phase, users have the option to bypass the current authenticator using the &quot;Bypass&quot; button (⓵).
+Similarly, there are info panels (⓶) with four parts: about, log, status, and data. These panels provide users with insights into the details and processes behind the authenticator, as well as how the server can verify the client.
+The about tab (⓷), for instance, offers insights into the usability of the authenticator.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -524,8 +694,8 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>830</width>
-                <height>866</height>
+                <width>1407</width>
+                <height>1861</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -533,6 +703,28 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                 <widget class="Heading1" name="label_4">
                  <property name="text">
                   <string>Learn</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_24">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/learn.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_25">
+                 <property name="text">
+                  <string>In the reading lists (⓵), users can click to view notes based on the topic.
+Use the toolbar (⓶) to collapse the side panel for a larger reading screen. Navigate between pages easily using the up and down arrows.
+Customise your reading experience with (⓷). Adjust font size and choose your preferred colour theme.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -585,8 +777,8 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>830</width>
-                <height>866</height>
+                <width>1409</width>
+                <height>5863</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -594,6 +786,132 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                 <widget class="Heading1" name="label_5">
                  <property name="text">
                   <string>Quiz</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Heading2" name="label_27">
+                 <property name="text">
+                  <string>Settings</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_26">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/quiz.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_28">
+                 <property name="text">
+                  <string>The quick quiz setup (⓵) shows 3 types of quiz, each utilising preset configurations. Click on each to view its description (⓶).
+When you're ready to start, click on the &quot;Begin Quiz&quot; button (⓷) to start your quiz journey.
+For more advanced user, you can customise the settings (⓸) to suit your training purpose. Click &quot;Amend&quot; button (⓹) to confirm your settings and begin the quiz.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Heading2" name="label_29">
+                 <property name="text">
+                  <string>Playing the Quiz</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_30">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/quiz2.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_32">
+                 <property name="text">
+                  <string>Based on the quiz question (⓵), you should choose an answer from the list of answers (⓶), then press the &quot;Next Question&quot; button (⓸) to proceed to the next quiz question until finished. You can amend your quiz answer using the back button (⓷) to return to the previous quiz question and change your answer.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_31">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/quiz4.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_33">
+                 <property name="text">
+                  <string>For timed quizzes, you'll see the time bar and the time remaining in digital clock format (⓵). Make sure to answer all the quiz questions within the given time; otherwise, the quiz will terminate after the time elapses and show you the results based on the questions you've answered.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Heading2" name="label_34">
+                 <property name="text">
+                  <string>Quiz Results</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_35">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/quiz3.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_36">
+                 <property name="text">
+                  <string>In the quiz summary (⓵), you will see the grade and its description, along with the percentage and the number of correct answers out of the total quiz questions. Additionally, there are descriptions of the time used, time per question, and the average difficulty of the quiz in the summary section (⓶).
+In (⓷), both the correct answer and your selected choice are displayed, allowing you to compare and identify the correct answer.
+The topic overview (⓸) provides insights into how well you performed in each topic covered by the quiz.
+Lastly, you can return to the settings to start a new quiz using the &quot;Back to Quiz Setting&quot; button (⓹).</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_37">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/quiz5.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_38">
+                 <property name="text">
+                  <string>If you are completing timed quizzes, you can also view the time used compared to the total time (⓵).</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -646,8 +964,8 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>830</width>
-                <height>866</height>
+                <width>1409</width>
+                <height>3760</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -655,6 +973,68 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                 <widget class="Heading1" name="label_6">
                  <property name="text">
                   <string>Profile</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_39">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/profile.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_40">
+                 <property name="text">
+                  <string>In the recent activities (⓵), you can find out about the activities you've recently completed to motivate your learning.
+You can view the details of total coins earned, quizzes completed, and simulations played in (⓶).
+Complete hidden achievements to unlock new badges, and you can view the badges you've earned in the Award &amp; Achievement tab (⓷).</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_41">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/profile2.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_42">
+                 <property name="text">
+                  <string>In the Area of Improvement tab (⓵), you can see the topics you are slightly behind on from the quizzes you've completed. Hover over the X icon to see exactly the number of mistakes you have made.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_43">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/profile3.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_44">
+                 <property name="text">
+                  <string>In the Book Reading tab (⓵), you can check off the reading you've done, which serves as a helpful tool to track your progress.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -707,8 +1087,8 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>830</width>
-                <height>866</height>
+                <width>1410</width>
+                <height>1838</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -716,6 +1096,24 @@ Once you've selected your preferred authenticator, press the &quot;Simulate&quot
                 <widget class="Heading1" name="label_7">
                  <property name="text">
                   <string>Manage</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="Picture" name="label_45">
+                 <property name="pixmap">
+                  <pixmap>../resources/images/help/manage.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_46">
+                 <property name="text">
+                  <string>In ⓵, you can adjust settings related to the application, such as notifications, preferences, and shortcut settings. Click on ⓶ if you would like to find out more about the app.
+Use reset button (⓷) to reset for a fresh start. Please exercise caution with this option, as it will remove all data, including your progress and settings.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>

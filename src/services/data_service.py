@@ -27,6 +27,7 @@ class DataService():
         self.cached_security_questions = []
         self.cached_facts = []
         self.cached_details = {}
+        self.cache_help_index = dict()
 
     def save_data(self) -> None:
         if self.signal_update:
@@ -252,4 +253,15 @@ class DataService():
             with open(Settings.QUIZ_FILE_PATH+'quiz_bank1.json', 'r') as f:
                 self.cached_quiz_bank = json.load(f)
         return self.cached_quiz_bank
-            
+    
+    """
+    =====================================================================================
+    HELP SECTION
+    =====================================================================================
+    """
+
+    def get_help_token(self) -> tuple:
+        if not self.cache_help_index:
+            with open(Settings.HELP_TOKEN_FILE_PATH, 'r') as f:
+                return (self.cache_help_index, json.load(f))
+        return (self.cache_help_index, None)

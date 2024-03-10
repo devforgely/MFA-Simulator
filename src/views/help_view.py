@@ -8,9 +8,12 @@ from configuration.app_configuration import Settings
 # pyright: reportAttributeAccessIssue=false
 
 class HelpView(QMainWindow):
-    def __init__(self) -> None:
+    def __init__(self, viewmodel) -> None:
         super().__init__()
         uic.loadUi("views_ui/help_view.ui", self)
+
+        self._viewmodel = viewmodel
+        self._viewmodel.search_changed.connect(self.stackedWidget.setCurrentIndex)
 
         self.setWindowTitle("MFA Simulator Helper")
         self.setAttribute(Qt.WA_DeleteOnClose)
@@ -33,10 +36,15 @@ class HelpView(QMainWindow):
         self.quick_start_btn.setChecked(True)
         self.stackedWidget.setCurrentIndex(0)
 
+        self.search_field.returnPressed.connect(self.search_text)
+
         self.current_theme = "dark"
         self.theme_btn.clicked.connect(self.change_theme)
         self.change_theme()
         self.show()
+
+    def search_text(self):
+        self._viewmodel.search(self.search_field.text())
 
     def button_click(self):
         btn_name = self.sender().objectName()

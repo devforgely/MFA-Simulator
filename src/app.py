@@ -4,6 +4,7 @@ from PyQt5.QtGui import QIcon
 from services.container import ApplicationContainer
 from services.data_service import DataService
 from viewmodels.main_viewmodel import MainViewModel
+from viewmodels.help_viewmodel import HelpViewModel
 from views.main_view import MainView
 from views.help_view import HelpView
 import sys
@@ -25,7 +26,7 @@ class App(QApplication):
     
     def on_message(self, message_title: str, *args: Any) -> None:
         if message_title == "Help":
-            self.help = HelpView()
+            self.help = HelpView(HelpViewModel())
         elif message_title == "Reboot":
             self.message_service.unsubscribe_all()
 

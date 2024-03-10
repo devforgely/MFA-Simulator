@@ -22,6 +22,8 @@ class Settings():
 
     QUIZ_FILE_PATH = "data/quizzes/"
 
+    HELP_TOKEN_FILE_PATH = "data/help_token.json"
+
     # APP SETTINGS
     ENABLE_CUSTOM_TITLE_BAR = True
     ENABLE_CUSTOM_THEME = False
