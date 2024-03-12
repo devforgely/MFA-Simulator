@@ -1,8 +1,14 @@
 import random
 import time
 from typing import List, Tuple
+from enum import Enum
 from services.data_service import Badge
 
+class QuizType(Enum):
+    CUSTOM = 0
+    CLASSIC = 1
+    TIMED = 2
+    IMPROVEMENT = 3
 
 class QuizService():
     def __init__(self, data_service) -> None:
@@ -15,7 +21,7 @@ class QuizService():
             'is_timed': False,
             'max_time': 5
         }
-        self.type = "custom"
+        self.type = QuizType.CUSTOM
         self.quizzes = []
         self.category_quiz = {}
 
@@ -32,15 +38,15 @@ class QuizService():
                 self.config[key] = value
 
     def configure_classic(self) -> None:
-        self.type = "classic"
+        self.type = QuizType.CLASSIC
         self.configure({'num_questions': 10, 'difficulty_range': (1, 10), 'all_categories': True, 'is_timed': False})
 
     def configure_timed(self) -> None:
-        self.type = "timed"
+        self.type = QuizType.TIMED
         self.configure({'num_questions': 10, 'difficulty_range': (1, 10), 'all_categories': True, 'is_timed': True, 'max_time': 5})
 
     def configure_improvement(self) -> None:
-        self.type = "improvement"
+        self.type = QuizType.IMPROVEMENT
         improvement_categories = [c[0] for c in self.data_service.get_user_improvements()]
         self.configure({'num_questions': 10, 'difficulty_range': (1, 10), 'all_categories': False, 
                         'categories': improvement_categories, 'is_timed': False})
@@ -90,7 +96,7 @@ class QuizService():
                 return (self.at+1, quiz, None)
         return (self.at+1, quiz, self.current_answers[self.at][0])
     
-    def sumbit_answer(self, answer: str) -> None:
+    def submit_answer(self, answer: str) -> None:
         if answer:
             if self.quizzes[self.at]["answer"] == answer:
                 self.current_answers[self.at] = (answer, True)
@@ -119,7 +125,7 @@ class QuizService():
         #BADGE END
             
         #BADGE CONDITION
-        if self.type == "improvement":
+        if self.type == QuizType.IMPROVEMENT:
             self.data_service.update_user_badge(Badge.LEARNER)
         #BADGE END
             
@@ -146,7 +152,7 @@ class QuizService():
         return f"{minutes:02d}:{seconds:02d}"
     
     def get_all_categories(self) -> set:
-        return self.data_service.get_quiz_bank()["categories"]
+        return self.data_service.get_quiz_bank()["categories"][:]
     
     def category_analyse(self) -> list:
         percentages = []

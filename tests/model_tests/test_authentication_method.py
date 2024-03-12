@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import patch
 from models.authentication.authentication_methods import *
+import cv2
+import numpy as np
 
 
 class TestChipPinStrategy(unittest.TestCase):
@@ -95,9 +97,40 @@ class TestFingerPrintStrategy(unittest.TestCase):
         # Assert
         self.assertEqual(self.strategy.get_type(), Method.FINGERPRINT)
 
+    def test_generate_template(self):
+        # Create a sample fingerprint byte data
+        with open("tests/fp1.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint_bytes = img_file.read()
+
+            # Call the generate_template method
+            template = self.strategy.generate_template(fingerprint_bytes)
+
+            # Check if the template is of the correct type (numpy array)
+            self.assertIsInstance(template, np.ndarray)
+
+            # Check if the template has the correct shape
+            self.assertEqual(template.shape, (64, 64))
+
+            # Check if the template contains only values 0 or 1
+            self.assertTrue(np.all(np.logical_or(template == 0, template == 1)))
+
+    def test_calculate_similarity(self):
+        # Create two sample templates (replace these with actual templates)
+        template1 = np.zeros((64, 64), dtype=np.uint8)
+        template2 = np.ones((64, 64), dtype=np.uint8)
+
+        # Call the calculate_similarity method
+        similarity_score = self.strategy.calculate_similarity(template1, template2)
+
+        # Check if the similarity score is within the expected range
+        self.assertTrue(0 <= similarity_score <= 1)
+
     def test_register(self):
         # Arrange
-        fingerprint = b'\x01\x02\x03\x04\x05'
+        with open("tests/fp1.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint = img_file.read()
         
         # Act
         result = self.strategy.register(fingerprint)
@@ -122,38 +155,47 @@ class TestFingerPrintStrategy(unittest.TestCase):
         self.assertFalse("fingerprint_template" in self.strategy.data)
 
     def test_authenticate(self):
-        self.strategy = FingerPrintStrategy()
         # Arrange
-        fingerprint = b'\x01\x02\x03\x04\x05'
+        with open("tests/fp1.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint = img_file.read()
+        
         self.strategy.register(fingerprint)
 
         # Act
-        with patch('random.random', return_value=1):
-            result = self.strategy.authenticate(fingerprint)
+        result = self.strategy.authenticate(fingerprint)
 
         # Assert
         self.assertTrue(result)
         self.assertEqual(self.strategy.data["user_fingerprint"], fingerprint)
         self.assertTrue("timestamp_authenticate" in self.strategy.data)
+        self.assertTrue("similarity_score" in self.strategy.data)
         self.assertEqual(self.strategy.data["fingerprint"], fingerprint)
 
     def test_authenticate_false(self):
         # Arrange
-        fingerprint = b'\x01\x02\x03\x04\x05'
+        with open("tests/fp1.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint = img_file.read()
         self.strategy.register(fingerprint)
 
         # Act
-        with patch('random.random', return_value=1):
-            result = self.strategy.authenticate(b'\x01\x02\x03\x04\x06')
+        with open("tests/fp2.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint_2 = img_file.read()
+        result = self.strategy.authenticate(fingerprint_2)
 
         # Assert
         self.assertFalse(result)
         self.assertTrue("timestamp_authenticate" in self.strategy.data)
-        self.assertEqual(self.strategy.data["fingerprint"], b'\x01\x02\x03\x04\x06')
+        self.assertTrue("similarity_score" in self.strategy.data)
+        self.assertEqual(self.strategy.data["fingerprint"], fingerprint_2)
 
     def test_bypass(self):
         # Arrange
-        fingerprint = b'\x01\x02\x03\x04\x05'
+        with open("tests/fp1.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint = img_file.read()
         self.strategy.register(fingerprint)
 
         # Act
@@ -607,7 +649,9 @@ class TestTwoFAKeyStrategy(unittest.TestCase):
 
     def test_register(self):
         # Arrange
-        fingerprint = b'\x01\x02\x03\x04\x05'
+        with open("tests/fp1.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint = img_file.read()
 
         # Act
         result = self.strategy.register(fingerprint)
@@ -617,6 +661,7 @@ class TestTwoFAKeyStrategy(unittest.TestCase):
         self.assertTrue("timestamp_register" in self.strategy.data)
         self.assertEqual(self.strategy.data["user_fingerprint"], fingerprint)
         self.assertEqual(self.strategy.data["fingerprint"], b"")
+        self.assertEqual(self.strategy.data["similarity_score"], "NULL")
         self.assertTrue("fingerprint_template" in self.strategy.data)
         self.assertTrue("public_key" in self.strategy.data)
         self.assertTrue("private_key" in self.strategy.data)
@@ -634,6 +679,7 @@ class TestTwoFAKeyStrategy(unittest.TestCase):
         self.assertFalse("timestamp_register" in self.strategy.data)
         self.assertFalse("user_fingerprint" in self.strategy.data)
         self.assertFalse("fingerprint" in self.strategy.data)
+        self.assertFalse("similarity_score" in self.strategy.data)
         self.assertFalse("fingerprint_template" in self.strategy.data)
         self.assertFalse("public_key" in self.strategy.data)
         self.assertFalse("private_key" in self.strategy.data)
@@ -641,41 +687,48 @@ class TestTwoFAKeyStrategy(unittest.TestCase):
 
     def test_authenticate(self):
         # Arrange
-        fingerprint = b'\x01\x02\x03\x04\x05'
+        with open("tests/fp1.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint = img_file.read()
         self.strategy.register(fingerprint)
 
         # Act
-        with patch('random.random', return_value=1):
-            result = self.strategy.authenticate(fingerprint)
+        result = self.strategy.authenticate(fingerprint)
 
         # Assert
         self.assertTrue(result)
         self.assertEqual(self.strategy.data["user_fingerprint"], fingerprint)
         self.assertTrue("timestamp_authenticate" in self.strategy.data)
         self.assertEqual(self.strategy.data["fingerprint"], fingerprint)
+        self.assertGreaterEqual(self.strategy.data["similarity_score"], 0.7)
         self.assertTrue("nonce" in self.strategy.data)
         self.assertTrue("signed_challenge" in self.strategy.data)
 
     def test_authenticate_false(self):
         # Arrange
-        fingerprint = b'\x01\x02\x03\x04\x05'
-        false_fingerprint = b'\x01\x02\x03\x04\x06'
+        with open("tests/fp1.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint = img_file.read()
+        with open("tests/fp2.png", 'rb') as img_file:
+            false_fingerprint = img_file.read()
         self.strategy.register(fingerprint)
 
         # Act
-        with patch('random.random', return_value=1):
-            result = self.strategy.authenticate(false_fingerprint)
+        result = self.strategy.authenticate(false_fingerprint)
 
         # Assert
         self.assertFalse(result)
         self.assertTrue("timestamp_authenticate" in self.strategy.data)
         self.assertEqual(self.strategy.data["fingerprint"], false_fingerprint)
+        self.assertLessEqual(self.strategy.data["similarity_score"], 0.7)
         self.assertFalse("nonce" in self.strategy.data)
         self.assertFalse("signed_challenge" in self.strategy.data)
 
     def test_bypass(self):
         # Arrange
-        fingerprint = b'\x01\x02\x03\x04\x05'
+        with open("tests/fp1.png", 'rb') as img_file:
+            # Read the image file as bytes
+            fingerprint = img_file.read()
         self.strategy.register(fingerprint)
 
         # Act
@@ -684,5 +737,6 @@ class TestTwoFAKeyStrategy(unittest.TestCase):
         # Assert
         self.assertTrue("timestamp_authenticate" in self.strategy.data)
         self.assertEqual(self.strategy.data["fingerprint"], self.strategy.data["user_fingerprint"])
+        self.assertGreaterEqual(self.strategy.data["similarity_score"], 0.7)
         self.assertTrue("nonce" in self.strategy.data)
         self.assertTrue("signed_challenge" in self.strategy.data)

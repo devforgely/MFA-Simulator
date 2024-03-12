@@ -169,7 +169,6 @@ class DataService():
                 with open(Settings.FACT_FILE_PATH, 'r') as file:
                     self.cached_facts = json.load(file)["facts"]
             except FileNotFoundError:
-                print("File is not found")
                 return "Where are all the MFA facts :("
         return random.choice(self.cached_facts)
     
@@ -194,7 +193,6 @@ class DataService():
                 self.cached_details[name] = json.load(file)
                 return self.cached_details[name]
         except FileNotFoundError:
-            print("File is not found")
             return {}
 
     def get_security_questions(self) -> list:
@@ -203,7 +201,6 @@ class DataService():
                 with open(Settings.SECURITY_QUESTION_FILE_PATH, 'r') as file:
                     self.cached_security_questions = json.load(file)["security_questions"]
             except FileNotFoundError:
-                print("File is not found")
                 return []
         
         # Select 9 random questions

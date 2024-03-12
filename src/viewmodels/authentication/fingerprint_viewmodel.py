@@ -1,7 +1,7 @@
-
 from viewmodels.authentication.authentication_base import *
 import random
 from models.utils import image_byte, byte_str
+import numpy as np
 from configuration.app_configuration import Settings
 
 class FingerprintRegisterViewModel(AuthenticationBaseViewModel):
@@ -44,7 +44,7 @@ class FingerprintRegisterViewModel(AuthenticationBaseViewModel):
     def state_data(self) -> dict:
         data = self.authentication_service.get_session_stored().copy()
         data["user_fingerprint"] = byte_str(data["user_fingerprint"])
-        data["fingerprint_template"] = byte_str(data["fingerprint_template"])
+        data["fingerprint_template"] = byte_str(data["fingerprint_template"].tobytes())
         return data
 
     def send(self, fingerprint: str) -> None:
@@ -81,10 +81,11 @@ class FingerprintAuthenticateViewModel(AuthenticationBaseViewModel):
 
     def state_data(self, is_checked: bool) -> dict:
         data = self.authentication_service.get_session_stored().copy()
-        data["fingerprint_template"] = byte_str(data["fingerprint_template"])
+        data["fingerprint_template"] = byte_str(data["fingerprint_template"].tobytes())
 
         if is_checked:
-            data["fingerprint"] = byte_str(data["fingerprint"]) 
+            data["fingerprint"] = byte_str(data["fingerprint"])
+            data["similarity_score"] = str(data["similarity_score"])
             
         return data
 

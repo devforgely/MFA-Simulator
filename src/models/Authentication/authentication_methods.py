@@ -9,6 +9,8 @@ import time
 import random
 import uuid
 import rsa
+import cv2
+import numpy as np
 
 # For purpose of simulation, the strategy is simplified
 
@@ -76,6 +78,29 @@ class FingerPrintStrategy(BaseStrategy):
     def get_type(self) -> Method:
         return Method.FINGERPRINT
     
+    def generate_template(self, fingerprint_bytes: bytes) -> np.ndarray:
+        arr = np.frombuffer(fingerprint_bytes, np.uint8)
+        image = cv2.imdecode(arr, cv2.IMREAD_GRAYSCALE)
+        
+        # Enhance contrast
+        image = cv2.equalizeHist(image)
+
+        # Apply Gaussian Blur to smooth the image
+        blurred_image = cv2.GaussianBlur(image, (3, 3), 0)
+
+        # Binarize the image
+        _, binarized_image = cv2.threshold(blurred_image, 0, 1, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+
+        # Simulated template: simply resize the image
+        template = cv2.resize(binarized_image, (64, 64), interpolation=cv2.INTER_AREA)
+
+        return template
+
+    def calculate_similarity(self, template1, template2):
+        # Calculate similarity score
+        similarity_score = np.sum(template1 == template2) / template1.size
+        return similarity_score
+        
     def register(self, fingerprint: bytes) -> bool:
         if fingerprint:
             self.data["timestamp_register"] = str(datetime.datetime.now())
@@ -83,7 +108,7 @@ class FingerPrintStrategy(BaseStrategy):
             self.data["user_fingerprint"] = fingerprint #For bypass
 
             # Assuming doing fingerprint to fingerprint template
-            self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
+            self.data["fingerprint_template"] = self.generate_template(fingerprint)
 
             return True
         return False
@@ -92,11 +117,12 @@ class FingerPrintStrategy(BaseStrategy):
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
         self.data["fingerprint"] = fingerprint
         # Assuming doing fingerprint to fingerprint template
-        template = bytes([byte ^ 0xFA for byte in fingerprint])
-
+        template = self.generate_template(fingerprint)
         # Account for False negative
-        if template == self.data["fingerprint_template"] and random.random() > 0.2:
+        if self.calculate_similarity(template, self.data["fingerprint_template"]) > 0.99:
+            self.data["similarity_score"] = random.uniform(0.97, 1.0)
             return True
+        self.data["similarity_score"] = random.uniform(0.5, 0.7)
         return False
     
     def bypass(self) -> None:
@@ -259,6 +285,29 @@ class TwoFAKeyStrategy(BaseStrategy):
     def get_type(self) -> Method:
         return Method.TWOFA_KEY
     
+    def generate_template(self, fingerprint_bytes: bytes) -> np.ndarray:
+        arr = np.frombuffer(fingerprint_bytes, np.uint8)
+        image = cv2.imdecode(arr, cv2.IMREAD_GRAYSCALE)
+        
+        # Enhance contrast
+        image = cv2.equalizeHist(image)
+
+        # Apply Gaussian Blur to smooth the image
+        blurred_image = cv2.GaussianBlur(image, (3, 3), 0)
+
+        # Binarize the image
+        _, binarized_image = cv2.threshold(blurred_image, 0, 1, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+
+        # Simulated template: simply resize the image
+        template = cv2.resize(binarized_image, (64, 64), interpolation=cv2.INTER_AREA)
+
+        return template
+
+    def calculate_similarity(self, template1, template2):
+        # Calculate similarity score
+        similarity_score = np.sum(template1 == template2) / template1.size
+        return similarity_score
+    
     def generate_challenge(self, length=16) -> bytes:
         return secrets.token_bytes(length)
     
@@ -284,9 +333,10 @@ class TwoFAKeyStrategy(BaseStrategy):
 
             self.data["user_fingerprint"] = fingerprint #For bypass
             self.data["fingerprint"] = b""
+            self.data["similarity_score"] = "NULL"
 
             # Assuming doing fingerprint to fingerprint template
-            self.data["fingerprint_template"] = bytes([byte ^ 0xFA for byte in fingerprint])
+            self.data["fingerprint_template"] = self.generate_template(fingerprint)
             
             self.data["public_key"], self.data["private_key"] = rsa.newkeys(512) # small bits for simulation
 
@@ -300,14 +350,13 @@ class TwoFAKeyStrategy(BaseStrategy):
         self.data["timestamp_authenticate"] = str(datetime.datetime.now())
         self.data["fingerprint"] = fingerprint
         # Assuming doing fingerprint to fingerprint template
-        template = bytes([byte ^ 0xFA for byte in fingerprint])
+        template = self.generate_template(fingerprint)
 
-        # Account for False negative
-        if template == self.data["fingerprint_template"] and random.random() > 0.2:
+        if self.calculate_similarity(template, self.data["fingerprint_template"]) > 0.99:
+            self.data["similarity_score"] = random.uniform(0.97, 1.0)
             return self.challenge_response()
+        self.data["similarity_score"] = random.uniform(0.5, 0.7)
         return False
     
     def bypass(self) -> None:
-        self.data["timestamp_authenticate"] = str(datetime.datetime.now())
-        self.data["fingerprint"] = self.data["user_fingerprint"]
-        self.challenge_response()
+        self.authenticate(self.data["user_fingerprint"])

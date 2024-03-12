@@ -1,6 +1,5 @@
 from typing import Any
 from PyQt5.QtCore import QObject, pyqtSignal
-from PyQt5.QtGui import QIcon
 from services.container import ApplicationContainer
 from models.authentication.authentication import Method
 from viewmodels.authentication.password_viewmodel import *
@@ -10,7 +9,6 @@ from viewmodels.authentication.picture_password_viewmodel import *
 from viewmodels.authentication.fingerprint_viewmodel import *
 from viewmodels.authentication.totp_viewmodel import *
 from viewmodels.authentication.twofa_key_viewmodel import *
-from configuration.app_configuration import Settings
 
 
 class SimulateViewModel(QObject):

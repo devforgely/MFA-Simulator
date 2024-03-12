@@ -118,6 +118,7 @@ class FingerprintAuthenticateView(QWidget):
         self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), InfoMode.EXPAND)
         
         self.info_panel.add_server_data("User Fingerprint Template", ("User Fingerprint Template", data["fingerprint_template"]), InfoMode.EXPAND)
+        self.info_panel.add_server_data("Similarity Score", "NULL")
 
         self.info_panel.log_text("Waiting for fingerprint data...\n")
 
@@ -155,6 +156,7 @@ class FingerprintAuthenticateView(QWidget):
             self.info_panel.log_text("Locking authentication for 10 seconds due to multiple fail attempts.\n")
 
         self.info_panel.update_client_data("Fingerprint", ("Fingerprint", data["fingerprint"]))
+        self.info_panel.update_server_data("Similarity Score", data["similarity_score"])
 
     def bypass(self) -> None:
         self._viewmodel.bypass()

@@ -171,7 +171,7 @@ class QuizPlayViewModel(QObject):
         self.saved_choice = choice
 
     def next_quiz(self) -> None:
-        self.quiz_service.sumbit_answer(self.saved_choice)
+        self.quiz_service.submit_answer(self.saved_choice)
 
         quiz = self.quiz_service.get_quiz(1)
         if quiz:

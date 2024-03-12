@@ -20,5 +20,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     @classmethod
     def get_service_count(cls):
-        return len(cls.__dict__)
+        services = [attr for attr in cls.__dict__.values() if isinstance(attr, providers.Provider)]
+        return len(services)
     

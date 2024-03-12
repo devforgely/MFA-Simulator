@@ -22,13 +22,18 @@ class TestUser(unittest.TestCase):
 
     def test_add_badge(self):
         badge_to_add = Badge.LEARNER
-        self.user.add_badge(badge_to_add)
+        self.assertTrue(self.user.add_badge(badge_to_add))
         self.assertIn(badge_to_add.value, self.user.badges)
 
     def test_add_duplicate_badge(self):
         badge_to_add = Badge.LEARNER
         self.user.add_badge(badge_to_add)
         self.assertFalse(self.user.add_badge(badge_to_add))
+
+    def test_get_badge_count(self):
+        self.user.add_badge(Badge.LEARNER)
+        self.user.add_badge(Badge.COIN_HUNTER)
+        self.assertEqual(self.user.get_badges_count(), (2, 8))
 
     def test_update_improvements(self):
         initial_improvements_length = len(self.user.improvements)
@@ -54,8 +59,14 @@ class TestUser(unittest.TestCase):
         self.assertEqual(len(self.user.improvements), initial_improvements_length-1)
 
     def test_update_reading(self):
-        self.user.readings = [(title, state) for title, state in zip(['title1', 'title2', 'title3'], [True, True, True])]
+        self.user.readings = [[title, state] for title, state in zip(['title1', 'title2', 'title3'], [False, False, False])]
         title_to_update = 'title1'
+        self.user.update_reading(title_to_update, True, 0)
+        self.assertTrue(self.user.readings[0][1])
+
+    def test_update_reading_false(self):
+        self.user.readings = [(title, state) for title, state in zip(['title1', 'title2', 'title3'], [False, False, False])]
+        title_to_update = 'title0'
         self.user.update_reading(title_to_update, False, 0)
         self.assertFalse(self.user.readings[0][1])
 

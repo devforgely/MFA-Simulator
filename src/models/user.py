@@ -74,7 +74,8 @@ class User:
                 self.improvements.append((category, difference))
 
     def update_reading(self, title: str, state: bool, i: int) -> None:
-        self.readings[i] = (title, state)
+        if self.readings[i][0] == title and isinstance(state, bool):
+            self.readings[i][1] = state
 
     def unlock_simulation(self, method_val: int) -> None:
         self.unlocked_simulations[method_val] = True

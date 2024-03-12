@@ -173,11 +173,11 @@ class TwoFAKeyAuthenticateView(QWidget):
 
         self.info_panel.add_client_data("Fingerprint", ("Fingerprint", "NULL"), InfoMode.EXPAND)
         self.info_panel.add_client_data("Fingerprint Template", ("Fingerprint Template", data["fingerprint_template"]), InfoMode.EXPAND)
+        self.info_panel.add_client_data("Similarity Score", "NULL")
         self.info_panel.add_client_data("Private Key", ("Private Key", data["private_key"]), InfoMode.EXPAND)
         self.info_panel.add_client_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), InfoMode.EXPAND)
         self.info_panel.add_client_data("Signed Challenge", ("Signed Challenge", "NULL"), InfoMode.EXPAND)
         
-        self.info_panel.add_server_data("User Key Name", data["key_name"])
         self.info_panel.add_server_data("User Key Handle", ("Key Handle", data["key_handle"]), InfoMode.EXPAND)
         self.info_panel.add_server_data("User Public Key", ("User Public Key", data["public_key"]), InfoMode.EXPAND)
         self.info_panel.add_server_data("Nonce", ("Nonce for Challenge-Response Protocol", "NULL"), InfoMode.EXPAND)
@@ -239,6 +239,7 @@ class TwoFAKeyAuthenticateView(QWidget):
             self.info_panel.log_text("Locking authentication for 10 seconds due to multiple fail attempts.\n")
             
         self.info_panel.update_client_data("Fingerprint", ("Fingerprint", data["fingerprint"]))
+        self.info_panel.update_client_data("Similarity Score", data["similarity_score"])
     
     def bypass(self) -> None:
         self._viewmodel.bypass()

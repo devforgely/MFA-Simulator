@@ -2,11 +2,7 @@ from typing import Any
 from PyQt5.QtCore import QObject, pyqtSignal
 from services.container import ApplicationContainer
 from services.data_service import DataService
-from viewmodels.simulate_viewmodels import SimulateViewModel, CreatorViewModel
-from viewmodels.quiz_viewmodels import QuizViewModel
-from viewmodels.learn_viewmodel import LearnViewModel
-from viewmodels.profile_viewmodel import ProfileViewModel
-from viewmodels.manage_viewmodel import ManageViewModel
+from viewmodels.simulate_viewmodels import CreatorViewModel
 from widgets.info_bar import InfoBarIcon
 
 

@@ -54,7 +54,7 @@ class TwoFAKeyRegisterViewModel(AuthenticationBaseViewModel):
     def state_data(self) -> dict:
         data = self.authentication_service.get_session_stored().copy()
         data["user_fingerprint"] = byte_str(data["user_fingerprint"])
-        data["fingerprint_template"] = byte_str(data["fingerprint_template"])
+        data["fingerprint_template"] = byte_str(data["fingerprint_template"].tobytes())
         data["private_key"] = decode_key(data["private_key"])
         data["public_key"] = decode_key(data["public_key"])
         return data
@@ -99,10 +99,11 @@ class TwoFAKeyAuthenticateViewModel(AuthenticationBaseViewModel):
 
     def state_data(self, is_checked: bool) -> dict:
         data = self.authentication_service.get_session_stored().copy()
-        data["fingerprint_template"] = byte_str(data["fingerprint_template"])
+        data["fingerprint_template"] = byte_str(data["fingerprint_template"].tobytes())
         data["private_key"] = decode_key(data["private_key"])
         data["public_key"] = decode_key(data["public_key"])
         data["fingerprint"] = byte_str(data["fingerprint"])
+        data["similarity_score"] = str(data["similarity_score"])
 
         if is_checked:
             data["nonce"] = byte_str(data["nonce"])
