@@ -62,7 +62,7 @@ class SecurityQuestionRegisterViewModel(AuthenticationBaseViewModel):
         if self.too_short_flag:
             self.too_short_flag = False
             self.clear_security_answer()
-            self.state_change.emit("Your answer must be atleast three characters long and case-sensitive is ignored.", 1)
+            self.state_change.emit("Your answer must be at least three characters long and case-sensitive is ignored.", 1)
         elif self.authentication_service.register(self.questions, self.answer_key):
             self.state_change.emit("Account has been registered.", 0)
             self.state_data_change.emit(self.state_data(), 0)

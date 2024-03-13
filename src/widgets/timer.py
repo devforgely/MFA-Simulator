@@ -17,7 +17,7 @@ class TimeThread(QThread):
 
     def run(self):
         self.is_running = True
-        for i in range(self.max_val, -1, -1):
+        for i in range(self.max_val-1, -1, -1):
             if not self.is_running:
                 break
             self._signal.emit(i)
@@ -31,7 +31,7 @@ class TimeDisplayThread(TimeThread):
         self.sec = int(max_val % 60)
 
     def run(self):
-        for i in range(self.max_val, -1, -1):
+        for i in range(self.max_val-1, -1, -1):
             if not self.is_running:
                 break
             

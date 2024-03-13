@@ -59,7 +59,7 @@ class TOTPRegisterViewModel(AuthenticationBaseViewModel):
         if self.authentication_service.register("Confirm Key"):
             self.state_change.emit("Account is linked.", 0)
             self.state_data_change.emit(self.state_data(), 0)
-            self.message_service.send(self, "Registered", None)
+            self.message_service.send(self, "Registered")
         else:
             self.state_change.emit("Registration Fail", 1)
 

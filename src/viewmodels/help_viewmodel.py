@@ -15,7 +15,8 @@ class HelpViewModel(QObject):
 
         if tokens:
             for doc_id, text in tokens.items():
-                self.add_document(doc_id, text)
+                if text:
+                    self.add_document(doc_id, text)
 
     def add_document(self, doc_id, text):
         for term in text.split(' '):

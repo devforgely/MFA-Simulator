@@ -33,7 +33,7 @@ class ChipPinRegisterViewModel(AuthenticationBaseViewModel):
 
     def send(self, pin) -> None:
         if not self.pin_entered and len(pin) < 4:
-            self.state_change.emit("PIN must be atleast 4 digits long.", 1)
+            self.state_change.emit("PIN must be at least 4 digits long.", 1)
         elif not self.pin_entered: #first pin check
             self.pin_entered = pin
             self.pin_field_changed.emit("")

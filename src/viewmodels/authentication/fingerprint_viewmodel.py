@@ -1,7 +1,6 @@
 from viewmodels.authentication.authentication_base import *
 import random
 from models.utils import image_byte, byte_str
-import numpy as np
 from configuration.app_configuration import Settings
 
 class FingerprintRegisterViewModel(AuthenticationBaseViewModel):
@@ -94,7 +93,7 @@ class FingerprintAuthenticateViewModel(AuthenticationBaseViewModel):
 
         flag = self.authentication_service.authenticate(fingerprint_data)
         if flag == 0:
-            self.state_change.emit("The user has been authenticated.", False)
+            self.state_change.emit("The user has been authenticated.", flag)
             self.message_service.send(self, "Authenticated") 
         elif flag == 1:
             self.state_change.emit("Your credentials does not match our records.", flag)

@@ -3,10 +3,10 @@ from unittest.mock import patch, Mock
 from viewmodels.help_viewmodel import HelpViewModel
 
 class TestHelpViewModel(unittest.TestCase):
-    @patch.object(HelpViewModel, '__init__', lambda self: super(HelpViewModel, self).__init__())
-    def setUp(self):
+    @patch("services.container.ApplicationContainer.data_service")
+    def setUp(self, mock_data_service):
+        mock_data_service.return_value.get_help_token.return_value = ({}, {"1": ""})
         self.view_model = HelpViewModel()
-        self.view_model.inverted_index = {}
 
     def test_add_document(self):
         self.view_model.add_document('0', 'text sample')
