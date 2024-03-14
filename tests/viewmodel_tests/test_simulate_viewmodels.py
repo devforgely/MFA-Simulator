@@ -202,8 +202,7 @@ class TestAuthenticateViewModel(unittest.TestCase):
 
     @patch("services.container.ApplicationContainer.authentication_service")
     def test_on_message_authenticate_view(self, authentication_service_mock):
-        # Mocking change signals
-        self.view_model.reset_signal = MagicMock()
+        # Mocking change signal
         self.view_model.simulation_index_changed = MagicMock()
 
         # Set up test data
@@ -212,7 +211,6 @@ class TestAuthenticateViewModel(unittest.TestCase):
         self.view_model.on_message("Authenticate View")
 
         self.assertEqual(self.view_model.load_index, 1)
-        self.view_model.reset_signal.emit.assert_called_once()
         self.view_model.simulation_index_changed.emit.assert_not_called()  # Because the simulation hasn't been loaded yet
 
     def test_on_message_authenticated(self):
@@ -287,15 +285,23 @@ class TestAuthenticateViewModel(unittest.TestCase):
         self.view_model.simulation_index_changed.emit.assert_called_once_with(2, True, True)
 
     def test_end_simulation(self):
+        # Mocking change signal
+        self.view_model.reset_signal = MagicMock()
+
         self.view_model.end_simulation()
 
         self.view_model.authentication_service.complete_simulation.assert_not_called()
+        self.view_model.reset_signal.emit.assert_called_once()
         self.view_model.message_service.send.assert_called_once_with(self.view_model, "Creator View")
 
     def test_complete_simulation(self):
+        # Mocking change signal
+        self.view_model.reset_signal = MagicMock()
+
         self.view_model.complete_simulation()
 
         self.view_model.authentication_service.complete_simulation.assert_called_once()
+        self.view_model.reset_signal.emit.assert_called_once()
         self.view_model.message_service.send.assert_called_once_with(self.view_model, "Creator View")
 
     def test_bypass(self):
