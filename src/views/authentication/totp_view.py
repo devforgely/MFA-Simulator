@@ -116,6 +116,7 @@ class TOTPAuthenticateView(QWidget):
         self._viewmodel.state_data_change.connect(self.update_data)
 
         self.setup_ui()
+        self.destroyed.connect(self._viewmodel.on_destroyed)
     
     def setup_ui(self) -> None:
         self.time_bar.setMaximum(self._viewmodel.step_count)

@@ -106,7 +106,7 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
             self.timer = QTimer()
             self.timer.setSingleShot(True)
             self.timer.timeout.connect(self.get_code)
-            self.timer.start(300) # add delay to account for synchronisation
+            self.timer.start(700) # add delay to account for synchronisation
             
 
     def state_data(self) -> dict:
@@ -130,3 +130,6 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
 
     def bypass(self) -> None:
         self.state_data_change.emit(self.state_data(), 0)
+
+    def on_destroyed(self) -> None:
+        self.threading.stop()

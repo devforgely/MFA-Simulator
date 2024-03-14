@@ -98,7 +98,7 @@ class InfoPanel(QWidget):
     def add_client_data(self, property: str, value: Any, type: InfoMode = InfoMode.DEFAULT) -> None:
         row = self.client_data_layout.rowCount()
         property_title = QLabel(property)
-        property_title.setStyleSheet("max-width: 200px;")
+        property_title.setStyleSheet("max-width: 220px;")
         self.client_data_layout.addWidget(property_title, row, 0)
 
         property_value = None
@@ -130,7 +130,7 @@ class InfoPanel(QWidget):
     def add_server_data(self, property: str, value: Any, type: InfoMode = InfoMode.DEFAULT) -> None:
         row = self.server_data_layout.rowCount()
         property_title = QLabel(property)
-        property_title.setStyleSheet("max-width: 200px;")
+        property_title.setStyleSheet("max-width: 220px;")
         self.server_data_layout.addWidget(property_title, row, 0)
         
         property_value = None
