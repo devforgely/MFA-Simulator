@@ -118,12 +118,12 @@ class DetailViewDialog(QDialog):
 
 
 class AboutDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, ui="views_ui/about_view.ui"):
         super(AboutDialog, self).__init__(parent)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        uic.loadUi("views_ui/about_view.ui", self)
+        uic.loadUi(ui, self)
 
         if parent is not None:
             self.resize(parent.size())

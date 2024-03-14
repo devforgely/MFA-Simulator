@@ -5,9 +5,9 @@ from widgets.info_panel import InfoMode
 
 
 class PicturePasswordRegisterView(QWidget):
-    def __init__(self, viewmodel, info_panel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, info_panel, parent: QWidget, ui="views_ui/register_views/picture_password_view.ui") -> None:
         super().__init__(parent)
-        self.load_ui()
+        self.load_ui(ui)
 
         self._viewmodel = viewmodel
         self.info_panel = info_panel
@@ -22,8 +22,8 @@ class PicturePasswordRegisterView(QWidget):
 
         self.setup_ui()
     
-    def load_ui(self) -> None:
-        uic.loadUi("views_ui/register_views/picture_password_view.ui", self)
+    def load_ui(self, ui) -> None:
+        uic.loadUi(ui, self)
 
     def setup_ui(self) -> None:
         self.visible_check.clicked.connect(self.toggle_border_visibility)
@@ -136,11 +136,8 @@ class PicturePasswordRegisterView(QWidget):
 
 
 class PicturePasswordAuthenticateView(PicturePasswordRegisterView):
-    def __init__(self, viewmodel, info_panel, parent: QWidget) -> None:
-        super().__init__(viewmodel, info_panel, parent)
-
-    def load_ui(self) -> None:
-        uic.loadUi("views_ui/authenticate_views/picture_password_view.ui", self)
+    def __init__(self, viewmodel, info_panel, parent: QWidget, ui="views_ui/authenticate_views/picture_password_view.ui") -> None:
+        super().__init__(viewmodel, info_panel, parent, ui)
 
     def initalise_infopanel(self) -> None:
         self.info_panel.add_authenticator_description(self._viewmodel.display_details["description"])

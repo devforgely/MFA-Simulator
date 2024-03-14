@@ -7,9 +7,9 @@ from configuration.app_configuration import Settings
 # pyright: reportAttributeAccessIssue=false
 
 class LearnView(QWidget):
-    def __init__(self, viewmodel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, parent: QWidget, ui="views_ui/learn_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/learn_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.notes_changed.connect(self.update_title_list)

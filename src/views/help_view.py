@@ -8,9 +8,9 @@ from configuration.app_configuration import Settings
 # pyright: reportAttributeAccessIssue=false
 
 class HelpView(QMainWindow):
-    def __init__(self, viewmodel) -> None:
+    def __init__(self, viewmodel, ui="views_ui/help_view.ui") -> None:
         super().__init__()
-        uic.loadUi("views_ui/help_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.search_changed.connect(self.stackedWidget.setCurrentIndex)

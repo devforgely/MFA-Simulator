@@ -5,9 +5,9 @@ from configuration.app_configuration import Settings
 
 
 class ProfileView(QWidget):
-    def __init__(self, viewmodel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, parent: QWidget, ui="views_ui/profile_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/profile_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.coin_changed.connect(self.coin_count.setText)

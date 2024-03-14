@@ -18,7 +18,7 @@ class InfoMode(Enum):
     EXPAND = 3
 
 class InfoPanel(QWidget):
-    def __init__(self, mode: InfoMode, parent=None) -> None:
+    def __init__(self, mode: InfoMode, parent=None, ui_register="views_ui/component_views/register_info_view.ui", ui_authenticate="views_ui/component_views/authenticate_info_view.ui") -> None:
         QWidget.__init__(self, parent)
         self.message_service = ApplicationContainer.message_service()
 
@@ -26,9 +26,9 @@ class InfoPanel(QWidget):
         self.mode = mode
 
         if mode == InfoMode.REGISTER:
-            uic.loadUi("views_ui/component_views/register_info_view.ui", self)
+            uic.loadUi(ui_register, self)
         elif mode == InfoMode.AUTHENTICATE:
-            uic.loadUi("views_ui/component_views/authenticate_info_view.ui", self)
+            uic.loadUi(ui_authenticate, self)
     
         shadow_effect = QGraphicsDropShadowEffect()
         shadow_effect.setColor(QColor(0, 0, 0, 40))

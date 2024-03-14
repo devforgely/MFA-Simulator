@@ -5,9 +5,9 @@ from widgets.info_panel import InfoMode
 
 
 class PasswordRegisterView(QWidget):
-    def __init__(self, viewmodel, info_panel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, info_panel, parent: QWidget, ui="views_ui/register_views/password_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/register_views/password_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self.info_panel = info_panel
@@ -84,9 +84,9 @@ class PasswordRegisterView(QWidget):
 
 
 class PasswordAuthenticateView(QWidget):
-    def __init__(self, viewmodel, info_panel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, info_panel, parent: QWidget, ui="views_ui/authenticate_views/password_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/authenticate_views/password_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self.info_panel = info_panel

@@ -59,7 +59,7 @@ class Arrow(QWidget):
             painter.begin(self)
             painter.setBrush(QColor(64, 64, 64))
             painter.setPen(QColor(64, 64, 64))
-            painter.drawPolygon(*self.arrow)
+            painter.drawPolygon(*self.arrow) # type: ignore
             painter.end()
 
 
@@ -82,9 +82,9 @@ class QuizView(QStackedWidget):
 
 
 class QuizSettingsView(QWidget):
-    def __init__(self, viewmodel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, parent: QWidget, ui="views_ui/quiz_settings_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/quiz_settings_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.custom_setting_expand_changed.connect(self.update_setting_expand)
@@ -229,9 +229,9 @@ class QuizSettingsView(QWidget):
 
 
 class QuizPlayView(QWidget):
-    def __init__(self, viewmodel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, parent: QWidget, ui="views_ui/quiz_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/quiz_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.time_mode_changed.connect(self.set_timed)
@@ -303,9 +303,9 @@ class QuizPlayView(QWidget):
             
 
 class QuizResponseView(QWidget):
-    def __init__(self, viewmodel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, parent: QWidget, ui="views_ui/quiz_response_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/quiz_response_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.check_time_changed.connect(self.update_time)

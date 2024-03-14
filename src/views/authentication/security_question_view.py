@@ -16,9 +16,9 @@ class CustemComboBox(QComboBox):
         pass
 
 class SecurityQuestionRegisterView(QWidget):
-    def __init__(self, viewmodel, info_panel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, info_panel, parent: QWidget, ui="views_ui/register_views/security_question_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/register_views/security_question_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self.info_panel = info_panel
@@ -180,9 +180,9 @@ class SecurityQuestionRegisterView(QWidget):
 
 
 class SecurityQuestionAuthenticateView(QWidget):
-    def __init__(self, viewmodel, info_panel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, info_panel, parent: QWidget, ui="views_ui/authenticate_views/security_question_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/authenticate_views/security_question_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self.info_panel = info_panel

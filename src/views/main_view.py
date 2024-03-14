@@ -20,9 +20,9 @@ from configuration.app_configuration import Settings
 
 
 class MainView(QMainWindow):
-    def __init__(self, viewmodel) -> None:
+    def __init__(self, viewmodel, ui="views_ui/main_view.ui") -> None:
         super().__init__()
-        uic.loadUi("views_ui/main_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.fact_changed.connect(self.fact_label.setText)

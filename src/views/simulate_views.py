@@ -34,9 +34,9 @@ class SimulateView(QStackedWidget):
         self._viewmodel.view_authentication.connect(lambda: self.setCurrentWidget(self.authenticate_page))
 
 class CreatorView(QWidget):
-    def __init__(self, viewmodel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, parent: QWidget, ui="views_ui/creator_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/creator_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.simulation_changed.connect(self.update_simulation_details)
@@ -108,9 +108,9 @@ class CreatorView(QWidget):
 class RegisterView(QWidget):
     resized = pyqtSignal()
 
-    def __init__(self, viewmodel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, parent: QWidget, ui="views_ui/register_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/register_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.reset_signal.connect(self.clear_stack)
@@ -186,9 +186,9 @@ class RegisterView(QWidget):
 class AuthenticateView(QWidget):
     resized = pyqtSignal()
     
-    def __init__(self, viewmodel, parent: QWidget) -> None:
+    def __init__(self, viewmodel, parent: QWidget, ui="views_ui/authenticate_view.ui") -> None:
         super().__init__(parent)
-        uic.loadUi("views_ui/authenticate_view.ui", self)
+        uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
         self._viewmodel.reset_signal.connect(self.clear_stack)
