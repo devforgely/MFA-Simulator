@@ -1,4 +1,5 @@
 from viewmodels.authentication.authentication_base import *
+from models.authentication.authentication import Method
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, QTimer
 from widgets.timer import TimeThread
@@ -79,11 +80,23 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         self.threading = TimeThread(self.max_time)
         self.step_count = self.threading.max_val
         self.threading._signal.connect(self.signal_update)
+        self.allow_code = True
+
+    def subscribe(self, type) -> None:
+        self.message_service.subscribe(self, type, self.on_message)
+
+    def on_message(self, message_title: str, *args)  -> None:
+        if message_title == "Change View":
+            if args[0] == Method.TOTP:
+                self.allow_code = True
+            else:
+                self.allow_code = False
     
     def get_code(self) -> None:
         # generate new totp
-        self.authentication_service.authenticate("GENERATE")
-        self.code_changed.emit(self.authentication_service.get_session_stored()["totp"], datetime.now(timezone.utc).strftime("%H:%M %Z"))
+        if self.allow_code:
+            self.authentication_service.authenticate("GENERATE")
+            self.code_changed.emit(self.authentication_service.get_session_stored()["totp"], datetime.now(timezone.utc).strftime("%H:%M %Z"))
 
     def start_totp(self) -> None:
         self.get_code()
@@ -106,7 +119,7 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
             self.timer = QTimer()
             self.timer.setSingleShot(True)
             self.timer.timeout.connect(self.get_code)
-            self.timer.start(700) # add delay to account for synchronisation
+            self.timer.start(1000) # add delay to account for synchronisation
             
 
     def state_data(self) -> dict:
@@ -130,6 +143,14 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
 
     def bypass(self) -> None:
         self.state_data_change.emit(self.state_data(), 0)
+        self.clean_up()
 
-    def on_destroyed(self) -> None:
-        self.threading.stop()
+    def clean_up(self) -> None:
+        if hasattr(self, 'threading'):
+            self.threading.stop()
+            self.threading.quit()
+            self.threading.wait()
+            del self.threading
+        if hasattr(self, 'timer') and self.timer.isActive():
+            self.timer.stop()
+            del self.timer

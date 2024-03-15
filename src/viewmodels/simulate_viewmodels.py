@@ -219,6 +219,7 @@ class AuthenticateViewModel(QObject):
                    self.authentication_service.at == self.authentication_service.auth_count:
                     self.load_simulation()
 
+                self.message_service.send(self, "Change View", self.authentication_service.get_type())
                 self.simulation_index_changed.emit(self.authentication_service.at, True, can_forward)
         else:
             self.congrats_dialog_signal.emit()
@@ -226,6 +227,7 @@ class AuthenticateViewModel(QObject):
     def go_backward(self) -> None:
         if self.authentication_service.backward():
             can_back = self.authentication_service.at > 0
+            self.message_service.send(self, "Change View", self.authentication_service.get_type())
             self.simulation_index_changed.emit(self.authentication_service.at, can_back, True)
 
     def bypass(self) -> None:

@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 from PyQt5.QtGui import QIntValidator, QPixmap
 from widgets.info_panel import InfoMode
+from viewmodels.simulate_viewmodels import AuthenticateViewModel
 from configuration.app_configuration import Settings
 
 # pyright: reportAttributeAccessIssue=false
@@ -108,6 +109,7 @@ class TOTPAuthenticateView(QWidget):
 
         self._viewmodel = viewmodel
         self.info_panel = info_panel
+        self._viewmodel.subscribe(AuthenticateViewModel)
         self._viewmodel.time_changed.connect(self.update_time)
         self._viewmodel.code_changed.connect(self.update_code)
         self._viewmodel.clear_code_signal.connect(self.clear_input)
@@ -116,7 +118,7 @@ class TOTPAuthenticateView(QWidget):
         self._viewmodel.state_data_change.connect(self.update_data)
 
         self.setup_ui()
-        self.destroyed.connect(self._viewmodel.on_destroyed)
+        self.destroyed.connect(self._viewmodel.clean_up)
     
     def setup_ui(self) -> None:
         self.time_bar.setMaximum(self._viewmodel.step_count)
@@ -247,3 +249,4 @@ class TOTPAuthenticateView(QWidget):
 
     def bypass(self) -> None:
         self._viewmodel.bypass()
+        self.update_state("The user has been authenticated.", 0)

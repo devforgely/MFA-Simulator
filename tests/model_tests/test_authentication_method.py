@@ -486,6 +486,22 @@ class TestTOTPStrategy(unittest.TestCase):
         self.assertEqual(len(totp), 6)
         self.assertTrue(totp.isdigit())
 
+    @patch('time.time', side_effect=[0, 29, 30, 56, 60])
+    def test_totp_change(self, mock_time):
+        # Arrange
+        self.strategy.register("")
+        self.strategy.register("Confirm")
+
+        # Act
+        totps = [self.strategy.generate_TOTP() for _ in range(5)]
+
+        # Assert
+        self.assertEqual(len(totps), 5)  # Ensure three TOTPs are generated
+        self.assertEqual(totps[0], totps[1])  # TOTP should remain same within the same 30s window
+        self.assertNotEqual(totps[1], totps[2])  # TOTP should change after 30s
+        self.assertEqual(totps[2], totps[3])  # TOTP should remain same within the same 30s window
+        self.assertNotEqual(totps[3], totps[4])  # TOTP should change after 30s
+
     def test_authenticate(self):
         # Arrange
         self.strategy.register("")

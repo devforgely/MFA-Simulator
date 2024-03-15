@@ -243,3 +243,4 @@ class TwoFAKeyAuthenticateView(QWidget):
     
     def bypass(self) -> None:
         self._viewmodel.bypass()
+        self.update_state("The user has been authenticated.", 0)

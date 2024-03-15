@@ -127,8 +127,6 @@ class PicturePasswordRegisterView(QWidget):
 
         self.info_panel.update_server_data("User Images", ("User Images Stored as Shared Secret", data["hashed_secret"]))
 
-        self.info_panel.update_method_note(self._viewmodel.display_details["notes"][1])
-
         self.info_panel.log_text(f"Client: {len(self._viewmodel.selected_images)} images selected.")
         self.info_panel.log_text("Client: Sending data through a secure communication channel.")
         self.info_panel.log_text("Server: Hashing the images in byte using sha-256.")
@@ -193,3 +191,4 @@ class PicturePasswordAuthenticateView(PicturePasswordRegisterView):
 
     def bypass(self) -> None:
         self._viewmodel.bypass()
+        self.update_state("The user has been authenticated.", 0)
