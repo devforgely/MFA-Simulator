@@ -145,19 +145,20 @@ class AuthenticationService():
             return True
         return False
     
-    def authenticate(self, *data: Any) -> int:
+    def authenticate(self, *data: Any, ignore_limit: bool = False) -> int:
         # 2 for lock
         # 1 for fail
         # 0 for success
-        if self.auth_false_count < self.LIMIT_COUNT:
-            if time.time() - self.lock_time >= self.LOCK_DURATION:
+        if ignore_limit or (self.auth_false_count < self.LIMIT_COUNT):
+            if ignore_limit or (time.time() - self.lock_time >= self.LOCK_DURATION):
                 state = self.strategy.authenticate(self.at, *data)
                 if state:
                     if self.at == self.auth_count:
                         self.auth_count += 1
                     return 0
                 
-                self.auth_false_count += 1
+                if not ignore_limit:
+                    self.auth_false_count += 1
                 return 1
             return 2
 

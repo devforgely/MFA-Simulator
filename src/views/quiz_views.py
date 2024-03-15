@@ -172,7 +172,8 @@ class QuizSettingsView(QWidget):
     def prepare_quiz(self) -> None:
         if not self._viewmodel.prepare_quiz():
             self.quiz_note.setText("""<b>Fail to generate quiz.</b><br>
-                                   <p>Perhaps you need to try complete a classic quiz so we can see what you can improve on.</p>""")
+                                   <p>Perhaps you need to try complete a classic quiz so we can see what you can improve on.</p>
+                                   <p>Perhaps there are no quizzes available for the parameters set.</p>""")
             
     def change_all_categories(self) -> None:
         if self.all_categories_box.isChecked():

@@ -89,6 +89,18 @@ class TestAuthenticationService(unittest.TestCase):
         # After LIMIT_COUNT attempts, authentication should be locked out
         self.assertEqual(self.service.authenticate("username", "wrong_password"), 2)
 
+    def test_authenticate_lockout_ignore(self):
+        self.service.add(Method.TOTP)
+        self.service.register("")
+        self.service.register("confirm")
+        for _ in range(self.service.LIMIT_COUNT):
+            self.assertEqual(self.service.authenticate("GENERATE"), 1)
+        # After LIMIT_COUNT attempts, authentication should be locked out
+        self.assertEqual(self.service.authenticate(self.service.get_session_stored()["totp"]), 2)
+        # After LIMIT_COUNT attempts, authentication should be locked out but can ignore
+        self.assertEqual(self.service.authenticate("GENERATE", ignore_limit=True), 1)
+        self.assertEqual(self.service.authenticate(self.service.get_session_stored()["totp"], ignore_limit=True), 0)
+
     def test_forward(self):
         self.service.add(Method.PASSWORD)
         self.service.add(Method.SECRET_QUESTION)

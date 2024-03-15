@@ -150,6 +150,7 @@ class ChipPinAuthenticateView(QWidget):
         self.submit_btn.installEventFilter(ButtonHoverWatcher(self.submit_btn, "tick-circle", "tick-circle-green"))
         self.submit_btn.setEnabled(False)
         self.warning_label.setVisible(False)
+        self.pin_field.setEchoMode(QLineEdit.Password)
         self.frame.adjust_shadow(30, 50, 2, 2)
         self.initalise_infopanel()
 

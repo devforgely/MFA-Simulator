@@ -362,7 +362,7 @@ QPushButton {
              <item>
               <widget class="QLabel" name="label_8">
                <property name="text">
-                <string>Are you sure you want the link the device to MFA APP?</string>
+                <string>Are you certain you wish to link the device to the MFA app?</string>
                </property>
                <property name="wordWrap">
                 <bool>true</bool>

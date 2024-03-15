@@ -91,7 +91,7 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
             if self.started:
                 if args[0] == Method.TOTP:
                     self.allow_code = True
-                    self.authentication_service.authenticate("GENERATE")
+                    self.authentication_service.authenticate("GENERATE", ignore_limit=True)
                     self.code_changed.emit(self.authentication_service.get_session_stored()["totp"], datetime.now(timezone.utc).strftime("%H:%M %Z"))
                 else:
                     self.allow_code = False
@@ -99,23 +99,25 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
     def get_code(self) -> None:
         # generate new totp
         if self.allow_code:
-            self.authentication_service.authenticate("GENERATE")
+            self.authentication_service.authenticate("GENERATE", ignore_limit=True)
             self.code_changed.emit(self.authentication_service.get_session_stored()["totp"], datetime.now(timezone.utc).strftime("%H:%M %Z"))
 
     def start_totp(self) -> None:
         self.started = True
         self.get_code()
-        self.threading.set_max(int(self.max_time - (time.time() % self.max_time))) # remaining time before totp expire
-        self.threading.start()
+        if self.threading is not None:
+            self.threading.set_max(int(self.max_time - (time.time() % self.max_time))) # remaining time before totp expire
+            self.threading.start()
 
     def signal_update(self, val: int):
         self.time_changed.emit(val)
         
         if val == 0:
             # Stop the old thread
-            if hasattr(self, 'threading'):
+            if hasattr(self, 'threading') and self.threading is not None:
                 self.threading.quit()
                 self.threading.wait()
+                self.threading = None
 
             self.threading = TimeThread(self.max_time) # Now we are in sync
             self.threading._signal.connect(self.signal_update)
@@ -135,7 +137,8 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         flag = self.authentication_service.authenticate(code)
 
         if not flag:
-            self.threading.stop()
+            self.allow_code = False
+            self.clean_up()
             self.state_change.emit("The user has been authenticated.", flag)
             self.message_service.send(self, "Authenticated")
         elif flag == 1:
@@ -152,9 +155,13 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
 
     def clean_up(self) -> None:
         self.message_service.unsubscribe(self)
-        if hasattr(self, 'threading'):
+        if hasattr(self, 'threading') and self.threading is not None:
             self.threading.stop()
             self.threading.quit()
             self.threading.wait()
-        if hasattr(self, 'timer') and self.timer.isActive():
-            self.timer.stop()
+            self.threading = None
+        if hasattr(self, 'timer') and self.timer is not None:
+            if self.timer.isActive():
+                self.timer.stop()
+            self.timer.deleteLater()
+            self.timer = None

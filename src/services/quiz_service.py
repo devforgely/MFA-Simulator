@@ -68,6 +68,8 @@ class QuizService():
         # Randomly select questions from the filtered list
         self.quizzes = random.sample(filtered_questions, min(self.config['num_questions'], len(filtered_questions)))
         self.current_answers: List[Tuple[str, bool]] = [("", False)] * len(self.quizzes)
+        if len(self.quizzes) == 0:
+            return False
         return True
     
     def get_time(self) -> tuple:

@@ -13,7 +13,7 @@ class HelpView(QMainWindow):
         uic.loadUi(ui, self)
 
         self._viewmodel = viewmodel
-        self._viewmodel.search_changed.connect(self.stackedWidget.setCurrentIndex)
+        self._viewmodel.search_changed.connect(self.help_search)
 
         self.setWindowTitle("MFA Simulator Helper")
         self.setAttribute(Qt.WA_DeleteOnClose)
@@ -45,6 +45,11 @@ class HelpView(QMainWindow):
 
     def search_text(self):
         self._viewmodel.search(self.search_field.text())
+
+    def help_search(self, index: int):
+        self.stackedWidget.setCurrentIndex(index)
+        buttons_list = self.button_group.buttons()
+        buttons_list[index].setChecked(True)
 
     def button_click(self):
         btn_name = self.sender().objectName()
