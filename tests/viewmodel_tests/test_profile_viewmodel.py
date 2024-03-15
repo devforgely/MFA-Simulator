@@ -15,7 +15,7 @@ class TestProfileViewModel(unittest.TestCase):
         data_service_mock.return_value.get_user_recent_activiies.return_value = ["Activity 1", "Activity 2"]
         data_service_mock.return_value.get_user_badges.return_value = ["Badge 1", "Badge 2"]
         data_service_mock.return_value.get_user_improvements.return_value = ["Improvement 1", "Improvement 2"]
-        data_service_mock.return_value.get_user_readings.return_value = [("Book 1", True), ("Book 2", False)]
+        data_service_mock.return_value.get_user_readings.return_value = [["Book & 1", True], ["Book 2", False]]
 
     def test_on_message_update_coins(self):
         # Mocking change signal
@@ -143,7 +143,7 @@ class TestProfileViewModel(unittest.TestCase):
         self.view_model.readings()
 
         # Asserting if the readings changed signal is emitted with the correct value
-        self.view_model.readings_changed.emit.assert_called_once_with([("Book 1", True), ("Book 2", False)])
+        self.view_model.readings_changed.emit.assert_called_once_with([["Book && 1", True], ["Book 2", False]])
 
     def test_update_reading(self):
         # Mocking DataService method

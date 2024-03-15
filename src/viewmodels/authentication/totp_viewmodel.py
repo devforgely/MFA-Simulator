@@ -106,7 +106,10 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         self.started = True
         self.get_code()
         if self.threading is not None:
-            self.threading.set_max(int(self.max_time - (time.time() % self.max_time))) # remaining time before totp expire
+            remaining_time = int(self.max_time - (time.time() % self.max_time))
+            if remaining_time == 0:
+                remaining_time = self.max_time
+            self.threading.set_max(remaining_time) # remaining time before totp expire
             self.threading.start()
 
     def signal_update(self, val: int):

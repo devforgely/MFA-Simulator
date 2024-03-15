@@ -61,7 +61,7 @@ class ProfileViewModel(QObject):
         for i in range(len(readings)):
             book_title, has_read = readings[i]
             if '&' in book_title:
-                readings[i] = (book_title.replace("&", "&&"), has_read)
+                readings[i] = [book_title.replace("&", "&&"), has_read]
         self.readings_changed.emit(readings)
 
     def update_reading(self, title: str, state: int, pos: int) -> None:

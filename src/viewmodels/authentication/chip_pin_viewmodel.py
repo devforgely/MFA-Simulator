@@ -96,4 +96,5 @@ class ChipPinAuthenticateViewModel(AuthenticationBaseViewModel):
             self.state_data_change.emit(self.state_data(False), flag)
 
     def bypass(self) -> None:
+        self.allow_pin = False
         self.state_data_change.emit(self.state_data(True), 0)

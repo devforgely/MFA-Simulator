@@ -135,6 +135,7 @@ class TestChipPinAuthenticateViewModel(unittest.TestCase):
         # Case: Successful authentication
         self.viewmodel.authentication_service.authenticate.return_value = 0
         self.viewmodel.send("1234")
+        self.assertFalse(self.viewmodel.allow_pin)
         self.viewmodel.state_change.emit.assert_called_with("The user has been authenticated.", 0)
         self.viewmodel.state_data_change.emit.assert_called_with(self.viewmodel.state_data(True), 0)
         self.viewmodel.message_service.send.assert_called_once_with(self.viewmodel, "Authenticated")
@@ -158,6 +159,7 @@ class TestChipPinAuthenticateViewModel(unittest.TestCase):
         self.viewmodel.state_data.return_value = {}
 
         self.viewmodel.bypass()
+        self.assertFalse(self.viewmodel.allow_pin)
         self.viewmodel.state_data_change.emit.assert_called_once_with(self.viewmodel.state_data(True), 0)
 
         

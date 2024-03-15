@@ -543,6 +543,8 @@ class TestDataServiceSection(unittest.TestCase):
         self.assertEqual(result[0].title, "OTP")  # Ensure titles are correctly formatted
         self.assertEqual(result[1].title, "Pin Card")
         self.assertEqual(result[2].title, "The Best Reading")
+        self.assertEqual(len(self.data_service.get_user_readings()), 3)
+        self.assertIsInstance(self.data_service.get_user_readings()[0], list)
 
     @patch('os.listdir')
     @patch('builtins.open')

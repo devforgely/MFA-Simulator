@@ -224,7 +224,7 @@ class DataService():
         if len(notes) > len(self.get_user_readings()):
             readings = []
             for note in notes:
-                readings.append((note.title, False))
+                readings.append([note.title, False])
             self.user.readings = readings
 
         return notes

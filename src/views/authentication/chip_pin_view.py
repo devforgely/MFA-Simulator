@@ -175,9 +175,10 @@ class ChipPinAuthenticateView(QWidget):
 
     def insert_card(self) -> None:
         self.terminal.setPixmap(QPixmap(Settings.IMAGE_FILE_PATH+"card_inside.png"))
-        self.pin_field.setPlaceholderText("Enter PIN")
-        self._viewmodel.allow_pin = True
-        self.submit_btn.setEnabled(True)
+        if not self.warning_label.isVisible():
+            self.pin_field.setPlaceholderText("Enter PIN")
+            self._viewmodel.allow_pin = True
+            self.submit_btn.setEnabled(True)
 
     def update_state(self, content: str, flag: int) -> None:
         if not flag:
