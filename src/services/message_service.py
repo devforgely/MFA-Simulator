@@ -10,6 +10,9 @@ class MessageService:
         if publisher_type not in self.subscriptions:
             # print(f"subscribe to:{publisher_type}")
             self.subscriptions[publisher_type] = []
+        elif subscriber_instance in (subscriber[0] for subscriber in self.subscriptions[publisher_type]):
+            # If subscriber_instance already in subscriptions, return without appending
+            return
         self.subscriptions[publisher_type].append((subscriber_instance, callback))
 
     def unsubscribe(self, subscriber_instance: Any) -> None:

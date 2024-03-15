@@ -159,7 +159,6 @@ class RegisterViewModel(QObject):
             self.simulation_index_changed.emit(self.authentication_service.at, can_back, True)
 
     def end_simulation(self) -> None:
-        self.reset_signal.emit()
         self.message_service.send(self, "Creator View")    
         
 
@@ -192,6 +191,7 @@ class AuthenticateViewModel(QObject):
 
     def on_message(self, message_title: str, *args: Any)  -> None:
         if message_title == "Authenticate View":
+            self.reset_signal.emit()
             self.authentication_service.at = 0
             self.load_index = 0
             self.load_simulation()
@@ -235,11 +235,9 @@ class AuthenticateViewModel(QObject):
             self.bypass_signal.emit(self.authentication_service.at)
 
     def end_simulation(self) -> None:
-        self.reset_signal.emit()
         self.message_service.send(self, "Creator View")
 
     def complete_simulation(self) -> None:
-        self.reset_signal.emit()
         self.authentication_service.complete_simulation()
         self.message_service.send(self, "Creator View")
     

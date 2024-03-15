@@ -190,15 +190,13 @@ class TOTPAuthenticateView(QWidget):
 
     def start_code(self) -> None:
         self.code_btn.setVisible(False)
+        self.time_bar.setVisible(True)
         self._viewmodel.start_totp()
 
     def update_code(self, totp: str, time: str) -> None:
         self.code_label.setText(totp)
-
+        self.time_label.setText(time)
         self.clear_input()
-
-        self.time_label.setText(time)        
-        self.time_bar.setVisible(True)
 
     def update_time(self, val: int) -> None:
         self.time_bar.setValue(val)

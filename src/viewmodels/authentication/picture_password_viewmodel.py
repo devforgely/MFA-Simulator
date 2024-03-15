@@ -33,7 +33,7 @@ class PicturePasswordRegisterViewModel(AuthenticationBaseViewModel):
 
         if len(temp_images) < 9:
             random.shuffle(self.viewed_images)
-            temp_images.extend(random.sample(self.viewed_images, 9-len(temp_images)))
+            temp_images.extend(random.sample([x for x in self.viewed_images if x not in self.selected_images], 9-len(temp_images)))
             self.viewed_images.clear()
 
         self.viewed_images.extend(temp_images)

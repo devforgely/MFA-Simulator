@@ -81,16 +81,20 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         self.step_count = self.threading.max_val
         self.threading._signal.connect(self.signal_update)
         self.allow_code = True
+        self.started = False
 
     def subscribe(self, type) -> None:
         self.message_service.subscribe(self, type, self.on_message)
 
     def on_message(self, message_title: str, *args)  -> None:
         if message_title == "Change View":
-            if args[0] == Method.TOTP:
-                self.allow_code = True
-            else:
-                self.allow_code = False
+            if self.started:
+                if args[0] == Method.TOTP:
+                    self.allow_code = True
+                    self.authentication_service.authenticate("GENERATE")
+                    self.code_changed.emit(self.authentication_service.get_session_stored()["totp"], datetime.now(timezone.utc).strftime("%H:%M %Z"))
+                else:
+                    self.allow_code = False
     
     def get_code(self) -> None:
         # generate new totp
@@ -99,6 +103,7 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
             self.code_changed.emit(self.authentication_service.get_session_stored()["totp"], datetime.now(timezone.utc).strftime("%H:%M %Z"))
 
     def start_totp(self) -> None:
+        self.started = True
         self.get_code()
         self.threading.set_max(int(self.max_time - (time.time() % self.max_time))) # remaining time before totp expire
         self.threading.start()
@@ -146,11 +151,10 @@ class TOTPAuthenticateViewModel(AuthenticationBaseViewModel):
         self.clean_up()
 
     def clean_up(self) -> None:
+        self.message_service.unsubscribe(self)
         if hasattr(self, 'threading'):
             self.threading.stop()
             self.threading.quit()
             self.threading.wait()
-            del self.threading
         if hasattr(self, 'timer') and self.timer.isActive():
             self.timer.stop()
-            del self.timer

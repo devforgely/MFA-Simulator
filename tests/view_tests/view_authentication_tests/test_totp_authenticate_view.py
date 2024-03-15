@@ -69,7 +69,6 @@ class TestTotpAuthenticateView(unittest.TestCase):
 
         self.assertEqual(self.view.code_label.text(), "111111")
         self.assertEqual(self.view.time_label.text(), "12:00")
-        self.assertTrue(self.view.time_bar.isVisible())
 
     def test_update_time(self):
         self.view.update_time(10)
