@@ -118,7 +118,6 @@ class TwoFAKeyRegisterView(QWidget):
         self.info_panel.update_server_data("User Key Handle", ("Key Handle", data["key_handle"]))
         self.info_panel.update_server_data("User Public Key", ("User Public Key", data["public_key"]))
 
-        self.info_panel.log_text("Client: 2FA Key powered and activated.")
         self.info_panel.log_text("Client: Fingerprint scanned.")
         self.info_panel.log_text("Client: Converting fingerprint to fingerprint template and store inside 2FA key.")
         self.info_panel.log_text("Security key generating public-private key pair and a key handle that references the private key.")
